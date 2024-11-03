@@ -13,6 +13,8 @@
 #ifndef STACK_H
 # define STACK_H
 
+# include <unistd.h>
+
 typedef struct s_node
 {
 	int				value;

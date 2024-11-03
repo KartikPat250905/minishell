@@ -35,14 +35,6 @@ t_node	*pop(t_stack *stack)
 	stack->top = popped->next;
 	stack->size -= 1;
 	popped->next = NULL;
-	if (popped == stack->max || popped == stack->min)
-	{
-		stack->max = NULL;
-		stack->min = NULL;
-		i = stack->top;
-		while (i)
-			i = i->next;
-	}
 	return (popped);
 }
 
