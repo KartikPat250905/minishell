@@ -24,7 +24,7 @@ t_node	*init_node(int value)
 	return (new_node);
 }
 
-t_stack	*init_stack(int argc, char **argv)
+t_stack	*init_stack(void)
 {
 	t_stack	*new_stack;
 
