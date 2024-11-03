@@ -1,0 +1,3 @@
+./parsing/*.y
+./parsing/*.output
+./parsing/*.tab.c
