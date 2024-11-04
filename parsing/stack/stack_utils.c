@@ -36,6 +36,14 @@ t_stack	*init_stack(void)
 	return (new_stack);
 }
 
+void	init_push(int value, t_stack *stack)
+{
+	t_node	*node;
+
+	node = init_node(value);
+	push(stack, node);
+}
+
 int	free_stack(t_stack *stack, int send_error)
 {
 	while (stack->size)

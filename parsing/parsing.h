@@ -2,6 +2,8 @@
 # define PARSING_H
 
 # include <unistd.h>
+# include <stdbool.h>
+# include "stack/stack.h"
 
 typedef enum e_action
 {
@@ -46,5 +48,9 @@ typedef struct s_entry
 	int	go_to;
 	int	reduce;
 }		t_entry;
+
+bool	is_type_token(int value);
+int		fetch_top(t_stack *stack);
+bool	is_non_terminal(int value);
 
 #endif
