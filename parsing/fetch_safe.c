@@ -1,8 +1,8 @@
-# include "parsing.h"
+#include "parsing.h"
 
 int	fetch_top(t_stack *stack)
 {
-	if (stack -> top)
+	if (stack->top)
 		return (stack->top->value);
 	return (-1);
 }

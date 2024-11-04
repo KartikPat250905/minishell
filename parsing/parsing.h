@@ -10,9 +10,10 @@ typedef enum e_action
 	SHIFT,
 	REDUCE,
 	ACCEPT,
+	DEFAULT = -1;
 }				t_action;
 
-typedef enum e_token_type
+typedef enum e_terminals
 {
 	END = 0,
 	RED_FO = 60,
@@ -26,7 +27,7 @@ typedef enum e_token_type
 
 typedef enum e_non_terminals
 {
-	ACCEPT = 9,
+	//ACCEPT = 9, //defined twice? //necessary?
 	PIPE_SEQ = 10,
 	SIMPLE_CMD = 11,
 	CMD_NAME = 12,
