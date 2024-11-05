@@ -6,11 +6,12 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 16:28:54 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 12:24:00 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/05 17:31:20 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "stack.h"
+#include "libft.h"
 
 t_node	*init_node(int value)
 {
@@ -45,6 +46,20 @@ void	init_push(int value, t_stack *stack)
 	push(stack, node);
 }
 */
+
+void	print_stack(t_stack *stack, char *name)
+{
+	t_node *node;
+
+	node = stack->top;
+	ft_putendl_fd(name, 1);
+	while (node)
+	{
+		ft_putnbr_fd(node->value, 1);
+		ft_putchar_fd('\n', 1);
+		node = node->next;
+	}
+}
 
 int	free_stack(t_stack *stack, int send_error)
 {
