@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 18:27:00 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/05 23:08:11 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,13 @@ int	parsing_main(void) //char *str
 		entry = table_lookup(stack, tokens, table);
 		if (!entry)
 			break ;
-		else if (entry->state == ACCEPT)
+		else if (entry->action == ACCEPT)
 			ret = 1;
-		else if (entry->state == SHIFT)
+		else if (entry->action == SHIFT)
 			ret = action_shift(stack, tokens, entry);
-		else if (entry->state == REDUCE)
+		else if (entry->action == REDUCE)
 			ret = action_reduce(stack, entry);
-		else if (entry->state == DEFAULT)
+		else if (entry->action == DEFAULT)
 			ret = action_goto(stack, entry);
 		else
 			ret = 0;
