@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 16:28:54 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/03 16:32:19 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/05 12:24:00 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ t_stack	*init_stack(void)
 	return (new_stack);
 }
 
+/*
 void	init_push(int value, t_stack *stack)
 {
 	t_node	*node;
@@ -43,6 +44,7 @@ void	init_push(int value, t_stack *stack)
 	node = init_node(value);
 	push(stack, node);
 }
+*/
 
 int	free_stack(t_stack *stack, int send_error)
 {

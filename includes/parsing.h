@@ -6,23 +6,26 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:39:14 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/04 21:39:16 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/05 13:43:34 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSING_H
 # define PARSING_H
 
-# include <unistd.h>
 # include <stdbool.h>
-# include "stack/stack.h"
+# include <unistd.h> //malloc(), free()
+# include <fcntl.h> //open()
+# include "libft.h"
+# include "stack.h"
+# include "gc_alloc.h"
 
 typedef enum e_action
 {
 	SHIFT,
 	REDUCE,
 	ACCEPT,
-	DEFAULT = -1;
+	DEFAULT = -1,
 }				t_action;
 
 typedef enum e_terminals
@@ -62,8 +65,29 @@ typedef struct s_entry
 	int	reduce;
 }		t_entry;
 
+//actions.c
+int	action_shift(t_stack *stack, t_stack *in_stack, t_entry *entry);
+int	action_reduce(t_stack *stack, t_entry *entry);
+int	action_goto(t_stack *stack, t_entry *entry);
+
+//enum_check.c
 bool	is_type_token(int value);
-int		fetch_top(t_stack *stack);
 bool	is_non_terminal(int value);
+bool	is_state(int value);
+
+//fetch_safe.c
+int		fetch_top(t_stack *stack);
+
+//file.c
+int	get_table_size(char *filename);
+t_entry	*create_entry(char *line);
+t_entry	**create_table(char *filename);
+
+//lexer/lexer.c
+void	lexer(t_stack *tokens);
+
+//parsing.c
+void	table_lookup(t_entry *entry, t_stack *stack, t_stack *in_stack, t_entry **table);
+int		parsing_main(void);//(char *str);
 
 #endif
