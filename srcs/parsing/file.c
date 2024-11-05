@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 12:28:18 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 12:56:34 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/05 15:58:16 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ t_entry	**create_table(char *filename)
 	size = get_table_size(filename);
 	fd = open(filename, O_RDONLY);
 	if (size <= 0 || fd == -1)
+	{
+		ft_putendl_fd("error", 2);
 		exit(EXIT_FAILURE);
+	}
 	table = malloc(sizeof(t_entry *) * size);
 	if (!table)
 		exit(EXIT_FAILURE);
