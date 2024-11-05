@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:39:14 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 13:43:34 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/05 16:58:29 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_entry	**create_table(char *filename);
 void	lexer(t_stack *tokens);
 
 //parsing.c
-void	table_lookup(t_entry *entry, t_stack *stack, t_stack *in_stack, t_entry **table);
+t_entry	*table_lookup(t_stack *stack, t_stack *in_stack, t_entry **table);
 int		parsing_main(void);//(char *str);
 
 #endif

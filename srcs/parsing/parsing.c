@@ -6,12 +6,11 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 16:45:05 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/05 17:00:52 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
-//state tokentype
 
 t_entry *actual_lookup(t_entry **table, int state, int token)
 {
@@ -27,13 +26,15 @@ t_entry *actual_lookup(t_entry **table, int state, int token)
 	return (NULL);
 }
 
-void	table_lookup(t_entry *entry, t_stack *stack, t_stack *in_stack, t_entry **table)
+t_entry	*table_lookup(t_stack *stack, t_stack *in_stack, t_entry **table)
 {
 	int	top;
 	int	top_in;
+	t_entry *entry;
 
 	top = fetch_top(stack);
 	top_in = fetch_top(in_stack);
+	entry = NULL;
 	if (is_state(top))
 		entry = actual_lookup(table, top, top_in);
 	if (is_non_terminal(top))
@@ -42,6 +43,7 @@ void	table_lookup(t_entry *entry, t_stack *stack, t_stack *in_stack, t_entry **t
 		if (!entry)
 			entry = actual_lookup(table, top, -1);
 	}
+	return (entry);
 }
 
 int	parsing_main(void) //char *str
@@ -54,6 +56,7 @@ int	parsing_main(void) //char *str
 
 	tokens = NULL;
 	entry = NULL;
+	tokens = init_stack();
 	lexer(tokens);
 	stack = init_stack();
 	push(stack, init_node(0));
@@ -62,7 +65,7 @@ int	parsing_main(void) //char *str
 	ret = -1;
 	while (ret == -1)
 	{
-		table_lookup(entry, stack, tokens, table);
+		entry = table_lookup(stack, tokens, table);
 		if (!entry)
 			break ;
 		else if (entry->state == ACCEPT)

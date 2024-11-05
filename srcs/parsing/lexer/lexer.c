@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:46:07 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 13:47:33 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/05 17:01:21 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
  */
 void	lexer(t_stack *tokens)
 {
-	tokens = init_stack();
 	//if (!input_tokens)
 	push(tokens, init_node(END)); //EOF
 	push(tokens, init_node(WORD)); //outfile
