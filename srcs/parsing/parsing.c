@@ -6,11 +6,12 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 23:08:11 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/06 13:10:16 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
+#include <stdio.h>
 
 t_entry *actual_lookup(t_entry **table, int state, int token)
 {
@@ -41,7 +42,7 @@ t_entry	*table_lookup(t_stack *stack, t_stack *in_stack, t_entry **table)
 		if (!entry)
 			entry = actual_lookup(table, top, -1);
 	}
-	if (is_non_terminal(top))
+	else if (is_non_terminal(top))
 		entry = actual_lookup(table, top, stack->top->next->value);
 	return (entry);
 }
@@ -71,7 +72,10 @@ int	parsing_main(void) //char *str
 		print_stack(tokens, "tokens");
 		entry = table_lookup(stack, tokens, table);
 		if (!entry)
+		{
+			ret = 0;
 			break ;
+		}
 		else if (entry->action == ACCEPT)
 			ret = 1;
 		else if (entry->action == SHIFT)
