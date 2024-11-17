@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:54 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 18:01:34 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/17 19:58:02 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ bool	is_type_token(int value)
 
 bool	is_non_terminal(int value)
 {
-	return (value == ACCEPT || value == PIPE_SEQ || value == SIMPLE_CMD
-			|| value == CMD_NAME || value == CMD_WORD || value == CMD_PRE
+	return (value == ACCEP || value == PIPE_SEQ || value == SIMPLE_CMD
+			|| value == CMD_NAME || value == CMD_WORD || value == CMD_PREFIX
 			|| value == CMD_SUFFIX || value == IO_REDIRECT || value == IO_FILE
 			|| value == FILENAME || value == IO_HERE || value == HERE_END);
 }

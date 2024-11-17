@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:46:07 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 17:01:21 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/17 23:25:46 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,13 @@
  *
  * test case:
  * ls > outfile EOF
- * WORD RET_TO WORD EOF
+ * WORD RED_TO WORD EOF
+ *
+ * ls > > ls
+ * WORD RED_TO RED_TO WORD EOF
+ *
+ * ls | cat EOF
+ * WORD PIPE WORD EOF
  *
  * btw, should prototype be?
  * int lexer(char *str, t_stack *input_tokens);
@@ -29,12 +35,20 @@
  *
  * t_stack *lexer(char *str);
  */
+
+//ls < ls ls | cat | ls > outfile
 void	lexer(t_stack *tokens)
 {
 	//if (!input_tokens)
 	push(tokens, init_node(END)); //EOF
-	push(tokens, init_node(WORD)); //outfile
-	//if (!init_node(WORD))
-	push(tokens, init_node(RED_TO)); //>
+	push(tokens, init_node(WORD)); // outfile
+	push(tokens, init_node(RED_TO)); // >
+	push(tokens, init_node(WORD)); //ls
+	push(tokens, init_node(PIPE)); // |
+	push(tokens, init_node(WORD)); //cat
+	push(tokens, init_node(PIPE)); // |
+	push(tokens, init_node(WORD)); //ls
+	push(tokens, init_node(WORD)); //ls
+	push(tokens, init_node(RED_FO)); // <
 	push(tokens, init_node(WORD)); //ls
 }

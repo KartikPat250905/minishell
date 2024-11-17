@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/06 13:18:34 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/17 23:00:33 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_entry *actual_lookup(t_entry **table, int state, int token)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (table[i])
@@ -35,14 +35,16 @@ t_entry	*table_lookup(t_stack *stack, t_stack *in_stack, t_entry **table)
 	top = fetch_top(stack);
 	top_in = fetch_top(in_stack);
 	entry = NULL;
-	if (is_state(top))
-	{
+	//if (is_state(top))
+	//{
 		entry = actual_lookup(table, top, top_in);
 		if (!entry)
+		{
 			entry = actual_lookup(table, top, -1);
-	}
-	else if (is_non_terminal(top))
-		entry = actual_lookup(table, top, stack->top->next->value);
+		}
+	//}
+	//else if (is_non_terminal(top))
+	//	entry = actual_lookup(table, top, stack->top->next->value);
 	return (entry);
 }
 
@@ -72,7 +74,7 @@ int	parsing_main(void) //char *str
 		entry = table_lookup(stack, tokens, table);
 		if (!entry)
 		{
-			ret = 0;
+			ret = 2;
 			break ;
 		}
 		else if (entry->action == ACCEPT)
@@ -80,11 +82,16 @@ int	parsing_main(void) //char *str
 		else if (entry->action == SHIFT)
 			ret = action_shift(stack, tokens, entry);
 		else if (entry->action == REDUCE)
-			ret = action_reduce(stack, entry);
-		else if (entry->action == DEFAULT)
-			ret = action_goto(stack, entry);
+			ret = action_reduce(stack, entry, table);
+		//else if (entry->action == GOTO)
+		//	ret = action_goto(stack, entry);
 		else
 			ret = 0;
 	}
+	ft_putendl_fd("----------------leftovers", 1);
+	print_stack(stack, "stack");
+	ft_putendl_fd("", 1);
+	print_stack(tokens, "tokens");
+	entry = table_lookup(stack, tokens, table);
 	return (ret);
 }
