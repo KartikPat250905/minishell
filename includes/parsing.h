@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:39:14 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/17 23:19:15 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/18 14:49:27 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef enum e_non_terminals
 	IO_HERE = 19,
 	FILENAME = 21, //upd from 18 to 21
 	HERE_END = 23, //upd from 20 to 23
+	DEFAULT = -1,
 }				t_rules; //rename to non_terminal
 
 typedef struct s_entry

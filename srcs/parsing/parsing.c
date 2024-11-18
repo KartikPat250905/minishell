@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/17 23:00:33 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/18 14:52:55 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ t_entry	*table_lookup(t_stack *stack, t_stack *in_stack, t_entry **table)
 	//{
 		entry = actual_lookup(table, top, top_in);
 		if (!entry)
-		{
-			entry = actual_lookup(table, top, -1);
-		}
+	//	{
+			entry = actual_lookup(table, top, DEFAULT);
+	//	}
 	//}
 	//else if (is_non_terminal(top))
 	//	entry = actual_lookup(table, top, stack->top->next->value);
@@ -83,15 +83,12 @@ int	parsing_main(void) //char *str
 			ret = action_shift(stack, tokens, entry);
 		else if (entry->action == REDUCE)
 			ret = action_reduce(stack, entry, table);
-		//else if (entry->action == GOTO)
-		//	ret = action_goto(stack, entry);
 		else
 			ret = 0;
 	}
-	ft_putendl_fd("----------------leftovers", 1);
-	print_stack(stack, "stack");
-	ft_putendl_fd("", 1);
-	print_stack(tokens, "tokens");
-	entry = table_lookup(stack, tokens, table);
+	//ft_putendl_fd("----------------leftovers", 1);
+	//print_stack(stack, "stack");
+	//ft_putendl_fd("", 1);
+	//print_stack(tokens, "tokens");
 	return (ret);
 }
