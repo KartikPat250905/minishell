@@ -6,11 +6,28 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 11:37:44 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/04 12:20:03 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/08 13:04:10 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gc_alloc.h"
+
+/*
+** @description
+** Returns the global gc structure.
+**
+** @param
+** None
+**
+** @return
+** A pointer to the global gc structure.
+*/
+t_gc	*get_gc(void)
+{
+	static t_gc	gc = {NULL};
+
+	return (&gc);
+}
 
 /*
 ** @description
@@ -22,12 +39,14 @@
 ** @return
 ** A pointer to the allocated memory, or NULL if the allocation fails.
 */
-void	*gc_alloc(t_gc *gc, size_t size)
+void	*gc_alloc(size_t size)
 {
+	t_gc	*gc;
 	void	*ptr;
 	t_list	*node;
 
-	if (!gc || !size)
+	gc = get_gc();
+	if (!size)
 		return (NULL);
 	ptr = malloc(size);
 	if (!ptr)
@@ -52,13 +71,15 @@ void	*gc_alloc(t_gc *gc, size_t size)
 ** @return
 ** None
 */
-void	gc_free(t_gc *gc, void *ptr)
+void	gc_free(void *ptr)
 {
+	t_gc	*gc;
 	t_list	*curr;
 	t_list	*prev;
 
-	if (!gc | !ptr)
+	if (!ptr)
 		return ;
+	gc = get_gc();
 	curr = gc->head;
 	prev = NULL;
 	while (curr)
@@ -88,13 +109,13 @@ void	gc_free(t_gc *gc, void *ptr)
 ** @return
 ** None
 */
-void	gc_free_all(t_gc *gc)
+void	gc_free_all(void)
 {
+	t_gc	*gc;
 	t_list	*curr;
 	t_list	*temp;
 
-	if (!gc)
-		return ;
+	gc = get_gc();
 	curr = gc->head;
 	while (curr)
 	{

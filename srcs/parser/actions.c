@@ -6,12 +6,11 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:33 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/18 15:54:05 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/22 12:04:57 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
-#include <stdio.h>
 
 t_entry *non_terminal_lookup(t_entry **table, int state, int non_terminal)
 {
@@ -29,7 +28,7 @@ t_entry *non_terminal_lookup(t_entry **table, int state, int non_terminal)
 	return (NULL);
 }
 
-int get_non_terminal(int rule_number)
+int	get_non_terminal(int rule_number)
 {
     switch (rule_number)
     {

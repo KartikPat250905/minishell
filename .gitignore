@@ -1,3 +1,2 @@
-parsing/*.y
-parsing/*.output
-parsing/*.tab.c
+grammar/*
+*.o

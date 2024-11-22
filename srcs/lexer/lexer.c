@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:46:07 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/17 23:25:46 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/22 15:11:05 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,10 @@ void	lexer(t_stack *tokens)
 {
 	//if (!input_tokens)
 	push(tokens, init_node(END)); //EOF
-	push(tokens, init_node(WORD)); // outfile
+	push(tokens, init_node(WORD)); //outfile
 	push(tokens, init_node(RED_TO)); // >
-	push(tokens, init_node(WORD)); //ls
-	push(tokens, init_node(PIPE)); // |
 	push(tokens, init_node(WORD)); //cat
 	push(tokens, init_node(PIPE)); // |
-	push(tokens, init_node(WORD)); //ls
-	push(tokens, init_node(WORD)); //ls
-	push(tokens, init_node(RED_FO)); // <
-	push(tokens, init_node(WORD)); //ls
+	push(tokens, init_node(WORD)); //hello
+	push(tokens, init_node(WORD)); //echo
 }

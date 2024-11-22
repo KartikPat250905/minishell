@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/18 14:52:55 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/22 14:17:14 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	parsing_main(void) //char *str
 	stack = init_stack();
 	push(stack, init_node(0));
 	//if (!init_node(0))
-	table = create_table("srcs/parsing/parsing-table");
+	table = create_table("srcs/parser/parsing-table");
 	ret = -1;
 	while (ret == -1)
 	{

@@ -4,14 +4,14 @@ INCLUDES = -Iincludes
 CFLAGS = -Wall -Wextra -Werror
 HEADER = minishell.h
 
-LIBFT = srcs/libft
+LIBFT = ./libft
 
-SOURCES = srcs/parsing/file.c \
-		  srcs/parsing/actions.c \
-		  srcs/parsing/enum_check.c \
-		  srcs/parsing/fetch_safe.c \
-		  srcs/parsing/parsing.c \
-		  srcs/parsing/lexer/lexer.c \
+SOURCES = srcs/parser/file.c \
+		  srcs/parser/actions.c \
+		  srcs/parser/enum_check.c \
+		  srcs/parser/fetch_safe.c \
+		  srcs/parser/parsing.c \
+		  srcs/lexer/lexer.c \
 		  srcs/main.c
 
 OBJECTS = $(SOURCES:.c=.o)
