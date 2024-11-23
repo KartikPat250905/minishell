@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:39:14 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/18 14:49:27 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/23 15:32:55 by karpatel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 # define PARSING_H
 
 # include <stdbool.h>
-# include <unistd.h> //malloc(), free()
+//# include <unistd.h> //malloc(), free()
 # include <fcntl.h> //open()
-# include "libft.h"
-# include "stack.h"
-# include "gc_alloc.h"
+//# include "libft.h"
+//# include "stack.h"
+//# include "lexer.h"
+//# include "gc_alloc.h"
+# include "minishell.h"
 
 typedef enum e_action
 {
@@ -27,18 +29,6 @@ typedef enum e_action
 	ACCEPT = 2,
 	GOTO = -1,
 }				t_action;
-
-typedef enum e_terminals
-{
-	END = 0,
-	RED_FO = 60,
-	RED_TO = 62,
-	PIPE = 124,
-	ERROR = 256,
-	WORD = 258,
-	DLESS = 259,
-	DGREAT = 260,
-}				t_token; //rename to terminal
 
 typedef enum e_non_terminals
 {
@@ -85,7 +75,7 @@ t_entry	*create_entry(char *line);
 t_entry	**create_table(char *filename);
 
 //lexer/lexer.c
-void	lexer(t_stack *tokens);
+//void	lexer(t_token_stack *tokens, char *input);
 
 //parsing.c
 t_entry *actual_lookup(t_entry **table, int state, int token);

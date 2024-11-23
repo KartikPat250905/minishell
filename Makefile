@@ -12,6 +12,10 @@ SOURCES = srcs/parser/file.c \
 		  srcs/parser/fetch_safe.c \
 		  srcs/parser/parsing.c \
 		  srcs/lexer/lexer.c \
+		  srcs/lexer/token_operations.c \
+		  srcs/lexer/tokenize_two.c \
+		  srcs/lexer/tokenize.c \
+		  srcs/lexer/tokens.c \
 		  srcs/main.c
 
 OBJECTS = $(SOURCES:.c=.o)

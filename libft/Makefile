@@ -67,6 +67,7 @@ B_SOURCES = ft_lstnew_bonus.c \
 			gc_alloc/gc_strjoin.c \
 			gc_alloc/gc_substr.c \
 			gc_alloc/gc_calloc.c \
+			gc_alloc/gc_strndup.c \
 			stack/stack_utils.c \
 			stack/stack_operations.c
 
@@ -109,7 +110,7 @@ clean:
 
 #fclean calls clean, and removes the executable and libft.a
 fclean: clean
-	rm -f $(EXECUTABLE) $(NAME) 
+	rm -f $(EXECUTABLE) $(NAME)
 
 #re calls fclean all, all calls name, name is libft.a
 re: fclean all

@@ -6,11 +6,11 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/22 14:17:14 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/23 15:30:44 by karpatel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.h"
+#include "minishell.h"
 
 t_entry *actual_lookup(t_entry **table, int state, int token)
 {
@@ -51,41 +51,42 @@ t_entry	*table_lookup(t_stack *stack, t_stack *in_stack, t_entry **table)
 int	parsing_main(void) //char *str
 {
 	int		ret;
-	t_stack	*stack;
-	t_stack	*tokens;
-	t_entry	**table;
+	//t_stack	*stack;
+	t_token_stack *tokens;
+	//t_entry	**table;
 	t_entry	*entry;
 
 	tokens = NULL;
 	entry = NULL;
-	tokens = init_stack();
-	lexer(tokens);
-	stack = init_stack();
-	push(stack, init_node(0));
-	//if (!init_node(0))
-	table = create_table("srcs/parser/parsing-table");
-	ret = -1;
-	while (ret == -1)
-	{
-		ft_putendl_fd("----------------", 1);
-		print_stack(stack, "stack");
-		ft_putendl_fd("", 1);
-		print_stack(tokens, "tokens");
-		entry = table_lookup(stack, tokens, table);
-		if (!entry)
-		{
-			ret = 2;
-			break ;
-		}
-		else if (entry->action == ACCEPT)
-			ret = 1;
-		else if (entry->action == SHIFT)
-			ret = action_shift(stack, tokens, entry);
-		else if (entry->action == REDUCE)
-			ret = action_reduce(stack, entry, table);
-		else
-			ret = 0;
-	}
+	ret = 0;
+	tokens = init_token_stack();
+	tokens = lexer("echo \"kartik is\"|echo 'shit'");
+	// stack = init_stack();
+	// push(stack, init_node(0));
+	// //if (!init_node(0))
+	// table = create_table("srcs/parser/parsing-table");
+	// ret = -1;
+	// while (ret == -1)
+	// {
+	// 	ft_putendl_fd("----------------", 1);
+	// 	print_stack(stack, "stack");
+	// 	ft_putendl_fd("", 1);
+	// 	print_stack(tokens, "tokens");
+	// 	entry = table_lookup(stack, tokens, table);
+	// 	if (!entry)
+	// 	{
+	// 		ret = 2;
+	// 		break ;
+	// 	}
+	// 	else if (entry->action == ACCEPT)
+	// 		ret = 1;
+	// 	else if (entry->action == SHIFT)
+	// 		ret = action_shift(stack, tokens, entry);
+	// 	else if (entry->action == REDUCE)
+	// 		ret = action_reduce(stack, entry, table);
+	// 	else
+	// 		ret = 0;
+	// }
 	//ft_putendl_fd("----------------leftovers", 1);
 	//print_stack(stack, "stack");
 	//ft_putendl_fd("", 1);

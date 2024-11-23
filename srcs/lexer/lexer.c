@@ -6,11 +6,11 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:46:07 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/22 15:11:05 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/23 15:30:17 by karpatel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parsing.h"
+#include "minishell.h"
 
 /*
  * Hardcored lexer just to be able to test the LR parsing algo,
@@ -37,14 +37,71 @@
  */
 
 //ls < ls ls | cat | ls > outfile
-void	lexer(t_stack *tokens)
+
+t_token_stack	*reverse_stack(t_token_stack *stack)
 {
-	//if (!input_tokens)
-	push(tokens, init_node(END)); //EOF
-	push(tokens, init_node(WORD)); //outfile
-	push(tokens, init_node(RED_TO)); // >
-	push(tokens, init_node(WORD)); //cat
-	push(tokens, init_node(PIPE)); // |
-	push(tokens, init_node(WORD)); //hello
-	push(tokens, init_node(WORD)); //echo
+	t_token_node	*curr;
+	t_token_node	*curr_temp;
+	t_token_node	*previous;
+
+	previous = NULL;
+	curr = stack -> top;
+	while(curr)
+	{
+		curr_temp = curr->next;
+		curr->next = previous;
+		previous = curr;
+		curr = curr_temp;
+	}
+	stack->top = previous;
+	return (stack);
+}
+
+void	init_iterators(t_iterators *it, char *input)
+{
+	it->cur = 0;
+	it->start = 0;
+	it->len = ft_strlen(input);
+	it->quote_char = ' ';
+	it->input = input;
+}
+
+t_token_stack	*lexer(char *input)
+{
+	t_iterators		it;
+	t_token_stack	*rev_tokens;
+	t_token_stack	*result;
+
+	init_iterators(&it, input);
+	rev_tokens = gc_alloc(sizeof(t_token_stack));
+	push_token(rev_tokens, create_token(END, NULL));
+	while (it.cur < it.len)
+	{
+		if (it.input[it.cur] == ' ')
+		{
+			handle_space(&it);
+			continue ;
+		}
+		if (tokenize_pipe(&it, rev_tokens))
+			continue;
+		else if (tokenize_input(&it, rev_tokens))
+			continue;
+		else if (tokenize_output(&it, rev_tokens))
+			continue;
+		else if (tokenize_quotes(&it, rev_tokens))
+			continue;
+		else if (tokenize_words(&it, rev_tokens))
+			continue;
+	}
+	print_token_stack(rev_tokens, "TOKEN STACK : BEFORE");
+	result = reverse_stack(rev_tokens);
+	print_token_stack(rev_tokens, "TOKEN STACK : AFTER");
+	return (result);
+	// push(tokens, init_node(END)); //EOF
+	// push(tokens, init_node(WORD)); //outfile
+	// push(tokens, init_node(RED_TO)); // >
+	// push(tokens, init_node(WORD)); //cat
+	// push(tokens, init_node(PIPE)); // |
+	// push(tokens, init_node(WORD)); //hello
+	// push(tokens, init_node(WORD)); //echo
 }

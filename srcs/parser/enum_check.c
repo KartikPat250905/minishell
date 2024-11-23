@@ -31,3 +31,10 @@ bool	is_state(int value)
 {
 	return (value >= 0 && value <= 30);
 }
+
+bool is_token(char ch, char next)
+{
+	return (ch == '>' || ch == '<' || ch == '|' ||
+			(ch == '>' && next == '>') || (ch == '<' && next == '<') ||
+			ch == '\'' || ch == '\"');
+}
