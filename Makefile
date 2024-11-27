@@ -6,16 +6,19 @@ HEADER = minishell.h
 
 LIBFT = ./libft
 
-SOURCES = srcs/parser/file.c \
+SOURCES = srcs/lexer/lexer.c \
+		  srcs/lexer/stack/token_utils.c \
+		  srcs/lexer/stack/token_operations.c \
+		  srcs/lexer/tokenize.c \
+		  srcs/lexer/tokenize_two.c \
+		  srcs/parser/stack/stack_utils.c \
+		  srcs/parser/stack/stack_operations.c \
+		  srcs/parser/parsing.c \
+		  srcs/parser/file.c \
 		  srcs/parser/actions.c \
 		  srcs/parser/enum_check.c \
 		  srcs/parser/fetch_safe.c \
 		  srcs/parser/parsing.c \
-		  srcs/lexer/lexer.c \
-		  srcs/lexer/token_operations.c \
-		  srcs/lexer/tokenize_two.c \
-		  srcs/lexer/tokenize.c \
-		  srcs/lexer/tokens.c \
 		  srcs/main.c
 
 OBJECTS = $(SOURCES:.c=.o)

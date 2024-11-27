@@ -6,21 +6,42 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:39:14 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/23 15:32:55 by karpatel         ###   ########.fr       */
+/*   Updated: 2024/11/26 18:57:20 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSING_H
 # define PARSING_H
 
-# include <stdbool.h>
-//# include <unistd.h> //malloc(), free()
 # include <fcntl.h> //open()
-//# include "libft.h"
-//# include "stack.h"
-//# include "lexer.h"
-//# include "gc_alloc.h"
 # include "minishell.h"
+
+/* -------------------------------------------------------------------------- */
+/*                                   STACK                                    */
+/* -------------------------------------------------------------------------- */
+
+typedef struct s_node
+{
+	int				value;
+	struct s_node	*next;
+}	t_node;
+
+typedef struct s_stack
+{
+	t_node	*top;
+	size_t	size;
+}	t_stack;
+
+t_node	*init_node(int value);
+t_stack	*init_stack(void);
+void	push(t_stack *stack, t_node *new_node);
+t_node	*pop(t_stack *stack);
+void	print_stack(t_stack *stack, char *name);
+//int	free_stack(t_stack *stack, int send_error);
+
+/* -------------------------------------------------------------------------- */
+/*                                  PARSING                                   */
+/* -------------------------------------------------------------------------- */
 
 typedef enum e_action
 {
@@ -32,7 +53,7 @@ typedef enum e_action
 
 typedef enum e_non_terminals
 {
-	ACCEP = 9, //defined twice, removing letter T, removable?
+	ACCEP = 9,
 	PIPE_SEQ = 10,
 	SIMPLE_CMD = 11,
 	CMD_NAME = 12,
@@ -45,7 +66,7 @@ typedef enum e_non_terminals
 	FILENAME = 21, //upd from 18 to 21
 	HERE_END = 23, //upd from 20 to 23
 	DEFAULT = -1,
-}				t_rules; //rename to non_terminal
+}				t_rules;
 
 typedef struct s_entry
 {
@@ -57,7 +78,7 @@ typedef struct s_entry
 }		t_entry;
 
 //actions.c
-int	action_shift(t_stack *stack, t_stack *in_stack, t_entry *entry);
+int	action_shift(t_stack *stack, t_token_stack *in_stack, t_entry *entry);
 int	action_reduce(t_stack *stack, t_entry *entry, t_entry **table);
 int	action_goto(t_stack *stack, t_entry *entry);
 
@@ -67,19 +88,16 @@ bool	is_non_terminal(int value);
 bool	is_state(int value);
 
 //fetch_safe.c
-int		fetch_top(t_stack *stack);
+//int		fetch_top(t_stack *stack);
 
 //file.c
 int	get_table_size(char *filename);
 t_entry	*create_entry(char *line);
 t_entry	**create_table(char *filename);
 
-//lexer/lexer.c
-//void	lexer(t_token_stack *tokens, char *input);
-
 //parsing.c
 t_entry *actual_lookup(t_entry **table, int state, int token);
-t_entry	*table_lookup(t_stack *stack, t_stack *in_stack, t_entry **table);
+t_entry	*table_lookup(t_stack *stack, t_token_stack *in_stack, t_entry **table);
 int		parsing_main(void);//(char *str);
 
 #endif

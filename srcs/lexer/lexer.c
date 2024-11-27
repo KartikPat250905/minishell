@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 12:46:07 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/23 15:30:17 by karpatel         ###   ########.fr       */
+/*   Updated: 2024/11/26 18:49:31 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ t_token_stack	*lexer(char *input)
 
 	init_iterators(&it, input);
 	rev_tokens = gc_alloc(sizeof(t_token_stack));
-	push_token(rev_tokens, create_token(END, NULL));
 	while (it.cur < it.len)
 	{
 		if (it.input[it.cur] == ' ')
@@ -93,9 +92,10 @@ t_token_stack	*lexer(char *input)
 		else if (tokenize_words(&it, rev_tokens))
 			continue;
 	}
-	print_token_stack(rev_tokens, "TOKEN STACK : BEFORE");
+	push_token(rev_tokens, create_token(END, NULL)); //protect
+	//print_token_stack(rev_tokens, "TOKEN STACK : BEFORE");
 	result = reverse_stack(rev_tokens);
-	print_token_stack(rev_tokens, "TOKEN STACK : AFTER");
+	//print_token_stack(rev_tokens, "TOKEN STACK : AFTER");
 	return (result);
 	// push(tokens, init_node(END)); //EOF
 	// push(tokens, init_node(WORD)); //outfile

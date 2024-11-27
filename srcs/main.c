@@ -10,17 +10,31 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "parsing.h"
-#include <stdio.h>
 
 int	main(void)
 {
-	int	ret;
+	char			*input;
+	t_token_stack	*tokens;
+	int				ret;
 
-	ret = parsing_main();
-	if (ret == 1)
-		ft_putendl_fd("-accepted-", 1);
-	else
-		ft_putendl_fd("-not accepted-", 1);
-	return (ret);
+	tokens = NULL;
+	while (1)
+	{
+		input = readline("microshell> ");
+		if (!input)
+			break ;
+		if (*input)
+			add_history(input);
+		tokens = init_token_stack();
+		tokens = lexer(input);
+		ret = parsing_main(tokens);
+		free(input);
+		if (ret == 1)
+			ft_putendl_fd("-accepted-", 1);
+		else
+			ft_putendl_fd("-not accepted-", 1);
+	}
+	return (0);
 }

@@ -1,5 +1,6 @@
-# include "lexer.h"
+#include "lexer.h"
 
+//aka init_token_node
 t_token_node	*create_token(t_token type, char *value)
 {
 	t_token_node	*new_node;
@@ -32,15 +33,15 @@ void	print_token_stack(t_token_stack *stack, char *name)
 
 	node = stack -> top;
 	ft_putendl_fd(name, 1);
-	printf("The top element is %s",node -> value);
+	printf("The top element is -->%s<--\n", node -> value);
 	fflush(stdout);
 	while (node)
 	{
-		ft_putstr_fd("Token type:", 1);
+		ft_putstr_fd("Token type->", 1);
 		ft_putnbr_fd(node->type, 1);
-		ft_putstr_fd("\tValue:", 1);
+		ft_putstr_fd("\tValue->", 1);
 		ft_putstr_fd(node->value, 1);
-		ft_putstr_fd("\tState:", 1);
+		ft_putstr_fd("\tState->", 1);
 		ft_putnbr_fd(node->state, 1);
 		ft_putstr_fd("\n", 1);
 		node = node -> next;

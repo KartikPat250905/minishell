@@ -10,9 +10,14 @@ void	handle_space(t_iterators *it)
 
 bool	tokenize_pipe(t_iterators *it, t_token_stack *stack)
 {
+	t_token_node *new;
+
 	if (it->input[it->cur] == '|')
 	{
-		push_token(stack, create_token(PIPE, gc_strdup("|")));
+		new = create_token(PIPE, gc_strdup("|"));
+		//if (!new)
+		//	ft_exit(); //which cleans the gc and exits?
+		push_token(stack, new);
 		it->cur++;
 		return (true);
 	}

@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "stack.h"
-#include "libft.h"
-#include "gc_alloc.h"
+#include "parsing.h"
 
 t_node	*init_node(int value)
 {

@@ -10,7 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "stack.h"
+#include "parsing.h"
+
+/*
+** @description
+** Push one node to the top of the stack
+**
+** @param
+** Pointer to node
+** Pointer to stack
+**
+** @return
+*/
+void	push(t_stack *stack, t_node *node)
+{
+	if (!stack->top)
+	{
+		stack->top = node;
+		stack->size++;
+		return ;
+	}
+	node->next = stack->top;
+	stack->top = node;
+	stack->size++;
+}
 
 /*
 ** @description
@@ -35,28 +58,5 @@ t_node	*pop(t_stack *stack)
 	stack->size -= 1;
 	popped->next = NULL;
 	return (popped);
-}
-
-/*
-** @description
-** Push one node to the top of the stack
-**
-** @param
-** Pointer to node
-** Pointer to stack
-**
-** @return
-*/
-void	push(t_stack *stack, t_node *node)
-{
-	if (!stack->top)
-	{
-		stack->top = node;
-		stack->size++;
-		return ;
-	}
-	node->next = stack->top;
-	stack->top = node;
-	stack->size++;
 }
 
