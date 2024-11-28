@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:33 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/26 19:06:03 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/28 19:02:46 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,17 @@ int	get_non_terminal(int rule_number)
 }
 
 
-int	action_shift(t_stack *stack, t_stack *in_stack, t_entry *entry)
+int	action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens)
 {
-	t_node	*popped;
+	t_token_node	*popped_token;
 	t_node	*next_state;
+	t_node	*token;
 
 	ft_putendl_fd("-shift-", 1);
-	//init_push(entry->go_to, stack);
-	popped = pop(in_stack); //pop_token(in_stack);
-	push(stack, popped); //not possible, gotta merge token stack and stack
+	popped_token = pop_token(tokens); //pop_token(in_stack);
+	token = init_node(popped_token->type);
+	push(stack, token);
+	link_token(stack, popped_token);
 	next_state = init_node(entry->go_to);
 	if (!next_state)
 		return (-2); //error?

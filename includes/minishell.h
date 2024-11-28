@@ -8,7 +8,10 @@
 
 # include "libft.h"
 # include "gc_alloc.h"
-# include "parsing.h"
 # include "lexer.h"
+//# include "parsing.h"
+
+# include <readline/readline.h>
+# include <readline/history.h>
 
 #endif

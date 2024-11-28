@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/26 19:02:24 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/28 19:12:03 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,50 +27,47 @@ t_entry *actual_lookup(t_entry **table, int state, int token)
 	return (NULL);
 }
 
-t_entry	*table_lookup(t_stack *stack, t_stack *in_stack, t_entry **table)
+t_entry	*table_lookup(t_stack *stack, t_token_stack *tokens, t_entry **table)
 {
-	int	top;
-	int	top_in;
-	t_entry *entry;
+	int	state;
+	int	token;
+	t_entry	*entry;
 
-	top = stack->top->value; //fetch_top(stack);
-	top_in = in_stack->top->value; //in_stack->top->type; //fetch_top(in_stack);
+	state = -2;
+	if (stack->top)
+		state = stack->top->value; //fetch_top(stack);
+	token = -2;
+	if (tokens->top)
+		token = tokens->top->type; //fetch_top(in_stack);
 	entry = NULL;
-	//if (is_state(top))
-	//{
-		entry = actual_lookup(table, top, top_in);
-		if (!entry)
-	//	{
-			entry = actual_lookup(table, top, DEFAULT);
-	//	}
-	//}
-	//else if (is_non_terminal(top))
-	//	entry = actual_lookup(table, top, stack->top->next->value);
+	entry = actual_lookup(table, state, token);
+	if (!entry)
+		entry = actual_lookup(table, state, DEFAULT);
 	return (entry);
 }
 
 int	parsing_main(t_token_stack *tokens) //char *str
 {
 	int		ret;
-	//t_stack	*stack;
-	//t_entry	**table;
-	//t_entry	*entry;
+	t_stack	*stack;
+	t_entry	**table;
+	t_entry	*entry;
 
-	//entry = NULL;
+	entry = NULL;
 	ret = 0;
-	print_token_stack(tokens, "TOKEN STACK : AFTER");
-	/*
+	table = create_table("srcs/parser/parsing-table");
+	print_token_stack(tokens, "---Token Stack (After Reverse)---");
 	stack = init_stack();
 	push(stack, init_node(0));
-	// //if (!init_node(0))
-	table = create_table("srcs/parser/parsing-table");
+	//if (!init_node(0))
 	ret = -1;
 	while (ret == -1)
 	{
 		ft_putendl_fd("----------------", 1);
-		print_stack(stack, "stack");
-		ft_putendl_fd("", 1);
-		print_stack(tokens, "tokens");
+		if (stack->top)
+			print_stack(stack, "stack");
+		if (tokens->top)
+			print_tokens(tokens, "tokens");
 		entry = table_lookup(stack, tokens, table);
 		if (!entry)
 		{
@@ -80,16 +77,17 @@ int	parsing_main(t_token_stack *tokens) //char *str
 		else if (entry->action == ACCEPT)
 			ret = 1;
 		else if (entry->action == SHIFT)
-			ret = action_shift(stack, tokens, entry);
+			ret = action_shift(stack, entry, tokens);
 		else if (entry->action == REDUCE)
 			ret = action_reduce(stack, entry, table);
 		else
 			ret = 0;
 	}
-	//ft_putendl_fd("----------------leftovers", 1);
-	//print_stack(stack, "stack");
-	//ft_putendl_fd("", 1);
-	//print_stack(tokens, "tokens");
+	/*
+	ft_putendl_fd("----------------leftovers", 1);
+	print_stack(stack, "stack");
+	ft_putendl_fd("", 1);
+	print_tokens(tokens, "tokens");
 	*/
 	return (ret);
 }

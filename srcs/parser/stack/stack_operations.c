@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 16:26:20 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 12:20:57 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/28 13:58:05 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,18 @@ void	push(t_stack *stack, t_node *node)
 	node->next = stack->top;
 	stack->top = node;
 	stack->size++;
+}
+
+/*
+ * linking state-token
+ */
+void	link_token(t_stack *stack, t_token_node *token)
+{
+	if (!stack->top)
+	{
+		return ;
+	}
+	stack->top->token = token;
 }
 
 /*

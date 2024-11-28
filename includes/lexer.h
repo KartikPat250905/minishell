@@ -1,31 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/28 11:20:18 by aapadill          #+#    #+#             */
+/*   Updated: 2024/11/28 11:20:20 by aapadill         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef LEXER_H
 # define LEXER_H
 
 # include "minishell.h"
-
-/* -------------------------------------------------------------------------- */
-/*                                TOKEN STACK                                 */
-/* -------------------------------------------------------------------------- */
-
-typedef struct s_token_node
-{
-	int					type;
-	char				*value;
-	t_quote_state		state;
-	struct s_token_node	*next;
-}	t_token_node;
-
-typedef struct s_token_stack
-{
-	t_token_node	*top;
-	size_t	size;
-}	t_token_stack;
-
-t_token_node	*create_token(t_token type, char *value);
-t_token_stack	*init_token_stack(void);
-void	print_token_stack(t_token_stack *stack, char *name);
-t_token_node	*pop_token(t_token_stack *stack);
-void	push_token(t_token_stack *stack, t_token_node *node);
 
 /* -------------------------------------------------------------------------- */
 /*                                   LEXER                                    */
@@ -58,6 +46,29 @@ typedef struct s_lexer_iterators
 	char	*input;
 }				t_iterators;
 
+/* -------------------------------------------------------------------------- */
+/*                                TOKEN STACK                                 */
+/* -------------------------------------------------------------------------- */
+
+typedef struct s_token_node
+{
+	int					type;
+	char				*value;
+	t_quote_state		state;
+	struct s_token_node	*next;
+}	t_token_node;
+
+typedef struct s_token_stack
+{
+	t_token_node	*top;
+	size_t	size;
+}	t_token_stack;
+
+/* -------------------------------------------------------------------------- */
+/*                               PROTOTYPES                                   */
+/* -------------------------------------------------------------------------- */
+
+//lexer
 void	handle_space(t_iterators *it);
 bool	tokenize_pipe(t_iterators *it, t_token_stack *stack);
 bool	tokenize_output(t_iterators *it, t_token_stack *stack);
@@ -67,5 +78,12 @@ bool	tokenize_words(t_iterators *it, t_token_stack *stack);
 
 bool	is_token(char ch, char next);
 t_token_stack	*lexer(char *input);
+
+//stack
+t_token_node	*create_token(t_token type, char *value);
+t_token_stack	*init_token_stack(void);
+void	print_token_stack(t_token_stack *stack, char *name);
+t_token_node	*pop_token(t_token_stack *stack);
+void	push_token(t_token_stack *stack, t_token_node *node);
 
 #endif

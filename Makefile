@@ -6,14 +6,13 @@ HEADER = minishell.h
 
 LIBFT = ./libft
 
-SOURCES = srcs/lexer/lexer.c \
-		  srcs/lexer/stack/token_utils.c \
+SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/lexer/stack/token_operations.c \
 		  srcs/lexer/tokenize.c \
 		  srcs/lexer/tokenize_two.c \
+		  srcs/lexer/lexer.c \
 		  srcs/parser/stack/stack_utils.c \
 		  srcs/parser/stack/stack_operations.c \
-		  srcs/parser/parsing.c \
 		  srcs/parser/file.c \
 		  srcs/parser/actions.c \
 		  srcs/parser/enum_check.c \
@@ -23,6 +22,8 @@ SOURCES = srcs/lexer/lexer.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
+READLINE = -lreadline
+
 all: $(NAME)
 
 $(LIBFT)/libft.a:
@@ -30,7 +31,7 @@ $(LIBFT)/libft.a:
 	make bonus -C $(LIBFT)
 
 $(NAME): $(OBJECTS) $(LIBFT)/libft.a
-	$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT)/libft.a -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT)/libft.a $(READLINE) -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
