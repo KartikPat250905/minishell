@@ -9,6 +9,7 @@
 # include "libft.h"
 # include "gc_alloc.h"
 # include "lexer.h"
+# include "signals.h"
 //# include "parsing.h"
 
 # include <readline/readline.h>

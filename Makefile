@@ -18,7 +18,8 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/parser/enum_check.c \
 		  srcs/parser/fetch_safe.c \
 		  srcs/parser/parsing.c \
-		  srcs/main.c
+		  srcs/main.c \
+		  srcs/signals/signals.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 

@@ -13,6 +13,8 @@
 #include "minishell.h"
 #include "parsing.h"
 
+
+
 int	main(void)
 {
 	char			*input;
@@ -20,11 +22,17 @@ int	main(void)
 	int				ret;
 
 	tokens = NULL;
+	activate_signal_handler();
 	while (1)
 	{
 		input = readline("microshell> ");
 		if (!input)
+		{
+			printf("Exit\n");
 			break ;
+		}
+		if (!*input)
+			continue ;
 		if (*input)
 			add_history(input);
 		tokens = init_token_stack();
