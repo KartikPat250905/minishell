@@ -74,6 +74,7 @@ t_token_stack	*lexer(char *input)
 
 	init_iterators(&it, input);
 	rev_tokens = gc_alloc(sizeof(t_token_stack));
+	rev_tokens -> top = NULL;
 	while (it.cur < it.len)
 	{
 		if (it.input[it.cur] == ' ')
@@ -95,7 +96,7 @@ t_token_stack	*lexer(char *input)
 	push_token(rev_tokens, create_token(END, NULL)); //protect
 	//print_token_stack(rev_tokens, "TOKEN STACK : BEFORE");
 	result = reverse_stack(rev_tokens);
-	//print_token_stack(rev_tokens, "TOKEN STACK : AFTER");
+	print_token_stack(rev_tokens, "TOKEN STACK : AFTER");
 	return (result);
 	// push(tokens, init_node(END)); //EOF
 	// push(tokens, init_node(WORD)); //outfile
