@@ -57,13 +57,27 @@ bool	tokenize_words(t_iterators *it, t_token_stack *stack)
 {
 	t_token_node	*node;
 	char			*word;
+	char			quote;
+	int				start;
 
-	it->start = it->cur;
-	if (is_token(it->input[it->cur], it->input[it->cur + 1]))
-		return (false);
+	start = it->cur;
+	//it->start = it->cur;
+	//if (is_token(it->input[it->cur], it->input[it->cur + 1]))
+	//	return (false);
 	while (it->cur < it->len && it->input[it->cur] != ' ' && !is_token(it->input[it->cur], it->input[it->cur + 1]))
-		it->cur++;
-	word = gc_strndup(&it->input[it->start], it->cur - it->start);
+	{
+		if (it->input[it->cur] == '\'' || it->input[it->cur] == '"')
+		{
+			quote = it->input[it->cur++];
+			while (it->cur < it->len && it->input[it->cur] != quote)
+				it->cur++;
+			if (it->cur < it->len)
+				it->cur++;
+		}
+		else
+			it->cur++;
+	}
+	word = gc_strndup(&it->input[start], it->cur - start);
 	node = create_token(WORD, word);
 	push_token(stack, node);
 	return (true);

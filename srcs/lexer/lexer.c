@@ -82,16 +82,25 @@ t_token_stack	*lexer(char *input)
 			handle_space(&it);
 			continue ;
 		}
-		if (tokenize_pipe(&it, rev_tokens))
-			continue;
-		else if (tokenize_input(&it, rev_tokens))
-			continue;
-		else if (tokenize_output(&it, rev_tokens))
-			continue;
+		if (is_token(it.input[it.cur], it.input[it.cur + 1]))
+		{
+			if (tokenize_pipe(&it, rev_tokens))
+				continue;
+			else if (tokenize_input(&it, rev_tokens))
+				continue;
+			else if (tokenize_output(&it, rev_tokens))
+				continue;
+		}
+		else
+		{
+			if (tokenize_words(&it, rev_tokens))
+				continue;
+		}
+		/*
 		else if (tokenize_quotes(&it, rev_tokens))
 			continue;
 		else if (tokenize_words(&it, rev_tokens))
-			continue;
+			continue;*/
 	}
 	eof = create_token(END, gc_strdup("EOF"));
 	//if (!eof)

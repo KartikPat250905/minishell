@@ -35,6 +35,5 @@ bool	is_state(int value)
 bool is_token(char ch, char next)
 {
 	return (ch == '>' || ch == '<' || ch == '|' ||
-			(ch == '>' && next == '>') || (ch == '<' && next == '<') ||
-			ch == '\'' || ch == '\"');
+			(ch == '>' && next == '>') || (ch == '<' && next == '<'));
 }
