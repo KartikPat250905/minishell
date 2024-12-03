@@ -23,6 +23,7 @@ int	main(int ac, char **av, char **envp)
 	//t_entry			**table;
 	g_env = fetch_envp(envp);
 	ft_cd(ac, av);
+	ft_pwd();
 	// tokens = NULL;
 	// activate_signal_handler();
 	// tokens = init_token_stack();

@@ -27,6 +27,7 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/free/free.c \
 		  srcs/builtins/cd.c \
 		  srcs/builtins/cd_utils.c \
+		  srcs/builtins/pwd.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 

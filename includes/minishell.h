@@ -17,4 +17,6 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+extern t_env *g_env;
+
 #endif

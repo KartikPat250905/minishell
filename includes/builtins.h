@@ -23,7 +23,7 @@ typedef struct s_sstack
 	size_t	size;
 }	t_sstack;
 
-
+int		ft_pwd(void);
 int		ft_cd(int ac, char **av);
 
 void	spush(t_sstack *stack, t_snode *node);
@@ -32,4 +32,5 @@ t_snode	*sinit_node(char *value);
 t_sstack	*sinit_stack(void);
 
 char	**ft_split(char const *s, char c, int *n);
+int		ft_strcmp(const char *s1, const char *s2);
 #endif

@@ -1,5 +1,7 @@
 # include "minishell.h"
 
+//#TODO: Right now the env variable pwd is set wrongly i WOULD fix this it needs getcwd func.
+
 int	go_home(void)
 {
 	char	*home_path;
@@ -80,6 +82,8 @@ int	ft_cd(int ac, char **av)
 			perror("minishell: cd:");
 			return (1);
 		}
+		add_to_env_list("OLDPWD", get_env("PWD"), 0);
+		add_to_env_list("PWD", path, 1);
         char cwd[1024];
         if (getcwd(cwd, sizeof(cwd)) == NULL) {
             perror("getcwd");
