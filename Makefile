@@ -22,6 +22,11 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/parser/ast.c \
 		  srcs/main.c \
 		  srcs/signals/signals.c \
+		  srcs/env/env.c \
+		  srcs/env/env_utils.c \
+		  srcs/free/free.c \
+		  srcs/builtins/cd.c \
+		  srcs/builtins/cd_utils.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 

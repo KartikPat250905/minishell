@@ -11,6 +11,8 @@
 # include "lexer.h"
 # include "signals.h"
 //# include "parsing.h"
+# include "builtins.h"
+# include "env.h"
 
 # include <readline/readline.h>
 # include <readline/history.h>
