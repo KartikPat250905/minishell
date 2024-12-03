@@ -35,6 +35,8 @@ t_gc	*get_gc(void)
 **
 ** @param
 ** size: The size of the memory block to allocate.
+** @update
+** bzero the allocated memory.
 **
 ** @return
 ** A pointer to the allocated memory, or NULL if the allocation fails.
@@ -57,6 +59,7 @@ void	*gc_alloc(size_t size)
 		free(ptr);
 		return (NULL);
 	}
+	ft_bzero(ptr, size);
 	ft_lstadd_front(&(gc->head), node);
 	return (ptr);
 }
@@ -97,6 +100,13 @@ void	gc_free(void *ptr)
 		prev = curr;
 		curr = curr->next;
 	}
+}
+
+void	gc_free_array(int n, void **ptr_array)
+{
+	while (n--)
+		gc_free(ptr_array[n]);
+	gc_free(ptr_array);
 }
 
 /*

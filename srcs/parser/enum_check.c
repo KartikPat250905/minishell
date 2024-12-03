@@ -6,13 +6,13 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:54 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/17 19:58:02 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/12/01 22:05:43 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-bool	is_type_token(int value)
+bool	is_terminal(int value)
 {
 	return (value == END || value == RED_FO || value == RED_TO
 			|| value == PIPE || value == ERROR || value == WORD

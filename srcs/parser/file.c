@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 12:28:18 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/05 15:58:16 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/30 15:33:30 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,13 @@ int	get_table_size(char *filename)
 		return (-1);
 	while (1)
 	{
-		line = get_next_line(fd);
+		line = gc_next_line(fd, READ_LINE);
 		if (!line)
 			break ;
 		size++;
-		free(line);
+		gc_free(line);
 	}
+	gc_next_line(fd, CLEAN_LINE);
 	close (fd);
 	return (size);
 }
@@ -40,15 +41,13 @@ t_entry	*create_entry(char *line)
 	int		n;
 	t_entry	*entry;
 
-	splitted = ft_split(line, ' ', &n);
+	splitted = gc_split(line, ' ', &n);
 	if (!splitted)
 		return (NULL);
-	entry = malloc(sizeof(t_entry));
+	entry = gc_alloc(sizeof(t_entry));
 	if (!entry)
 	{
-		while (n--)
-			free(splitted[n]);
-		free(splitted);
+		gc_free_array(n, (void **)splitted);
 		return (NULL);
 	}
 	entry->state = ft_atoi(splitted[0]);
@@ -56,9 +55,7 @@ t_entry	*create_entry(char *line)
 	entry->action = ft_atoi(splitted[2]);
 	entry->go_to = ft_atoi(splitted[3]);
 	entry->reduce = ft_atoi(splitted[4]);
-	while (n--)
-		free(splitted[n]);
-	free(splitted);
+	gc_free_array(n, (void **)splitted);
 	return (entry);
 }
 
@@ -75,29 +72,29 @@ t_entry	**create_table(char *filename)
 	fd = open(filename, O_RDONLY);
 	if (size <= 0 || fd == -1)
 	{
-		ft_putendl_fd("error", 2);
-		exit(EXIT_FAILURE);
+		ft_putendl_fd("error opening file", 2);
+		return (NULL);
 	}
-	table = malloc(sizeof(t_entry *) * size);
+	table = gc_alloc(sizeof(t_entry *) * (size + 1));
 	if (!table)
-		exit(EXIT_FAILURE);
+		return (NULL);
+	table[size] = NULL;
 	while (i < size)
 	{
-		line = get_next_line(fd);
+		line = gc_next_line(fd, READ_LINE);
 		if (!line)
 			break ;
 		table[i] = create_entry(line);
-		free(line);
+		gc_free(line);
 		if (!table[i])
 		{
-			while (i-- > 0)
-				free(table[i]);
-			free(table);
+			gc_free_array(i, (void **)table);
 			close(fd);
-			exit (EXIT_FAILURE);
+			return (NULL);
 		}
 		i++;
 	}
+	gc_next_line(fd, CLEAN_LINE);
 	close (fd);
 	return (table);
 }

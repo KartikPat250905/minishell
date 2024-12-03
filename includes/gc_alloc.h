@@ -22,6 +22,7 @@ typedef struct s_garbage_collector
 
 void	*gc_alloc(size_t size);
 void	gc_free(void *ptr);
+void	gc_free_array(int n, void **ptr_array);
 void	gc_free_all(void);
 
 char	*gc_itoa(int n);
