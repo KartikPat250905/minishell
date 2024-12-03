@@ -47,7 +47,8 @@ SOURCES = ft_isalpha.c \
 		  int_overflows.c \
 		  has_duplicates.c \
 		  get_next_line.c \
-		  ft_atoi_base.c
+		  ft_atoi_base.c \
+		  ft_strcmp.c \
 
 #b_sources calls the bonus source codes
 B_SOURCES = ft_lstnew_bonus.c \
