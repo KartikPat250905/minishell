@@ -6,115 +6,175 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:33 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/28 19:02:46 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/30 14:43:53 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-t_entry *non_terminal_lookup(t_entry **table, int state, int non_terminal)
-{
-	int	i;
-
-	i = 0;
-	while (table[i])
-	{
-		if (table[i]->state == state && 
-			table[i]->token_type == non_terminal && 
-			table[i]->action == GOTO)
-			return (table[i]);
-		i++;
-	}
-	return (NULL);
-}
-
-int	get_non_terminal(int rule_number)
-{
-    switch (rule_number)
-    {
-        case 1: return PIPE_SEQ; // Rule 1: pipe_sequence → simple_command
-        case 2: return PIPE_SEQ; // Rule 2: pipe_sequence → pipe_sequence T_PIPE simple_command
-        case 3: return SIMPLE_CMD; // Rule 3: simple_command → cmd_prefix cmd_word cmd_suffix
-        case 4: return SIMPLE_CMD; // Rule 4: simple_command → cmd_prefix cmd_word
-        case 5: return SIMPLE_CMD; // Rule 5: simple_command → cmd_prefix
-        case 6: return SIMPLE_CMD; // Rule 6: simple_command → cmd_name cmd_suffix
-        case 7: return SIMPLE_CMD; // Rule 7: simple_command → cmd_name
-        case 8: return CMD_NAME; // Rule 8: cmd_name → T_WORD
-        case 9: return CMD_WORD; // Rule 9: cmd_word → T_WORD
-        case 10: return CMD_PREFIX; // Rule 10: cmd_prefix → IO_REDIRECT
-        case 11: return CMD_PREFIX; // Rule 11: cmd_prefix → cmd_prefix IO_REDIRECT
-        case 12: return CMD_SUFFIX; // Rule 12: cmd_suffix → IO_REDIRECT
-        case 13: return CMD_SUFFIX; // Rule 13: cmd_suffix → cmd_suffix IO_REDIRECT
-        case 14: return CMD_SUFFIX; // Rule 14: cmd_suffix → WORD
-        case 15: return CMD_SUFFIX; // Rule 15: cmd_suffix → cmd_suffix WORD
-        case 16: return IO_REDIRECT; // Rule 16: io_redirect → io_file
-        case 17: return IO_REDIRECT; // Rule 17: io_redirect → io_here
-        case 18: return IO_FILE; // Rule 18: io_file → '<' filename
-        case 19: return IO_FILE; // Rule 19: io_file → '>' filename
-        case 20: return IO_FILE; // Rule 20: io_file → DGREAT filename
-        case 21: return FILENAME; // Rule 21: filename → WORD
-        case 22: return IO_HERE; // Rule 22: DLESS → here_end
-        case 23: return HERE_END; // Rule 22: here_end → WORD
-        default:
-            ft_putendl_fd("Error: Invalid rule number", 2);
-            return -1; // Indicate error
-    }
-}
-
-
+//organize error returns: malloc, logic
 int	action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens)
 {
 	t_token_node	*popped_token;
-	t_node	*next_state;
-	t_node	*token;
+	t_node			*token;
+	t_ast_node		*ast_node;
 
 	ft_putendl_fd("-shift-", 1);
-	popped_token = pop_token(tokens); //pop_token(in_stack);
+	popped_token = pop_token(tokens);
+	if (!popped_token)
+		return (-2);
+
+	//--create_ast_node
+	ast_node = gc_alloc(sizeof(t_ast_node));
+	if (!ast_node)
+		return (-2);
+	ast_node->type = popped_token->type;
+	ast_node->token = popped_token;
+	//--create_ast_node
+
+	//--create_token and link ast_node
 	token = init_node(popped_token->type);
+	if (!token)
+		return (-2);
+	token->ast_node = ast_node;
+	//--create_token and link ast_node
 	push(stack, token);
-	link_token(stack, popped_token);
-	next_state = init_node(entry->go_to);
-	if (!next_state)
-		return (-2); //error?
-	push(stack, next_state);
-	return (-1);
+
+	return (action_goto(stack, entry));
 }
 
 int	action_reduce(t_stack *stack, t_entry *entry, t_entry **table)
 {
-	int	rm_tokens;
-	int	i;
 	int	non_terminal;
-	t_node	*rule;
 	int	current_state;
+	t_node	*rule;
 	t_entry	*goto_entry;
 
 	ft_putendl_fd("-reduce-", 1);
-	rm_tokens = 0;
-	i = entry->reduce * 2;
-	//if (i < 0 || i > 3) //way too particular for this grammar
-	//	return (-2);
-	while(rm_tokens < i--)
-		pop(stack);
-	current_state = stack->top->value; //fetch_top(stack);
+
+	//--ast_node type fetch
 	non_terminal = get_non_terminal(entry->go_to);
 	if (non_terminal == -1)
 		return (-2);
+	//--ast_node type fetch
+
+	//--ast_node children array alloc
+	t_ast_node	**children;
+	children = NULL;
+	if (entry->reduce > 0)
+	{
+		children = gc_alloc(sizeof(t_ast_node *) * entry->reduce);
+		if (!children)
+			return (-2);
+	}
+	//--ast_node children array alloc
+	
+	//--ast_node children fill
+	int	i;
+	t_node *state;
+	t_node *symbol;
+
+	i = entry->reduce;
+	while(0 < i--)
+	{
+		state = pop(stack);
+		if (!state)
+			return (-2);
+		symbol = pop(stack);
+		if (!symbol)
+			return (-2);
+		if (symbol->ast_node)
+			children[i] = symbol->ast_node;
+		else
+			children[i] = NULL;
+		//free state and symbol?
+	}
+	//--ast_node children fill
+
+	//current_state
+	if (!stack->top)
+		return (-2);
+	current_state = stack->top->value; //fetch_top(stack);
+
+	//--create_ast_node
+	t_ast_node	*ast_node;
+	ast_node = gc_alloc(sizeof(t_ast_node));
+	if (!ast_node)
+	{
+		if (children)
+			gc_free(children);
+		return (-2);
+	}
+	//--create_ast_node
+	ast_node->type = non_terminal;
+	ast_node->children = children;
+	ast_node->child_count = entry->reduce;
+	
+	//--push non-terminal to stack
 	rule = init_node(non_terminal);
 	if (!rule)
+	{
+		if (ast_node)
+			gc_free(ast_node);
+		if (children)
+			gc_free(children);
 		return (-2);
+	}
+	rule->ast_node = ast_node;
 	push(stack, rule);
+	//--push non-terminal to stack
+
 	goto_entry = non_terminal_lookup(table, current_state, non_terminal);
 	if (!goto_entry)
 		return (-2); //goto entry not found
+
 	return(action_goto(stack, goto_entry));
+}
+
+int	action_accept(void) //t_stack *stack
+{
+	ft_putendl_fd("-accept-", 1);
+	/*
+	t_node	*state;
+	t_node	*symbol;
+
+	state = pop(stack);
+	if (!state)
+		return (-2);
+	symbol = pop(stack);
+	if (!symbol)
+		return (-2);
+
+	//--create_ast_node
+	t_ast_node	*ast_node;
+	ast_node = gc_alloc(sizeof(t_ast_node));
+	if (!ast_node)
+		return (-2);
+	ast_node->type = ACCEP;
+	ast_node->token = NULL;
+	ast_node->child_count = 1;
+	ast_node->children = gc_alloc(sizeof(t_ast_node *));
+	if (!ast_node->children)
+		return (-2);
+	ast_node->children[0] = symbol->ast_node;
+	//--create_ast_node
+
+	t_node	*accept;
+	accept = init_node(ast_node->type);
+	if (!accept)
+		return (-2);
+	accept->ast_node = ast_node;
+	push(stack, accept);
+	*/
+	ft_putendl_fd("parsing accepted", 1);
+	return (1);
 }
 
 int	action_goto(t_stack *stack, t_entry *entry)
 {
 	t_node	*next_state;
 
-	ft_putendl_fd("-goto-", 1);
+	ft_putendl_fd("-adding goto-", 1);
 	next_state = init_node(entry->go_to);
 	if (!next_state)
 		return (-2); //error

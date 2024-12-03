@@ -18,6 +18,14 @@
 # include <limits.h>
 # include <stdint.h>
 
+# ifndef READ_LINE
+#  define READ_LINE 0
+# endif
+
+# ifndef CLEAN_LINE
+#  define CLEAN_LINE 1
+# endif
+
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 100
 # endif

@@ -37,15 +37,15 @@ void	push(t_stack *stack, t_node *node)
 
 /*
  * linking state-token
- */
+
 void	link_token(t_stack *stack, t_token_node *token)
 {
 	if (!stack->top)
 	{
 		return ;
 	}
-	stack->top->token = token;
-}
+	//stack->top->token = token; //remove
+}*/
 
 /*
 ** @description

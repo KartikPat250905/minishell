@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:39:14 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/28 14:28:22 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/12/01 22:06:05 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,18 @@ typedef struct s_entry
 /*                                   STACK                                    */
 /* -------------------------------------------------------------------------- */
 
+typedef struct s_ast_node
+{
+	int					type;
+	t_token_node		*token;
+	struct s_ast_node	**children;
+	int					child_count;
+}	t_ast_node;
+
 typedef struct s_node
 {
-	int				value; //state //rule //non-terminal
-	t_token_node	*token;
+	int				value; //state or terminal/non-terminal
+	t_ast_node		*ast_node;
 	struct s_node	*next;
 }	t_node;
 
@@ -78,10 +86,15 @@ typedef struct s_stack
 //actions.c
 int	action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens);
 int	action_reduce(t_stack *stack, t_entry *entry, t_entry **table);
+int	action_accept(void); //t_stack *stack
 int	action_goto(t_stack *stack, t_entry *entry);
 
+//ast.c
+t_ast_node	*get_ast_root(t_stack *stack);
+void traverse_ast(t_ast_node *node, int indent);
+
 //enum_check.c
-bool	is_type_token(int value);
+bool	is_terminal(int value);
 bool	is_non_terminal(int value);
 bool	is_state(int value);
 
@@ -94,16 +107,21 @@ t_entry	*create_entry(char *line);
 t_entry	**create_table(char *filename);
 
 //parsing.c
+t_entry *non_terminal_lookup(t_entry **table, int state, int non_terminal);
 t_entry	*actual_lookup(t_entry **table, int state, int token);
 t_entry	*table_lookup(t_stack *stack, t_token_stack *tokens, t_entry **table);
-int		parsing_main(t_token_stack *tokens);
+int		parsing_main(t_token_stack *tokens, t_entry **table);
 
-//stack
+//stack.c
 t_node	*init_node(int value);
 t_stack	*init_stack(void);
 
+//grammar_utils.c
+int	get_non_terminal(int rule_number);
+const char	*get_symbol_name(int type);
+
+//stack_utils.c
 void	push(t_stack *stack, t_node *new_node);
-void	link_token(t_stack *stack, t_token_node *token);
 t_node	*pop(t_stack *stack);
 void	print_stack(t_stack *stack, char *name);
 void	print_tokens(t_token_stack *tokens, char *name);

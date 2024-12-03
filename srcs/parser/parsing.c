@@ -6,18 +6,36 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 21:37:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/11/28 19:12:03 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/11/30 15:05:48 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parsing.h"
 
+t_entry *non_terminal_lookup(t_entry **table, int state, int non_terminal)
+{
+	int	i;
+
+	i = 0;
+	while (table[i])
+	{
+		if (table[i]->state == state && 
+			table[i]->token_type == non_terminal && 
+			table[i]->action == GOTO)
+			return (table[i]);
+		i++;
+	}
+	return (NULL);
+}
+
 t_entry *actual_lookup(t_entry **table, int state, int token)
 {
 	int	i;
 
 	i = 0;
+	if (!table)
+		return (NULL);
 	while (table[i])
 	{
 		if (table[i]->state == state && table[i]->token_type == token)
@@ -46,20 +64,22 @@ t_entry	*table_lookup(t_stack *stack, t_token_stack *tokens, t_entry **table)
 	return (entry);
 }
 
-int	parsing_main(t_token_stack *tokens) //char *str
+int	parsing_main(t_token_stack *tokens, t_entry **table)
 {
 	int		ret;
 	t_stack	*stack;
-	t_entry	**table;
+	t_node	*node;
 	t_entry	*entry;
 
 	entry = NULL;
 	ret = 0;
-	table = create_table("srcs/parser/parsing-table");
-	print_token_stack(tokens, "---Token Stack (After Reverse)---");
 	stack = init_stack();
-	push(stack, init_node(0));
-	//if (!init_node(0))
+	if (!init_stack())
+		return (-1);
+	node = init_node(0);
+	if (!init_node(0))
+		return (-1);
+	push(stack, node);
 	ret = -1;
 	while (ret == -1)
 	{
@@ -75,7 +95,7 @@ int	parsing_main(t_token_stack *tokens) //char *str
 			break ;
 		}
 		else if (entry->action == ACCEPT)
-			ret = 1;
+			ret = action_accept(); //stack
 		else if (entry->action == SHIFT)
 			ret = action_shift(stack, entry, tokens);
 		else if (entry->action == REDUCE)
@@ -83,11 +103,10 @@ int	parsing_main(t_token_stack *tokens) //char *str
 		else
 			ret = 0;
 	}
-	/*
+	traverse_ast(get_ast_root(stack), 0);
 	ft_putendl_fd("----------------leftovers", 1);
 	print_stack(stack, "stack");
 	ft_putendl_fd("", 1);
 	print_tokens(tokens, "tokens");
-	*/
 	return (ret);
 }
