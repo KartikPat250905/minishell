@@ -50,6 +50,7 @@ int	main(int ac, char **av, char **envp)
 		args = ft_split(input, ' ', &no_of_args);
 		ft_echo(no_of_args, args);
 		ft_env(no_of_args, args);
+		ft_export(no_of_args, args);
 		// table = create_table("srcs/parser/parsing-table");
 		// tokens = lexer(input);
 		// ret = parsing_main(tokens, table);
