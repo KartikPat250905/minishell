@@ -27,3 +27,18 @@ char	*get_env(char *key)
 	}
 	return (NULL);
 }
+
+void	env_to_envp_print(void)
+{
+	t_env	*env;
+
+	env = g_env;
+	while (env)
+	{
+		ft_putstr_fd(env->key, 1);
+		ft_putchar_fd('=', 1);
+		ft_putstr_fd(env -> value, 1);
+		ft_putchar_fd('\n', 1);
+		env = env -> next;
+	}
+}
