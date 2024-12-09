@@ -47,9 +47,7 @@ int	main(int ac, char **av, char **envp)
 		// if (tokens)
 		// 	free_tokens()
 		args = ft_split(input, ' ', &no_of_args);
-		//needs to be done every time otherwise it will not update the envp
-		//and we will segfault
-		g_env = fetch_envp(envp);
+		g_env = fetch_envp(envp); //needs to be done every time otherwise we segfault
 		ft_env(no_of_args, args);
 		ft_export(no_of_args, args);
 		ft_echo(no_of_args, args);

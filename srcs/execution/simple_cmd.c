@@ -32,9 +32,9 @@ int	get_redirect_type(t_ast_node *io_redirect_node)
 	}
 	else if (child->type == IO_HERE)
 	{
-		//return (HERE_END);
-		return (DLESS); //not sure if this is correct
-		//this needs a implementation for here_doc
+		op_node = child->children[0];
+		if (op_node->token->type == DLESS)
+			return (DLESS);
 	}
 	return (-1);
 }
@@ -62,52 +62,101 @@ char	*get_filename(t_ast_node *io_redirect_node)
 	return (NULL);
 }
 
-void	handle_io_redirect(t_ast_node *io_redirect_node)
+char	*get_here_end_word(t_ast_node *io_redirect)
 {
-	char	*filename;
-	int		redirect_type;
-	int		fd;
-	
-	fd = 0;
-	filename = get_filename(io_redirect_node);
-	redirect_type = get_redirect_type(io_redirect_node);
+	t_ast_node	*io_here;
+	t_ast_node	*here_end;
+	t_ast_node	*word;
 
-	if (redirect_type == RED_FO)
-		fd = open(filename, O_RDONLY);
-	else if (redirect_type == RED_TO)
-		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if (redirect_type == DGREAT)
-		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (fd < 0)
-	{
-		perror(filename);
-		return ;
-	}
-	if (redirect_type == RED_FO)
-		dup2(fd, STDIN_FILENO);
-	else
-		dup2(fd, STDOUT_FILENO);
-	close(fd);
+	io_here = io_redirect->children[0];
+	here_end = io_here->children[1];
+	word = here_end->children[0];
+	return (word->token->value);
 }
 
-void	apply_redirections(t_ast_node *node)
+void	gather_redirects(t_ast_node *node, t_exec_info *info)
 {
-	int	i;
+	int		type;
+	char	*end_word;
+	int		pipefd[2];
+	char	*line;
+	t_redir_info	*redir_info;
+	int		i;
 
 	if (!node)
 		return ;
-	
+
 	if (node->type == IO_REDIRECT)
 	{
-		handle_io_redirect(node);
+		type = get_redirect_type(node);
+		if (type == DLESS)
+		{
+			end_word = get_here_end_word(node);
+			if (pipe(pipefd) == -1)
+			{
+				perror("pipe");
+				return ;
+				//exit(1); //is this the correct exit code?
+			}
+			//stops until here_end word is found
+			while (1)
+			{
+				line = readline("heredoc> ");
+				if (!line || ft_strcmp(line, end_word) == 0)
+				{
+					free(line);
+					break ;
+				}
+				ft_putendl_fd(line, pipefd[1]);
+				free(line);
+			}
+			close(pipefd[1]);
+			info->heredoc_fd = pipefd[0];
+		}
+		else if (type == RED_FO || type == RED_TO || type == DGREAT)
+		{
+			redir_info = gc_alloc(sizeof(t_redir_info));
+			redir_info->type = type;
+			redir_info->filename = get_filename(node);
+			ft_lstadd_back(&info->redir_list, ft_lstnew(redir_info)); //switch to gc
+		}
 		return ;
 	}
 	i = 0;
 	while (i < node->child_count)
 	{
-		//io_redirects only have 1 child
-		apply_redirections(node->children[i]);
+		gather_redirects(node->children[i], info);
 		i++;
+	}
+}
+
+void	apply_normal_redirections(t_list *normal_redirects)
+{
+	t_redir_info	*redir_info;
+	int				fd;
+
+	while (normal_redirects)
+	{
+		redir_info = normal_redirects->content;
+		fd = -1;
+		if (redir_info->type == RED_FO)
+			fd = open(redir_info->filename, O_RDONLY);
+		else if (redir_info->type == RED_TO)
+			fd = open(redir_info->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (redir_info->type == DGREAT)
+			fd = open(redir_info->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fd < 0)
+		{
+			perror(redir_info->filename);
+			//return ; //or exit?
+			exit(1); //is this the correct exit code?
+		}
+		if (redir_info->type == RED_FO)
+			dup2(fd, STDIN_FILENO);
+		else
+			dup2(fd, STDOUT_FILENO);
+		close(fd);
+		normal_redirects = normal_redirects->next;
 	}
 }
 
@@ -124,9 +173,9 @@ void	construct_cmd(t_ast_node *node, t_list **words)
 
 	if (node->type == WORD)
 	{
-		cmd_elem = ft_lstnew(node->token->value);
+		cmd_elem = ft_lstnew(node->token->value); //switch to gc
 		//if (!cmd_elem)
-		ft_lstadd_back(words, cmd_elem); //convert to gc_lstadd_back
+		ft_lstadd_back(words, cmd_elem); //switch to gc
 		return ;
 	}
 	i = 0;
@@ -201,7 +250,7 @@ char	*look_for_cmd(char *cmd, char **paths)
 	return (NULL);
 }
 
-void	execute_simple_cmd(t_ast_node *node)
+void	execute_simple_cmd(t_ast_node *simple_cmd)
 {
 	char	**argv;
 	pid_t	pid;
@@ -209,13 +258,17 @@ void	execute_simple_cmd(t_ast_node *node)
 	char	**paths;
 	int		status;
 	int		n;
+	t_exec_info	info;
 
-	/*if (is_builtin(node))
+	info.heredoc_fd = -1;
+	info.redir_list = NULL;
+	gather_redirects(simple_cmd, &info);
+	/*if (is_builtin(simple_cmd))
 	{
-		execute_builtin(node);
+		execute_builtin(simple_cmd);
 		return ;
 	}*/
-	argv = build_argv(node);
+	argv = build_argv(simple_cmd);
 	pid = fork();
 	if (pid < 0)
 	{
@@ -224,18 +277,25 @@ void	execute_simple_cmd(t_ast_node *node)
 	}
 	else if (pid == 0) //child
 	{
-		apply_redirections(node);
+		if (info.heredoc_fd != -1)
+		{
+			dup2(info.heredoc_fd, STDIN_FILENO);
+			close(info.heredoc_fd);
+		}
+		apply_normal_redirections(info.redir_list);
 		path = get_env("PATH");
 		if (!path)
 		{
 			ft_putendl_fd("minishell: command not found", 2);
-			exit(127);
+			exit(127); //is this the correct exit code?
 		}
 		paths = gc_split(path, ':', &n);
 		path = look_for_cmd(argv[0], paths);
+		if (!path)
+			exit(127); //is this the correct exit code?
 		execve(path, argv, g_env->envp);
 		perror("execve");
-		exit(126); //not sure if this is the correct exit code
+		exit(126); //is this the correct exit code?
 	}
 	else
 	{

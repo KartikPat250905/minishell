@@ -1,2 +1,4 @@
 grammar/*
 *.o
+.DS_Store
+.vscode

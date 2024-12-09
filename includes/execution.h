@@ -19,6 +19,18 @@
 # define EXIT_CMD_NOT_FOUND 127
 # define EXIT_PERMISSION_DENIED 126
 
+typedef	struct s_redir_info
+{
+	int		type;
+	char	*filename;
+}	t_redir_info;
+
+typedef struct s_exec_info
+{
+	int		heredoc_fd;
+	t_list	*redir_list;
+}	t_exec_info;
+
 void	execute_simple_cmd(t_ast_node *node);
 void	execute_ast(t_ast_node *node);
 
