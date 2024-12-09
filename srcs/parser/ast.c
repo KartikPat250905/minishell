@@ -53,12 +53,12 @@ void traverse_ast(t_ast_node *node, int indent)
     if (node->token)
     {
         // It's a terminal node
-        printf("Terminal: %s, value=%s\n", get_symbol_name(node->type), node->token->value);
+        printf("%s, value=%s\n", get_symbol_name(node->type), node->token->value);
     }
     else
     {
         // It's a non-terminal node
-        printf("Non-terminal: %s, child_count=%d\n", get_symbol_name(node->type), node->child_count);
+        printf("%s, children: %d\n", get_symbol_name(node->type), node->child_count);
     }
 
     // Recursively traverse child nodes

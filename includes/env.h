@@ -3,6 +3,7 @@
 
 typedef struct s_env
 {
+	char			**envp;
 	char			*key;
 	char			*value;
 	int				is_env;

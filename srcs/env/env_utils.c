@@ -37,8 +37,8 @@ void	env_to_envp_print(void)
 	{
 		ft_putstr_fd(env->key, 1);
 		ft_putchar_fd('=', 1);
-		ft_putstr_fd(env -> value, 1);
+		ft_putstr_fd(env ->value, 1);
 		ft_putchar_fd('\n', 1);
-		env = env -> next;
+		env = env->next;
 	}
 }

@@ -83,5 +83,6 @@ t_env	*fetch_envp(char **envp)
 		envadd(&result, temp);
 		i++;
 	}
+	result->envp = envp;
 	return (result);
 }

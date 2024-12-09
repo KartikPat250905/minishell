@@ -73,7 +73,6 @@ void	handle_space(t_iterators *it);
 bool	tokenize_pipe(t_iterators *it, t_token_stack *stack);
 bool	tokenize_output(t_iterators *it, t_token_stack *stack);
 bool	tokenize_input(t_iterators *it, t_token_stack *stack);
-bool	tokenize_quotes(t_iterators *it, t_token_stack *stack);
 bool	tokenize_words(t_iterators *it, t_token_stack *stack);
 
 bool	is_token(char ch, char next);

@@ -9,7 +9,6 @@ LIBFT = ./libft
 SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/lexer/stack/token_operations.c \
 		  srcs/lexer/tokenize.c \
-		  srcs/lexer/tokenize_two.c \
 		  srcs/lexer/lexer.c \
 		  srcs/parser/stack/stack_utils.c \
 		  srcs/parser/stack/stack_operations.c \
@@ -20,6 +19,8 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/parser/fetch_safe.c \
 		  srcs/parser/parsing.c \
 		  srcs/parser/ast.c \
+		  srcs/execution/simple_cmd.c \
+		  srcs/execution/execute.c \
 		  srcs/main.c \
 		  srcs/signals/signals.c \
 		  srcs/env/env.c \

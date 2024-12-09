@@ -60,7 +60,7 @@ typedef struct s_entry
 
 typedef struct s_ast_node
 {
-	int					type;
+	int					type; //rename to symbol?
 	t_token_node		*token;
 	struct s_ast_node	**children;
 	int					child_count;

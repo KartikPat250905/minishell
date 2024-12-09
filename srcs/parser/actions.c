@@ -174,7 +174,7 @@ int	action_goto(t_stack *stack, t_entry *entry)
 {
 	t_node	*next_state;
 
-	ft_putendl_fd("-adding goto-", 1);
+	//ft_putendl_fd("-adding goto-", 1);
 	next_state = init_node(entry->go_to);
 	if (!next_state)
 		return (-2); //error
