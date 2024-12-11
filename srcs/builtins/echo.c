@@ -33,8 +33,8 @@ int	ft_echo(char **av)
 	int	i;
 
 	nl = 1;
-	i = 0;
-	if (!ft_strcmp(av[0], "echo"))
+	i = 1;
+	if (ft_strcmp(av[0], "echo"))
 		return (1);
 	if (av[1] && !ft_strcmp(av[1], "-n"))
 	{

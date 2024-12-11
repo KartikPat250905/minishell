@@ -22,7 +22,7 @@ int	main(int ac, char **av, char **envp)
 	t_token_stack	*tokens;
 	int				ret;
 	t_entry			**table;
-	
+
 	// ft_cd(ac, av);
 	// ft_pwd();
 	(void)ac;

@@ -3,7 +3,7 @@
 void	sig_handler(int sig)
 {
 	(void)sig;
-	write(1, "\nmicroshell> ", 12);
+	write(1, "\n", 1);
 }
 
 void	activate_signal_handler(void)

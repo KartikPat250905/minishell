@@ -68,15 +68,16 @@ char	*build_path(char *av)
 	return (path);
 }
 
-int	ft_cd(int ac, char **av)
+int	ft_cd(char **av)
 {
 	char	*path;
 
-	if (ac == 1)
+	if (!av[1])
 		return (!go_home());
 	else
 	{
-		path = build_path_env(av[1]);
+		printf("CD getting this: %s\n", av[1]);
+		path = av[1];
 		if (chdir(path) == ERROR)
 		{
 			perror("minishell: cd:");

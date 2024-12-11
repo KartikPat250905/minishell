@@ -1,9 +1,11 @@
 # include "minishell.h"
 
-int	ft_pwd(void)
+int	ft_pwd(char **argv)
 {
 	char	*pwd;
 
+	if (argv[0] && argv[1])
+		return (1);
 	pwd = getcwd(NULL, 0);
 	if (pwd == NULL)
 		return (1);

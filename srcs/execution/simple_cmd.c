@@ -139,11 +139,11 @@ void	apply_normal_redirections(t_list *normal_redirects)
 	{
 		redir_info = normal_redirects->content;
 		fd = -1;
-		if (redir_info->type == RED_FO)
+		if (redir_info->type == RED_FO) //<
 			fd = open(redir_info->filename, O_RDONLY);
-		else if (redir_info->type == RED_TO)
+		else if (redir_info->type == RED_TO) //>
 			fd = open(redir_info->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (redir_info->type == DGREAT)
+		else if (redir_info->type == DGREAT) //>>
 			fd = open(redir_info->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (fd < 0)
 		{
@@ -277,12 +277,21 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	int		status;
 	int		n;
 	t_exec_info	info;
+	int original_in;
+	int	original_out;
 	//int		exit_builtin;
 
 	info.heredoc_fd = -1;
 	info.redir_list = NULL;
 	gather_redirects(simple_cmd, &info);
 	argv = build_argv(simple_cmd);
+	original_in = dup(STDIN_FILENO);
+	original_out = dup(STDOUT_FILENO);
+	if (!original_in || !original_out)
+	{
+		perror("dup");
+		return ;
+	}
 	if (argv && is_builtin(argv[0]))
 	{
 		if (info.heredoc_fd != -1)
@@ -293,6 +302,10 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		apply_normal_redirections(info.redir_list);
 		//exit_builtin = execute_builtin(argv);
 		execute_builtin(argv);
+		dup2(original_in, STDIN_FILENO);
+		dup2(original_out, STDOUT_FILENO);
+		close(original_in);
+		close(original_out);
 		//exit(exit_builtin);
 		return ;
 	}

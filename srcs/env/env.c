@@ -9,7 +9,7 @@ int	add_to_env_list(char *key, char *value, int is_env)
 	{
 		temp = g_env;
 		while (temp)
-		{	
+		{
 			if (!ft_strcmp(temp -> key, key))
 				temp -> value = value;
 			temp = temp -> next;
@@ -66,7 +66,7 @@ void	envadd(t_env **lst, t_env *new)
 		current = current->next;
 	current->next = new;
 }
-
+//only head has envp fix
 t_env	*fetch_envp(char **envp)
 {
 	int		i;
@@ -83,6 +83,8 @@ t_env	*fetch_envp(char **envp)
 		envadd(&result, temp);
 		i++;
 	}
-	result->envp = envp;
+	result->envp = envp;// copy the real one
+	//result->envp = build_envp(result);
+	//char **built_envp(t_env *head);
 	return (result);
 }

@@ -37,18 +37,20 @@ int	execute_builtin(char **argv)
 {
 	if (!ft_strcmp(argv[0], "echo"))
 		return (ft_echo(argv));
-	/*else if (!ft_strcmp(argv[0], "cd"))
-		ft_cd(argv);
+	else if (!ft_strcmp(argv[0], "cd"))
+		return (ft_cd(argv));
 	else if (!ft_strcmp(argv[0], "pwd"))
-		ft_pwd();
+		return (ft_pwd(argv));
 	else if (!ft_strcmp(argv[0], "export"))
-		ft_export(argv);
+		return (ft_export(argv));
+	else if (!ft_strcmp(argv[0], "env"))
+		return (!ft_env(argv));
+	/*
 	else if (!ft_strcmp(argv[0], "unset"))
 		ft_unset(argv);
-	else if (!ft_strcmp(argv[0], "env"))
-		ft_env();
 	else if (!ft_strcmp(argv[0], "exit"))
-		ft_exit(argv);*/
+		ft_exit(argv);
+	*/
 	return (0);
 }
 
