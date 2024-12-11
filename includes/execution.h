@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:19:03 by aapadill          #+#    #+#             */
-/*   Updated: 2024/12/07 13:19:21 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/12/11 10:07:17 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define EXECUTION_H
 
 # include "minishell.h"
+# include <sys/wait.h>
 
 # define EXIT_CMD_NOT_FOUND 127
 # define EXIT_PERMISSION_DENIED 126
