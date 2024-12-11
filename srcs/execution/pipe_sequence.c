@@ -70,6 +70,7 @@ void	execute_pipeline(t_ast_node **command, int cmd_count)
 		i++;
 	}
 	i = 0;
+	ignore_signals();
 	while (i < cmd_count)
 	{
 		pid = fork();
@@ -119,6 +120,7 @@ void	execute_pipeline(t_ast_node **command, int cmd_count)
 		wait(NULL);
 		i++;
 	}
+	activate_signal_handler();
 }
 
 void	execute_pipe_seq(t_ast_node *node)

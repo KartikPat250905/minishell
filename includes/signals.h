@@ -9,5 +9,6 @@
 
 void	activate_signal_handler(void);
 void	sig_handler(int sig);
+void	ignore_signals(void);
 
 #endif

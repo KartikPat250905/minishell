@@ -317,6 +317,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	}
 	else if (pid == 0) //child
 	{
+		ignore_signals();
 		if (info.heredoc_fd != -1)
 		{
 			dup2(info.heredoc_fd, STDIN_FILENO);
@@ -350,6 +351,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	}
 	else
 	{
+		activate_signal_handler();
 		waitpid(pid, &status, 0);
 		//if (WIFEXITED(status))
 		//exit(WEXITSTATUS(status));
