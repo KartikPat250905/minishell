@@ -18,7 +18,7 @@ int	get_redirect_type(t_ast_node *io_redirect_node)
 {
 	t_ast_node	*child;
 	t_ast_node	*op_node;
-	
+
 	child = io_redirect_node->children[0];
 	if (child->type == IO_FILE)
 	{
@@ -45,7 +45,7 @@ char	*get_filename(t_ast_node *io_redirect_node)
 	t_ast_node	*filename;
 	t_ast_node	*here_end;
 	t_ast_node	*word;
-	
+
 	child = io_redirect_node->children[0];
 	if (child->type == IO_FILE)
 	{
@@ -224,6 +224,7 @@ char	**build_argv(t_ast_node *simple_command)
 		printf("%s\n", argv[i]);
 		i++;
 	}
+	printf("-----------------your stuff starts after here\n");
 	return (argv);
 }
 
