@@ -259,16 +259,25 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	int		status;
 	int		n;
 	t_exec_info	info;
+	//int		exit_builtin;
 
 	info.heredoc_fd = -1;
 	info.redir_list = NULL;
 	gather_redirects(simple_cmd, &info);
-	/*if (is_builtin(simple_cmd))
-	{
-		execute_builtin(simple_cmd);
-		return ;
-	}*/
 	argv = build_argv(simple_cmd);
+	if (argv && is_builtin(argv[0]))
+	{
+		if (info.heredoc_fd != -1)
+		{
+			dup2(info.heredoc_fd, STDIN_FILENO);
+			close(info.heredoc_fd);
+		}
+		apply_normal_redirections(info.redir_list);
+		//exit_builtin = execute_builtin(argv);
+		execute_builtin(argv);
+		//exit(exit_builtin);
+		return ;
+	}
 	pid = fork();
 	if (pid < 0)
 	{

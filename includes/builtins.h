@@ -25,7 +25,7 @@ typedef struct s_sstack
 
 int		ft_pwd(void);
 int		ft_cd(int ac, char **av);
-int		ft_echo(int ac, char **av);
+int		ft_echo(char **av);
 int		ft_env(int ac, char **av);
 int		ft_export(int ac, char **av);
 

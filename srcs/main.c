@@ -22,8 +22,6 @@ int	main(int ac, char **av, char **envp)
 	t_token_stack	*tokens;
 	int				ret;
 	t_entry			**table;
-	int				no_of_args;
-	char			**args;
 	
 	// ft_cd(ac, av);
 	// ft_pwd();
@@ -35,7 +33,7 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		input = readline("microshell> ");
-		if (!input || !ft_strcmp(input, "exit"))
+		if (!input)
 		{
 			printf("Exit\n");
 			break ;
@@ -46,11 +44,7 @@ int	main(int ac, char **av, char **envp)
 			add_history(input);
 		// if (tokens)
 		// 	free_tokens()
-		args = ft_split(input, ' ', &no_of_args);
-		g_env = fetch_envp(envp); //needs to be done every time otherwise we segfault
-		ft_env(no_of_args, args);
-		ft_export(no_of_args, args);
-		ft_echo(no_of_args, args);
+		g_env = fetch_envp(envp); //needs to be done every time for now otherwise we segfault
 		table = create_table("srcs/parser/parsing-table");
 		tokens = lexer(input);
 		ret = parsing_main(tokens, table);
