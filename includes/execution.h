@@ -34,4 +34,6 @@ typedef struct s_exec_info
 void	execute_simple_cmd(t_ast_node *node);
 void	execute_ast(t_ast_node *node);
 
+void	execute_pipe_seq(t_ast_node *node);
+
 #endif

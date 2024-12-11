@@ -24,7 +24,6 @@ void	execute_ast(t_ast_node *node)
 	}
 	else if (node->type == PIPE_SEQ)
 	{
-		//execute_pipe_seq(node);
-		execute_ast(node->children[0]);
+		execute_pipe_seq(node);
 	}
 }

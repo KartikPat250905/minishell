@@ -242,9 +242,9 @@ char	*look_for_cmd(char *cmd, char **paths)
 			return (triable_path);
 		i++;
 	}
-	ft_putstr_fd("./microshell: ", STDERR_FILENO);
-	ft_putstr_fd(cmd, STDERR_FILENO);
-	ft_putendl_fd(": command not found", STDERR_FILENO);
+	//ft_putstr_fd("./microshell: ", STDERR_FILENO);
+	//ft_putstr_fd(cmd, STDERR_FILENO);
+	//ft_putendl_fd(": command not found", STDERR_FILENO);
 	//gc_free_all(); //possible due to being in a child process?
 	//exit(EXIT_CMD_NOT_FOUND);
 	return (NULL);
@@ -292,14 +292,22 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		paths = gc_split(path, ':', &n);
 		path = look_for_cmd(argv[0], paths);
 		if (!path)
+		{
+			ft_putendl_fd("minishell: command not found", 2);
 			exit(127); //is this the correct exit code?
-		execve(path, argv, g_env->envp);
-		perror("execve");
-		exit(126); //is this the correct exit code?
+		}
+		if (execve(path, argv, g_env->envp) == -1)
+		{
+			perror("execve");
+			exit(126); //is this the correct exit code?
+		}
 	}
 	else
 	{
 		waitpid(pid, &status, 0);
+		//if (WIFEXITED(status))
+		//exit(WEXITSTATUS(status));
+		//	g_env->last_exit_status = WEXITSTATUS(status);
 	}
 	//gc_free_array((void **)argv, //length of argv);
 }

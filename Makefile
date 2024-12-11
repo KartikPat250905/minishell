@@ -20,6 +20,7 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/parser/parsing.c \
 		  srcs/parser/ast.c \
 		  srcs/execution/simple_cmd.c \
+		  srcs/execution/pipe_sequence.c \
 		  srcs/execution/execute.c \
 		  srcs/main.c \
 		  srcs/signals/signals.c \
