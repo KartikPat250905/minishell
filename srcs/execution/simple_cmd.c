@@ -228,6 +228,23 @@ char	**build_argv(t_ast_node *simple_command)
 	return (argv);
 }
 
+static int	is_cmd_already_path(char *cmd)
+{
+	if (ft_strchr(cmd, '/'))
+	{
+		if (access(cmd, F_OK) == 0)
+			return (1);
+		else
+		{
+			ft_putstr_fd("./pipex: ", STDERR_FILENO);
+			perror(cmd);
+			gc_free_all();
+			exit(EXIT_CMD_NOT_FOUND);
+		}
+	}
+	return (0);
+}
+
 char	*look_for_cmd(char *cmd, char **paths)
 {
 	int		i;
@@ -299,8 +316,14 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 			ft_putendl_fd("minishell: command not found", 2);
 			exit(127); //is this the correct exit code?
 		}
-		paths = gc_split(path, ':', &n);
-		path = look_for_cmd(argv[0], paths);
+		if (is_cmd_already_path(argv[0]))
+			path = argv[0];
+		else
+		{
+			paths = gc_split(path, ':', &n);
+			path = look_for_cmd(argv[0], paths);
+			gc_free_array(n, (void **)paths);
+		}
 		if (!path)
 		{
 			ft_putendl_fd("minishell: command not found", 2);
