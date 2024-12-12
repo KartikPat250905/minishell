@@ -1,6 +1,8 @@
 # include "minishell.h"
 
-/*void	sort_list(t_env *env)
+/*
+After checking i found that we might not need it but it is still here in case we need to sort something
+void	sort_list(t_env **env)
 {
 	t_env	*temp;
 	int		flag;
@@ -8,37 +10,40 @@
 	t_env	*next;
 	t_env	*prev;
 
-	temp = env;
 	flag = 1;
-	prev = NULL;
 	while (flag)
 	{
-		while (temp)
+		flag = 0;
+		prev = NULL;
+		temp = *env;
+		while (temp && temp -> next)
 		{
 			cur = temp;
 			next = temp -> next;
+			printf("Current key is %s and the next one is %s\n",cur->key, next -> key);
 			if (ft_strcmp(cur -> key, next -> key) < 0)
 			{
-				prev -> next =
+				if (prev != NULL)
+					prev -> next = next;
+				else
+					*env = next;
+				cur -> next = next -> next;
+				next -> next = cur;
+				prev = next;
+				flag = 1;
 			}
-			temp = temp -> next -> next;
+			else
+				prev = cur;
+			temp = cur -> next;
 		}
-		temp = env;
 	}
 }*/
 
-int	ft_export(char **av)
+void	print_exported(t_env *env)
 {
-	t_env	*env;
-	t_env	*global;
-
-	global = g_env;
-	env = fetch_envp(global -> envp);
-	//sort_list(env);
-	if (ft_strcmp(av[0], "export") || av[2])
-		return (1);
 	while (env)
 	{
+		printf("\nThe key is %s and the value is %s",env->key,env->value);
 		if (env -> is_env)
 		{
 			ft_putstr_fd("declare -x ", 1);
@@ -50,5 +55,75 @@ int	ft_export(char **av)
 		}
 		env = env -> next;
 	}
+}
+
+void	assign_env(char **str)
+{
+	t_env	*global;
+
+	global = g_env;
+	while(global)
+	{
+		global -> envp = str;
+		global = global -> next;
+	}
+}
+
+void	update_envp(void)
+{
+	t_env	*global;
+	char	**env_new;
+	int		i;
+	char	*temp;
+
+	global = g_env;
+	env_new = gc_alloc(sizeof(char*) * ft_count_pointers(global->envp));
+	i = 0;
+	while (global)
+	{
+		temp = gc_strjoin(global->key, "=");
+		env_new[i++] = gc_strjoin(temp, global->value);
+		global = global -> next;
+	}
+	global = g_env;
+	gc_free_array(ft_count_pointers(global->envp), (void**)global -> envp);
+	assign_env(env_new);
+}
+
+void	export_var(char **av)
+{
+	int		i;
+	char	*eq;
+	size_t	len;
+
+	i = 1;
+	while (av[i])
+	{
+		eq = ft_strchr(av[i], '=');
+		if (!eq)
+		{
+			printf("minishell: Invalid number of arguments\n");
+			return ;
+		}
+		len = eq - av[i];
+		add_to_env_list(gc_strndup(av[i], len), gc_strdup(eq), 1);
+		i++;
+	}
+	update_envp();
+}
+
+int	ft_export(char **av)
+{
+	t_env	*env;
+	t_env	*global;
+
+	global = g_env;
+	env = fetch_envp(global -> envp);
+	if (ft_strcmp(av[0], "export"))
+		return (1);
+	if (!av[1])
+		print_exported(env);
+	else
+		export_var(av);
 	return (0);
 }

@@ -28,6 +28,7 @@ int		ft_cd(char **av);
 int		ft_echo(char **av);
 int		ft_env(char **av);
 int		ft_export(char **av);
+int		ft_unset(char **av);
 
 void	spush(t_sstack *stack, t_snode *node);
 t_snode	*spop(t_sstack *stack);

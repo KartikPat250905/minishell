@@ -33,6 +33,7 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/builtins/echo.c \
 		  srcs/builtins/ft_env.c \
 		  srcs/builtins/export.c \
+		  srcs/builtins/unset.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 

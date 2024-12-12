@@ -22,9 +22,9 @@ void	free_node_unset(char *key)
 	free(env);
 }
 
-int	ft_unset(int ac, char **av)
+int	ft_unset(char **av)
 {
-	if (ft_strcmp("unset", av[0]) || ac != 2)
+	if (ft_strcmp("unset", av[0]) || !av[2])
 		return (1);
 	if (get_env(av[1]) == NULL)
 		return (0);

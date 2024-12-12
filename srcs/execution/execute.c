@@ -45,9 +45,9 @@ int	execute_builtin(char **argv)
 		return (ft_export(argv));
 	else if (!ft_strcmp(argv[0], "env"))
 		return (!ft_env(argv));
-	/*
 	else if (!ft_strcmp(argv[0], "unset"))
 		ft_unset(argv);
+	/*
 	else if (!ft_strcmp(argv[0], "exit"))
 		ft_exit(argv);
 	*/
