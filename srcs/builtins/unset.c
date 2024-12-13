@@ -37,7 +37,7 @@ void	unset_var(char **av)
 
 int	ft_unset(char **av)
 {
-	if (ft_strcmp("unset", av[0]) || !av[2])
+	if (ft_strcmp("unset", av[0]))
 		return (0);
 	if (get_env(av[1]) == NULL)
 		return (0);

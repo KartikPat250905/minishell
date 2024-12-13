@@ -101,7 +101,6 @@ void	export_var(char **av)
 		eq = ft_strchr(av[i], '=');
 		if (!eq)
 		{
-			printf("I am here");
 			add_to_env_list(gc_strdup(av[i]), gc_strdup(""), 1);
 			i++;
 			continue ;
