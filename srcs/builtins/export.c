@@ -114,15 +114,13 @@ void	export_var(char **av)
 
 int	ft_export(char **av)
 {
-	t_env	*env;
 	t_env	*global;
 
 	global = g_env;
-	env = fetch_envp(global -> envp);
 	if (ft_strcmp(av[0], "export"))
 		return (0);
 	if (!av[1])
-		print_exported(env);
+		print_exported(global);
 	else
 		export_var(av);
 	return (0);
