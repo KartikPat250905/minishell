@@ -12,7 +12,6 @@ int	add_to_env_list(char *key, char *value, int is_env)
 		{
 			if (!ft_strcmp(temp -> key, key))
 			{
-				free(temp->value);
 				temp -> value = value;
 				return (0);
 			}

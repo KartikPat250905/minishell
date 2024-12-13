@@ -23,42 +23,41 @@ int	go_home(void)
 	return (0);
 }
 
-char	*join_with_slashes(char *p1, char *p2)
-{
-	char	*result;
-	char	*temp;
+// char	*join_with_slashes(char *p1, char *p2)
+// {
+// 	char	*result;
+// 	char	*temp;
 
-	temp = ft_strjoin("/", p2);
-	if (!temp)
-		return (NULL);
-	result = ft_strjoin(p1, temp);
-	free(temp);
-	if (!result)
-		return (NULL);
-	return (result);
-}
+// 	temp = ft_strjoin("/", p2);
+// 	if (!temp)
+// 		return (NULL);
+// 	result = ft_strjoin(p1, temp);
+// 	if (!result)
+// 		return (NULL);
+// 	return (result);
+// }
 
-char	*build_path(char *av)
-{
-	char	*path;
-	char	*temp;
+// char	*build_path(char *av)
+// {
+// 	char	*path;
+// 	char	*temp;
 
-	if (av[0] == '/')
-		path = ft_strdup(av);
-	else if(!ft_strncmp(".", av, 1) || !ft_strncmp("..", av, 2))
-		path = join_with_slashes(get_env("PWD") ,av);
-	else
-	{
-		path = build_path_env(av);
-		if (ft_strcmp(path, av))
-		{
-			temp = path;
-			path = join_with_slashes(get_env("PATH"), path);
-			free(temp);
-		}
-	}
-	return (path);
-}
+// 	if (av[0] == '/')
+// 		path = ft_strdup(av);
+// 	else if(!ft_strncmp(".", av, 1) || !ft_strncmp("..", av, 2))
+// 		path = join_with_slashes(get_env("PWD") ,av);
+// 	else
+// 	{
+// 		path = build_path_env(av);
+// 		if (ft_strcmp(path, av))
+// 		{
+// 			temp = path;
+// 			path = join_with_slashes(get_env("PATH"), path);
+// 			free(temp);
+// 		}
+// 	}
+// 	return (path);
+// }
 
 int	ft_cd(char **av)
 {
