@@ -22,10 +22,23 @@ void	free_node_unset(char *key)
 	free(env);
 }
 
+void	unset_var(char **av)
+{
+	int		i;
+
+	i = 1;
+	while (av[i])
+	{
+		free_node_unset(av[i]);
+		i++;
+	}
+	update_envp();
+}
+
 int	ft_unset(char **av)
 {
 	if (ft_strcmp("unset", av[0]) || !av[2])
-		return (1);
+		return (0);
 	if (get_env(av[1]) == NULL)
 		return (0);
 	free_node_unset(av[1]);

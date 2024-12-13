@@ -64,9 +64,11 @@ int	ft_cd(char **av)
 {
 	char	*path;
 
+	if (ft_strcmp("cd", av[0]))
+		return (0);
 	if (!av[1])
 		return (!go_home());
-	else
+	else if (av[0] && av[1] && !av[2])
 	{
 		printf("CD getting this: %s\n", av[1]);
 		path = av[1];
@@ -77,6 +79,11 @@ int	ft_cd(char **av)
 		}
 		add_to_env_list("OLDPWD", get_env("PWD"), 0);
 		add_to_env_list("PWD", path, 1);
+	}
+	else
+	{
+		printf("minishell: cd: too many arguments\n");
+		return (1);
 	}
 	return (0);
 }

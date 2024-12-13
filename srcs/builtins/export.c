@@ -102,8 +102,8 @@ void	export_var(char **av)
 		eq = ft_strchr(av[i], '=');
 		if (!eq)
 		{
-			printf("minishell: Invalid number of arguments\n");
-			return ;
+			add_to_env_list(gc_strdup(av[i]), gc_strdup(""), 1);
+			continue ;
 		}
 		len = eq - av[i];
 		add_to_env_list(gc_strndup(av[i], len), gc_strdup(eq), 1);
@@ -120,7 +120,7 @@ int	ft_export(char **av)
 	global = g_env;
 	env = fetch_envp(global -> envp);
 	if (ft_strcmp(av[0], "export"))
-		return (1);
+		return (0);
 	if (!av[1])
 		print_exported(env);
 	else
