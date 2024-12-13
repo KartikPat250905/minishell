@@ -43,7 +43,6 @@ void	print_exported(t_env *env)
 {
 	while (env)
 	{
-		printf("\nThe key is %s and the value is %s",env->key,env->value);
 		if (env -> is_env)
 		{
 			ft_putstr_fd("declare -x ", 1);
@@ -105,8 +104,9 @@ void	export_var(char **av)
 			add_to_env_list(gc_strdup(av[i]), gc_strdup(""), 1);
 			continue ;
 		}
+		printf("I am not in the infinite loop xd \n");
 		len = eq - av[i];
-		add_to_env_list(gc_strndup(av[i], len), gc_strdup(eq), 1);
+		add_to_env_list(gc_strndup(av[i], len), gc_strdup(eq + 1), 1);
 		i++;
 	}
 	update_envp();

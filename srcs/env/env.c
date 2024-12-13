@@ -79,6 +79,8 @@ t_env	*fetch_envp(char **envp)
 
 	i = 0;
 	result = NULL;
+	if (!envp)
+		return (result);
 	while (envp[i])
 	{
 		temp = init_env_node(envp[i], 1);

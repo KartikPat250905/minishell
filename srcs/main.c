@@ -31,6 +31,7 @@ int	main(int ac, char **av, char **envp)
 	activate_signal_handler();
 	tokens = init_token_stack();
 	table = create_table("srcs/parser/parsing-table");
+	g_env = fetch_envp(envp);
 	while (1)
 	{
 		input = readline("microshell> ");
@@ -45,7 +46,7 @@ int	main(int ac, char **av, char **envp)
 			add_history(input);
 		// if (tokens)
 		// 	free_tokens()
-		g_env = fetch_envp(envp); //needs to be done every time for now otherwise we segfault
+		//g_env = fetch_envp(envp); //needs to be done every time for now otherwise we segfault
 		tokens = lexer(input);
 		ret = parsing_main(tokens, table);
 		free(input);
