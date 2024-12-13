@@ -62,6 +62,7 @@ int	go_home(void)
 int	ft_cd(char **av)
 {
 	char	*path;
+	char	*cwd;
 
 	if (ft_strcmp("cd", av[0]))
 		return (0);
@@ -77,7 +78,14 @@ int	ft_cd(char **av)
 			return (1);
 		}
 		add_to_env_list("OLDPWD", get_env("PWD"), 0);
-		add_to_env_list("PWD", path, 1);
+		cwd = getcwd(NULL, 0);
+		if (!cwd)
+		{
+			perror("minishell: cd: getcwd failed");
+			return (1);
+		}
+		add_to_env_list("PWD", gc_strdup(cwd), 1);
+		free(cwd);
 	}
 	else
 	{
