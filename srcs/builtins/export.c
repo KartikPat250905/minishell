@@ -1,59 +1,89 @@
 # include "minishell.h"
 
-/*
-After checking i found that we might not need it but it is still here in case we need to sort something
-void	sort_list(t_env **env)
+int	ft_count_nodes(t_env *env)
 {
-	t_env	*temp;
-	int		flag;
-	t_env	*cur;
-	t_env	*next;
-	t_env	*prev;
+	int	result;
 
+	result = 0;
+	while (env)
+	{
+		result++;
+		env = env -> next;
+	}
+	return (result);
+}
+
+char	**sort_list(t_env *env)
+{
+	char	**strings;
+	int		i;
+	int		flag;
+	char	*temp;
+
+	strings = gc_alloc(sizeof(char*) * ft_count_nodes(env) + 1);
+	i = 0;
 	flag = 1;
+	while (env)
+	{
+		strings[i++] = gc_strdup(env -> key);
+		env = env -> next;
+	}
+	strings[i] = NULL;
 	while (flag)
 	{
+		i = 0;
 		flag = 0;
-		prev = NULL;
-		temp = *env;
-		while (temp && temp -> next)
+		while (strings[i])
 		{
-			cur = temp;
-			next = temp -> next;
-			printf("Current key is %s and the next one is %s\n",cur->key, next -> key);
-			if (ft_strcmp(cur -> key, next -> key) < 0)
+			if (strings[i + 1] && ft_strcmp(strings[i], strings[i + 1]) > 0)
 			{
-				if (prev != NULL)
-					prev -> next = next;
-				else
-					*env = next;
-				cur -> next = next -> next;
-				next -> next = cur;
-				prev = next;
 				flag = 1;
+				temp = strings[i];
+				strings[i] = strings[i + 1];
+				strings[i + 1] = temp;
 			}
-			else
-				prev = cur;
-			temp = cur -> next;
+			i++;
 		}
 	}
-}*/
+	return (strings);
+}
+
 
 void	print_exported(t_env *env)
 {
-	while (env)
+	t_env	*copy;
+	char	**array;
+	int		i;
+
+	i = 0;
+	copy = env;
+	array = sort_list(copy);
+	for (int i = 0; array[i]; i++)
+    	printf("The string in some order%s\n", array[i]);
+	while (array[i])
 	{
-		if (env -> is_env)
+		ft_putstr_fd("declare -x ", 1);
+		ft_putstr_fd(array[i], 1);
+		if (get_env(array[i]) && get_env(array[i])[0] != '\0')
+		{
+			ft_putstr_fd("=\"", 1);
+			ft_putstr_fd(get_env(array[i]), 1);
+			ft_putstr_fd("\"", 1);
+		}
+		ft_putchar_fd('\n', 1);
+		/*if (copy -> is_env)
 		{
 			ft_putstr_fd("declare -x ", 1);
-			ft_putstr_fd(env->key, 1);
+			ft_putstr_fd(copy->key, 1);
 			ft_putstr_fd("=\"", 1);
-			ft_putstr_fd(env->value, 1);
+			ft_putstr_fd(copy->value, 1);
 			ft_putstr_fd("\"", 1);
 			ft_putchar_fd('\n', 1);
 		}
-		env = env -> next;
+		copy = copy -> next;*/
+		i++;
 	}
+	gc_free_array(ft_count_nodes(copy), (void *)array);
 }
 
 void	assign_env(char **str)
@@ -98,6 +128,11 @@ void	export_var(char **av)
 	i = 1;
 	while (av[i])
 	{
+		if (av[i][0] >= '0' && av[i][0] <= '9')
+		{
+			printf("minishell: export: `%s': not a valid identifier\n", av[i++]);
+			continue;
+		}
 		eq = ft_strchr(av[i], '=');
 		if (!eq)
 		{

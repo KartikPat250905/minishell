@@ -14,8 +14,12 @@ void	free_node_unset(char *key)
 		prev = env;
 		env = env -> next;
 	}
+	if (!env)
+		return ;
 	if (prev != NULL)
 		prev -> next = env -> next;
+	else
+		prev->next = env->next;
 	env -> next = NULL;
 	free(env -> key);
 	free(env -> value);
@@ -34,6 +38,7 @@ void	unset_var(char **av)
 	}
 	update_envp();
 }
+//unset head properly
 
 int	ft_unset(char **av)
 {

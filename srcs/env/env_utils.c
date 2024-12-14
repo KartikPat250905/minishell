@@ -33,7 +33,7 @@ void	env_to_envp_print(void)
 	t_env	*env;
 
 	env = g_env;
-	while (env)
+	while (env && env -> value[0] != '\0')
 	{
 		ft_putstr_fd(env->key, 1);
 		ft_putchar_fd('=', 1);
