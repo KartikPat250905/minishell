@@ -58,8 +58,6 @@ void	print_exported(t_env *env)
 	i = 0;
 	copy = env;
 	array = sort_list(copy);
-	for (int i = 0; array[i]; i++)
-    	printf("The string in some order%s\n", array[i]);
 	while (array[i])
 	{
 		ft_putstr_fd("declare -x ", 1);
