@@ -160,6 +160,114 @@ void	apply_normal_redirections(t_list *normal_redirects)
 	}
 }
 
+char	*remove_quotes(char *str, char quote)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		if (str[i] == quote)
+		{
+			i++;
+			continue ;
+		}
+		str[j] = str[i];
+		i++;
+		j++;
+	}
+	str[j] = '\0';
+	return (str);
+}
+
+//env var format: \$[A-Za-z_][A-Za-z0-9_]*
+char	*env_expander(char *str)
+{
+	char	*pre;
+	char	*env_var;
+	char	*value;
+	char	*tmp;
+	int		in_sq;
+	int		in_dq;
+	int		i;
+	int		start;
+	char	single_char[2];
+
+	pre = gc_strdup("");
+	in_sq = 0;
+	in_dq = 0;
+	i = 0;
+	single_char[1] = '\0';
+	while (str[i])
+	{
+		if (str[i] == '"' && !in_sq)
+		{
+			in_dq = !in_dq;
+			i++;
+			continue;
+		}
+		else if (str[i] == '\'' && !in_dq)
+		{
+			in_sq = !in_sq;
+			i++;
+			continue;
+		}
+		//check for a variable expansion
+		if (str[i] == '$' && !in_sq)
+		{
+			if (str[i + 1] == '?')
+			{
+				//handle last exit code, hardcoded for now to 42
+				//char *exit_code_str = ft_itoa(g->last_exit_status);
+				tmp = gc_strjoin(pre, "42");
+				gc_free(pre);
+				//gc_free(exit_code_str);
+				pre = tmp;
+				i += 2; //past "$?"
+				continue;
+			}
+			else if ((str[i + 1] == '_' || ft_isalpha(str[i + 1])))
+			{
+				start = i + 1;
+				i += 1;
+				while (ft_isalnum(str[i]) || str[i] == '_')
+					i++;
+				env_var = gc_substr(str, start, i - start);
+				value = get_env(env_var);
+				gc_free(env_var);
+
+				if (value)
+				{
+					tmp = gc_strjoin(pre, value);
+					gc_free(pre);
+					gc_free(value);
+					pre = tmp;
+				}
+				//if no value, we remove the variable and not append anything
+				continue;
+			}
+			else
+			{
+				//append one character (with a null terminator by default)
+				single_char[0] = str[i];
+				tmp = gc_strjoin(pre, single_char);
+				gc_free(pre);
+				pre = tmp;
+				i++;
+			}
+		}
+		//normal character that is not a quote or $
+		single_char[0] = str[i];
+		tmp = gc_strjoin(pre, single_char);
+		gc_free(pre);
+		pre = tmp;
+		i++;
+	}
+	return (pre);
+}
+
 void	construct_cmd(t_ast_node *node, t_list **words)
 {
 	t_list	*cmd_elem;
@@ -173,7 +281,13 @@ void	construct_cmd(t_ast_node *node, t_list **words)
 
 	if (node->type == WORD)
 	{
-		cmd_elem = ft_lstnew(node->token->value); //switch to gc
+		//remove_quotes(node->token->value, '\"');
+		//printf("\ttype: %s\n", get_symbol_name(node->token->type));
+		//printf("\tvalue: %s\n", node->token->value);
+		//printf("\tstate: %i\n", node->token->state);
+		//printf("\texpanded: %s\n", env_expander(node->token->value));
+		//cmd_elem = ft_lstnew(node->token->value);
+		cmd_elem = ft_lstnew(env_expander(node->token->value));
 		//if (!cmd_elem)
 		ft_lstadd_back(words, cmd_elem); //switch to gc
 		return ;
@@ -224,7 +338,7 @@ char	**build_argv(t_ast_node *simple_command)
 		printf("%s\n", argv[i]);
 		i++;
 	}
-	printf("-----------------your stuff starts after here\n");
+	printf("-----------------your expected stuff starts this line\n");
 	return (argv);
 }
 
@@ -236,7 +350,7 @@ static int	is_cmd_already_path(char *cmd)
 			return (1);
 		else
 		{
-			ft_putstr_fd("./pipex: ", STDERR_FILENO);
+			ft_putstr_fd("./microshell: ", STDERR_FILENO);
 			perror(cmd);
 			gc_free_all();
 			exit(EXIT_CMD_NOT_FOUND);

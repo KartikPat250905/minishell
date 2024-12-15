@@ -85,11 +85,13 @@ void	execute_pipeline(t_ast_node **command, int cmd_count)
 			if (i > 0)
 			{
 				dup2(pipefds[(i-1) * 2], STDIN_FILENO);
+				//protect dup2
 			}
 			//if not last command
 			if (i < cmd_count - 1)
 			{
 				dup2(pipefds[i * 2 + 1], STDOUT_FILENO);
+				//protect dup2
 			}
 			//close all pipes
 			j = 0;
