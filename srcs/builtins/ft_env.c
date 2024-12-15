@@ -2,10 +2,13 @@
 
 int	ft_env(char **av)
 {
-	if (av[0] && av[1])
-		return (0);
 	if (ft_strcmp("env", av[0]))
-		return (1);
+		return (0);
+	if (av[0] && av[1])
+	{
+		printf("minishell: env: Arguments and options aren't supported\n");
+		return (0);
+	}
 	env_to_envp_print();
 	return (0);
 }

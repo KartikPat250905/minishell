@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-INCLUDES = -Iincludes
+INCLUDES = -Iincludes -I/opt/homebrew/opt/readline/include
 CFLAGS = -Wall -Wextra -Werror
 HEADER = minishell.h
 
@@ -33,10 +33,12 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/builtins/echo.c \
 		  srcs/builtins/ft_env.c \
 		  srcs/builtins/export.c \
+		  srcs/builtins/unset.c \
+		  srcs/builtins/ft_exit.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
-READLINE = -lreadline
+READLINE = -lreadline -L/opt/homebrew/opt/readline/lib
 
 all: $(NAME)
 
@@ -61,3 +63,4 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+

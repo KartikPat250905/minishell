@@ -35,6 +35,11 @@ void	env_to_envp_print(void)
 	env = g_env;
 	while (env)
 	{
+		if (env -> value[0] == '\0')
+		{
+			env = env -> next;
+			continue ;
+		}
 		ft_putstr_fd(env->key, 1);
 		ft_putchar_fd('=', 1);
 		ft_putstr_fd(env ->value, 1);

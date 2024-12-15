@@ -11,7 +11,10 @@ int	add_to_env_list(char *key, char *value, int is_env)
 		while (temp)
 		{
 			if (!ft_strcmp(temp -> key, key))
+			{
 				temp -> value = value;
+				return (0);
+			}
 			temp = temp -> next;
 		}
 		return (0);
@@ -75,6 +78,8 @@ t_env	*fetch_envp(char **envp)
 
 	i = 0;
 	result = NULL;
+	if (!envp)
+		return (result);
 	while (envp[i])
 	{
 		temp = init_env_node(envp[i], 1);

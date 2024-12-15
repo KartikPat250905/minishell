@@ -27,6 +27,24 @@ int	ft_echo(int ac, char **av)
 	return (0);
 }*/
 
+int	check_n(char *str)
+{
+	int	i;
+
+	i = 1;
+	if (str[0] == '-' && str[1] == 'n')
+	{
+		while (str[i] != '\0')
+		{
+			if (str[i] != 'n')
+				return (0);
+			i++;
+		}
+		return (1);
+	}
+	return (0);
+}
+
 int	ft_echo(char **av)
 {
 	int	nl;
@@ -34,12 +52,12 @@ int	ft_echo(char **av)
 
 	nl = 1;
 	i = 1;
-	if (ft_strcmp(av[0], "echo"))
-		return (1);
-	if (av[1] && !ft_strcmp(av[1], "-n"))
+	if (ft_strcmp(av[0], "echo") != 0)
+		return (0);
+	while (av[i] && check_n(av[i]))
 	{
 		nl = 0;
-		i = 2;
+		i++;
 	}
 	while (av[i])
 	{
@@ -48,7 +66,8 @@ int	ft_echo(char **av)
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
-	if (nl) //will only happen if nl flag is on
+	if (nl)
 		ft_putchar_fd('\n', 1);
+
 	return (0);
 }
