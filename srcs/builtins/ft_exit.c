@@ -43,8 +43,7 @@ int	ft_exit(char **av)
 	}
 	if (av[0] && !av[1])
 		exit_code = 0;
-	else if (av[1][0] && (av[1][0] == '+' || av[1][0] == '-')
-			&& av[1][1] && ft_isnumstr(&av[1][1]))
+	else if ((av[1][0] == '+' || av[1][0] == '-' || ft_isdigit(av[1][0])))
 	{
 		exit_code = get_exit_code(av);
 	}
@@ -53,7 +52,7 @@ int	ft_exit(char **av)
 		printf("minishell: exit: numeric argument required\n");
 		return (1);
 	}
-	gc_free_all();
+	//gc_free_all();
 	exit(exit_code);
 	return (0);
 }

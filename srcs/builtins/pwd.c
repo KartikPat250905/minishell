@@ -5,7 +5,10 @@ int	ft_pwd(char **argv)
 	char	*pwd;
 
 	if (argv[0] && argv[1])
+	{
+		printf("minishell: pwd: %s: options and arguments are not allowed\n", argv[1]);
 		return (1);
+	}
 	pwd = getcwd(NULL, 0);
 	if (pwd == NULL)
 		return (1);

@@ -44,6 +44,11 @@ int	ft_unset(char **av)
 {
 	if (ft_strcmp("unset", av[0]))
 		return (0);
+	if (av[1] && av[1][0] == '-')
+	{
+		printf("minishell: export: options aren't supported\n");
+		return (1);
+	}
 	if (get_env(av[1]) == NULL)
 		return (0);
 	free_node_unset(av[1]);

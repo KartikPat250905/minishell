@@ -117,6 +117,24 @@ void	update_envp(void)
 	assign_env(env_new);
 }
 
+int	is_edge(char *str)
+{
+	int	i;
+
+	i = 0;
+	if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-' || str[0] == '=')
+		return (1);
+	while (str[i])
+	{
+		if (str[i] == '.' || str[i] == '/' || str[i] == ':')
+			return (1);
+		if (str[i] == '=')
+			break ;
+		i++;
+	}
+	return (0);
+}
+
 void	export_var(char **av)
 {
 	int		i;
@@ -126,7 +144,7 @@ void	export_var(char **av)
 	i = 1;
 	while (av[i])
 	{
-		if (av[i][0] >= '0' && av[i][0] <= '9')
+		if (is_edge(av[i]))
 		{
 			printf("minishell: export: `%s': not a valid identifier\n", av[i++]);
 			continue;

@@ -35,16 +35,16 @@ int	ft_cd(char **av)
 	else if (av[0] && av[1] && !av[2])
 	{
 		path = av[1];
-		if (chdir(path) == ERROR)
+		if (chdir(path) == -1)
 		{
-			perror("minishell: cd:");
+			printf("bash: cd: %s: No such file or directory\n", av[1]);
 			return (1);
 		}
 		add_to_env_list("OLDPWD", get_env("PWD"), 0);
 		cwd = getcwd(NULL, 0);
 		if (!cwd)
 		{
-			perror("minishell: cd: getcwd failed");
+			printf("minishell: cd: getcwd failed\n");
 			return (1);
 		}
 		add_to_env_list("PWD", gc_strdup(cwd), 1);
