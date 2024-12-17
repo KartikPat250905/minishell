@@ -16,7 +16,6 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/parser/grammar_utils.c \
 		  srcs/parser/actions.c \
 		  srcs/parser/enum_check.c \
-		  srcs/parser/fetch_safe.c \
 		  srcs/parser/parsing.c \
 		  srcs/parser/ast.c \
 		  srcs/execution/simple_cmd.c \
@@ -26,15 +25,17 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/signals/signals.c \
 		  srcs/env/env.c \
 		  srcs/env/env_utils.c \
-		  srcs/free/free.c \
 		  srcs/builtins/cd.c \
 		  srcs/builtins/cd_utils.c \
 		  srcs/builtins/pwd.c \
 		  srcs/builtins/echo.c \
 		  srcs/builtins/ft_env.c \
 		  srcs/builtins/export.c \
+		  srcs/builtins/export_utils.c \
+		  srcs/builtins/export_utilstwo.c \
 		  srcs/builtins/unset.c \
 		  srcs/builtins/ft_exit.c \
+		  srcs/signals/signals_two.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 

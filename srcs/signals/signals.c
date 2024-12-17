@@ -28,15 +28,6 @@ void	ignore_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void here_doc_sig(int sig)
-{
-	if (sig == SIGINT)
-	{
-		g_exit_status = 130;
-		exit(130);
-	}
-}
-
 int	get_exit_status(int status)
 {
 	if (WIFSIGNALED(status))

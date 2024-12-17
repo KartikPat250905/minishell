@@ -78,7 +78,7 @@ t_env	*init_env_node(char *env, int if_env)
 		return (NULL);
 	key = ft_substr(env, 0, ft_strchr(env, '=') - env);
 	value = ft_substr(env, ft_strchr(env, '=') - env + 1, ft_strlen(env) - (ft_strchr(env, '=') - env) - 1);
-	handle_shvl(&key, &value);
+	//handle_shvl(&key, &value);
 	if (!key || !value)
 	{
 		free(key);

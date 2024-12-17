@@ -98,9 +98,6 @@ bool	is_terminal(int value);
 bool	is_non_terminal(int value);
 bool	is_state(int value);
 
-//fetch_safe.c
-//int		fetch_top(t_stack *stack);
-
 //file.c
 int	get_table_size(char *filename);
 t_entry	*create_entry(char *line);

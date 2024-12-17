@@ -99,6 +99,7 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 				//exit(1); //is this the correct exit code?
 			}
 			//stops until here_end word is found
+			signal(SIGINT, here_doc_sig);
 			while (1)
 			{
 				line = readline("heredoc> ");
@@ -321,7 +322,6 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	}
 	else if (pid == 0) //child
 	{
-		ignore_signals();
 		if (info.heredoc_fd != -1)
 		{
 			dup2(info.heredoc_fd, STDIN_FILENO);

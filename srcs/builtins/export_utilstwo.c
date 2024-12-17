@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   export_utilstwo.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: karpatel <karpatel@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 15:27:15 by karpatel          #+#    #+#             */
-/*   Updated: 2024/12/17 15:27:17 by karpatel         ###   ########.fr       */
+/*   Created: 2024/12/17 16:15:53 by karpatel          #+#    #+#             */
+/*   Updated: 2024/12/17 16:15:55 by karpatel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_env(char **av)
+char	**populate_strings(t_env *env)
 {
-	if (ft_strcmp("env", av[0]))
-		return (0);
-	if (av[0] && av[1])
+	int		i;
+	char	**strings;
+
+	i = 0;
+	strings = gc_alloc(sizeof(char *) * ft_count_nodes(env) + 1);
+	while (env)
 	{
-		printf("minishell: env: Arguments and options aren't supported\n");
-		return (1);
+		strings[i++] = gc_strdup(env -> key);
+		env = env -> next;
 	}
-	env_to_envp_print();
-	return (0);
+	strings[i] = NULL;
+	return (strings);
 }
