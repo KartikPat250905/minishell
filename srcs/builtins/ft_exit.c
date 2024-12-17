@@ -53,6 +53,7 @@ int	ft_exit(char **av)
 		return (1);
 	}
 	//gc_free_all();
+	g_exit_status = exit_code;
 	exit(exit_code);
 	return (0);
 }

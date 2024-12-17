@@ -54,10 +54,12 @@ void	execute_pipeline(t_ast_node **command, int cmd_count)
 	int	pipefds[2 * (cmd_count - 1)];
 	int	i;
 	int	j;
-	pid_t	pid;
+	pid_t	*pid;
+	int		status;
 
 	i = 0;
 	pipe_count = cmd_count - 1;
+	pid = gc_alloc(pipe_count * sizeof(pid_t));
 	//create pipes
 	while (i < pipe_count)
 	{
@@ -73,14 +75,14 @@ void	execute_pipeline(t_ast_node **command, int cmd_count)
 	ignore_signals();
 	while (i < cmd_count)
 	{
-		pid = fork();
-		if (pid < 0)
+		pid[i] = fork();
+		if (pid[i] < 0)
 		{
 			perror("fork");
 			//return ;
 			exit(1);
 		}
-		else if (pid == 0) //child
+		else if (pid[i] == 0) //child
 		{
 			//if not first command
 			if (i > 0)
@@ -117,7 +119,21 @@ void	execute_pipeline(t_ast_node **command, int cmd_count)
 	i = 0;
 	while (i < cmd_count)
 	{
-		wait(NULL);
+		waitpid(pid[i], &status, 0);
+		if (WIFEXITED(status))
+		{
+			g_exit_status = WEXITSTATUS(status);
+			if (g_exit_status == 1)
+				g_exit_status = 127;
+		}
+		else if (WIFSIGNALED(status))
+		{
+			int signal_num = WTERMSIG(status);
+			if (signal_num == SIGINT)
+			{
+				g_exit_status = 130;
+			}
+		}
 		i++;
 	}
 	activate_signal_handler();

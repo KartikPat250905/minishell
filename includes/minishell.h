@@ -19,5 +19,6 @@
 # include <readline/history.h>
 
 extern t_env *g_env;
+extern int	g_exit_status;
 
 #endif

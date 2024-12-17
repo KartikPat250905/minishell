@@ -52,8 +52,6 @@ int	ft_echo(char **av)
 
 	nl = 1;
 	i = 1;
-	if (ft_strcmp(av[0], "echo") != 0)
-		return (0);
 	while (av[i] && check_n(av[i]))
 	{
 		nl = 0;
@@ -68,6 +66,5 @@ int	ft_echo(char **av)
 	}
 	if (nl)
 		ft_putchar_fd('\n', 1);
-
 	return (0);
 }

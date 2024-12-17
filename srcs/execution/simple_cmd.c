@@ -104,6 +104,7 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 				line = readline("heredoc> ");
 				if (!line || ft_strcmp(line, end_word) == 0)
 				{
+					g_exit_status = 0;
 					free(line);
 					break ;
 				}
@@ -257,7 +258,10 @@ char	*look_for_cmd(char *cmd, char **paths)
 		aux = gc_strjoin(paths[i], "/");
 		triable_path = gc_strjoin(aux, cmd);
 		if (access(triable_path, F_OK | X_OK) == 0)
+		{
+			g_exit_status = 0;
 			return (triable_path);
+		}
 		i++;
 	}
 	//ft_putstr_fd("./microshell: ", STDERR_FILENO);
@@ -301,7 +305,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		}
 		apply_normal_redirections(info.redir_list);
 		//exit_builtin = execute_builtin(argv);
-		execute_builtin(argv);
+		g_exit_status = execute_builtin(argv);
 		dup2(original_in, STDIN_FILENO);
 		dup2(original_out, STDOUT_FILENO);
 		close(original_in);

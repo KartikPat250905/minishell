@@ -30,26 +30,42 @@ int	add_to_env_list(char *key, char *value, int is_env)
 	return (0);
 }
 
-// void	handle_shvl(char **key, char **value)
-// {
-// 	int	shell_lvl;
+int	is_valid_number(const char *str)
+{
+	if (*str == '-')
+		str++;
+	while (*str)
+	{
+		if (!isdigit(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
 
-// 	if (!ft_strcmp(*key, "SHLVL"))
-// 	{
-// 		if (ft_isdigit(*value[0]))
-// 		{
-// 			shell_lvl = ft_atoi(*value) + 1;
-// 			printf("The shell lvl is %d\n", shell_lvl);
-// 			free(*value);
-// 			*value = ft_itoa(shell_lvl);
-// 		}
-// 		else
-// 		{
-// 			free(*value);
-// 			*value = ft_strdup("1");
-// 		}
-// 	}
-// }
+void	handle_shvl(char **key, char **value)
+{
+	int	shell_lvl;
+
+	if (!ft_strcmp(*key, "SHLVL"))
+	{
+		if (is_valid_number(*value))
+		{
+			printf("I am here\n");
+			shell_lvl = ft_atoi(*value) + 1;
+			if (shell_lvl > 999)
+				shell_lvl = 1;
+			printf("The shell lvl is %d\n", shell_lvl);
+			free(*value);
+			*value = ft_itoa(shell_lvl);
+		}
+		else
+		{
+			free(*value);
+			*value = ft_strdup("1");
+		}
+	}
+}
 
 t_env	*init_env_node(char *env, int if_env)
 {
@@ -62,7 +78,7 @@ t_env	*init_env_node(char *env, int if_env)
 		return (NULL);
 	key = ft_substr(env, 0, ft_strchr(env, '=') - env);
 	value = ft_substr(env, ft_strchr(env, '=') - env + 1, ft_strlen(env) - (ft_strchr(env, '=') - env) - 1);
-	//handle_shvl(&key, &value);
+	handle_shvl(&key, &value);
 	if (!key || !value)
 	{
 		free(key);
