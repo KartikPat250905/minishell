@@ -487,3 +487,51 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	}
 	//gc_free_array((void **)argv, //length of argv);
 }
+
+void	execute_simple_piped_cmd(char **argv)
+{
+	char	*path;
+	char	**paths;
+	int		status;
+	int		n;
+
+	if (!argv || !argv[0])
+		exit(EXIT_FAILURE);
+	
+	if (is_builtin(argv[0]))
+	{
+		status = execute_builtin(argv);
+		exit(status);
+	}
+
+	ignore_signals();
+	path = get_env("PATH");
+	if (is_cmd_already_path(argv[0]))
+		path = argv[0];
+	else
+	{
+		if (!path)
+		{
+			ft_putstr_fd("microshell: ", 2);
+			ft_putstr_fd(argv[0], 2);
+			ft_putendl_fd(": No such file or directory", 2);
+			exit(127); //is this the correct exit code?
+		}
+		paths = gc_split(path, ':', &n);
+		path = look_for_cmd(argv[0], paths);
+		gc_free_array(n, (void **)paths);
+	}
+
+	if (!path)
+	{
+		ft_putstr_fd(argv[0], 2);
+		ft_putendl_fd(": command not found", 2);
+		exit(127); //is this the correct exit code?
+	}
+	if (execve(path, argv, g_env->envp) == -1)
+	{
+		perror("execve");
+		exit(126); //is this the correct exit code?
+	}
+	//this should not happen
+}
