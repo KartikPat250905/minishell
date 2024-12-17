@@ -35,7 +35,6 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/builtins/export_utilstwo.c \
 		  srcs/builtins/unset.c \
 		  srcs/builtins/ft_exit.c \
-		  srcs/signals/signals_two.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 

@@ -46,7 +46,7 @@ t_token_stack	*reverse_stack(t_token_stack *stack)
 
 	previous = NULL;
 	curr = stack -> top;
-	while(curr)
+	while (curr)
 	{
 		curr_temp = curr->next;
 		curr->next = previous;
@@ -66,6 +66,30 @@ void	init_iterators(t_iterators *it, char *input)
 	it->input = input;
 }
 
+int	lexer_loop(t_iterators *it, t_token_stack *rev_tokens)
+{
+	if (it->input[it->cur] == ' ')
+	{
+		handle_space(it);
+		return (1);
+	}
+	if (is_token(it->input[it->cur], it->input[it->cur + 1]))
+	{
+		if (tokenize_pipe(it, rev_tokens))
+			return (1);
+		else if (tokenize_input(it, rev_tokens))
+			return (1);
+		else if (tokenize_output(it, rev_tokens))
+			return (1);
+	}
+	else
+	{
+		if (tokenize_words(it, rev_tokens))
+			return (1);
+	}
+	return (0);
+}
+
 t_token_stack	*lexer(char *input)
 {
 	t_iterators		it;
@@ -77,43 +101,12 @@ t_token_stack	*lexer(char *input)
 	rev_tokens = gc_alloc(sizeof(t_token_stack));
 	while (it.cur < it.len)
 	{
-		if (it.input[it.cur] == ' ')
-		{
-			handle_space(&it);
+		if (lexer_loop(&it, rev_tokens))
 			continue ;
-		}
-		if (is_token(it.input[it.cur], it.input[it.cur + 1]))
-		{
-			if (tokenize_pipe(&it, rev_tokens))
-				continue;
-			else if (tokenize_input(&it, rev_tokens))
-				continue;
-			else if (tokenize_output(&it, rev_tokens))
-				continue;
-		}
-		else
-		{
-			if (tokenize_words(&it, rev_tokens))
-				continue;
-		}
-		/*
-		else if (tokenize_quotes(&it, rev_tokens))
-			continue;
-		else if (tokenize_words(&it, rev_tokens))
-			continue;*/
 	}
 	eof = create_token(END, gc_strdup("EOF"));
-	//if (!eof)
-	//	return (NULL);
 	push_token(rev_tokens, eof);
 	result = reverse_stack(rev_tokens);
 	print_token_stack(rev_tokens, "TOKEN STACK : AFTER");
 	return (result);
-	// push(tokens, init_node(END)); //EOF
-	// push(tokens, init_node(WORD)); //outfile
-	// push(tokens, init_node(RED_TO)); // >
-	// push(tokens, init_node(WORD)); //cat
-	// push(tokens, init_node(PIPE)); // |
-	// push(tokens, init_node(WORD)); //hello
-	// push(tokens, init_node(WORD)); //echo
 }
