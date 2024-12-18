@@ -29,13 +29,13 @@ int	main(int ac, char **av, char **envp)
 	if (ac > 1)
 		set_debug(true);
 	tokens = NULL;
-	//activate_signal_handler();
 	tokens = init_token_stack();
 	table = create_table("srcs/parser/parsing-table");
 	g_env = fetch_envp(envp);
 	g_exit_status = 0;
 	while (1)
 	{
+		activate_signal_parent();
 		input = readline("microshell> ");
 		if (!input)
 		{

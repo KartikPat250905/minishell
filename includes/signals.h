@@ -7,10 +7,13 @@
 # include <stdlib.h>
 # include <signal.h>
 
+void	sig_handler_child(int sig);
 void	activate_signal_handler(void);
-void	sig_handler(int sig);
 void	ignore_signals(void);
-void	here_doc_sig(int sig);
-void	here_doc_sig_piped(int sig);
+int		get_exit_status(int status);
+void	hd_sig_handler(int sig);
+void	activate_hd_signal_handler(void);
+void	restore_default_signals(void);
+void	activate_signal_parent(void);
 
 #endif

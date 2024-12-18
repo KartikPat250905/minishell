@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	sig_handler(int sig)
+void	sig_handler_parent(int sig)
 {
 	if (sig == SIGINT)
 	{
@@ -28,10 +28,25 @@ void	sig_handler(int sig)
 	}
 }
 
+void	activate_signal_parent(void)
+{
+	signal(SIGINT, sig_handler_parent);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	sig_handler_child(int sig)
+{
+	if (sig == SIGINT)
+	{
+		g_exit_status = 130;
+		write(1, "\n", 1);
+	}
+}
+
 void	activate_signal_handler(void)
 {
-	signal(SIGINT, sig_handler);
-	signal(SIGQUIT, sig_handler);
+	signal(SIGINT, sig_handler_child);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	ignore_signals(void)
@@ -40,28 +55,30 @@ void	ignore_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	here_doc_sig(int sig)
-{
-	if (sig == SIGINT)
-	{
-		g_exit_status = 130;
-		printf("\nheredoc> ");
-	}
-}
-
-void	here_doc_sig_piped(int sig)
-{
-	if (sig == SIGINT)
-	{
-		printf("here doc sig");
-		g_exit_status = 130;
-		exit(g_exit_status);
-	}
-}
-
 int	get_exit_status(int status)
 {
 	if (WIFSIGNALED(status))
 		return (128 + WTERMSIG(status));
 	return (WEXITSTATUS(status));
+}
+
+void	hd_sig_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		write(1, "\n", 1);
+		close(0);
+	}
+}
+
+void	activate_hd_signal_handler(void)
+{
+	signal(SIGINT, hd_sig_handler);
+	signal(SIGQUIT, hd_sig_handler);
+}
+
+void	restore_default_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }

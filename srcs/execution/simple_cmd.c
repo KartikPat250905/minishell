@@ -99,11 +99,10 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 				//exit(1); //is this the correct exit code?
 			}
 			//stops until here_end word is found
-			//signal(SIGINT, here_doc_sig);
 			while (1)
 			{
+				activate_hd_signal_handler();
 				line = readline("heredoc> ");
-				signal(SIGINT, here_doc_sig);
 				if (!line || ft_strcmp(line, end_word) == 0 || g_exit_status == 130)
 				{
 					//g_exit_status = 0;
@@ -113,7 +112,7 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 				ft_putendl_fd(line, pipefd[1]);
 				free(line);
 			}
-			//signal(SIGINT, sig_handler);
+			restore_default_signals();
 			close(pipefd[1]);
 			info->heredoc_fd = pipefd[0];
 		}
@@ -417,14 +416,12 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	original_out = dup(STDOUT_FILENO);
 	if (!original_in || !original_out)
 	{
-		perror("dup");
 		return ;
 	}
 	if (argv && is_builtin(argv[0]))
 	{
 		if (info.heredoc_fd != -1)
 		{
-			//signal(SIGINT, here_doc_sig);
 			dup2(info.heredoc_fd, STDIN_FILENO);
 			close(info.heredoc_fd);
 		}
@@ -446,7 +443,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		}
 		else if (pid == 0) //child
 		{
-			//ignore_signals();
+			activate_signal_handler();
 			if (info.heredoc_fd != -1)
 			{
 				dup2(info.heredoc_fd, STDIN_FILENO);
@@ -485,7 +482,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		}
 		else //parent
 		{
-			//activate_signal_handler();
+			ignore_signals();
 			waitpid(pid, &status, 0);
 			if (WIFEXITED(status)) //if exit() was called
 				g_exit_status = WEXITSTATUS(status); //exit status == exit code
@@ -517,8 +514,6 @@ void	execute_simple_piped_cmd(char **argv)
 		status = execute_builtin(argv);
 		exit(status);
 	}
-
-	//ignore_signals();
 	path = get_env("PATH");
 	if (is_cmd_already_path(argv[0]))
 		path = argv[0];

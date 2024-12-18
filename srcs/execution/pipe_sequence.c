@@ -70,8 +70,8 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 		}
 		i++;
 	}
-	//ignore_signals();
 	i = 0;
+	ignore_signals();
 	while (i < cmd_count)
 	{
 		//leaving in here for now but separate into a function
@@ -81,11 +81,11 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
     info.redir_list = NULL;
 
     //before forking
+	activate_signal_handler();
     gather_redirects(commands[i], &info);
 
     //build argv
     argv = build_argv(commands[i]);
-
     pid[i] = fork();
 	//pid = fork();
     if (pid[i] < 0)
@@ -124,7 +124,6 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 			//apply heredoc
             if (info.heredoc_fd != -1)
             {
-				//signal(SIGINT, here_doc_sig_piped);
                 if (dup2(info.heredoc_fd, STDIN_FILENO) < 0)
                 {
                     perror("dup2 heredoc");
@@ -168,7 +167,6 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 		}
 		i++;
 	}
-	//activate_signal_handler();
 }
 
 void	execute_pipe_seq(t_ast_node *node)
