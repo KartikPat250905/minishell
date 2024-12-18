@@ -40,6 +40,7 @@ char	*get_filename(t_ast_node *io_redirect_node);
 char	*get_here_end_word(t_ast_node *io_redirect);
 void	gather_redirects(t_ast_node *node, t_exec_info *info);
 void	apply_normal_redirections(t_list *normal_redirects);
+char	*env_expander(char *str);
 char	**build_argv(t_ast_node *simple_command);
 
 void	execute_simple_cmd(t_ast_node *node);

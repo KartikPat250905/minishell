@@ -117,7 +117,7 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 		{
 			redir_info = gc_alloc(sizeof(t_redir_info));
 			redir_info->type = type;
-			redir_info->filename = get_filename(node);
+			redir_info->filename = env_expander(get_filename(node)); //kinda hardcoded
 			ft_lstadd_back(&info->redir_list, ft_lstnew(redir_info)); //switch to gc
 		}
 		return ;
