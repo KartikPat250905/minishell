@@ -59,5 +59,5 @@ int	main(int ac, char **av, char **envp)
 	clear_history();
 	//rl_clear_history();
 	rl_free_line_state();
-	return (0);
+	return (g_exit_status);
 }
