@@ -117,7 +117,7 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 		{
 			redir_info = gc_alloc(sizeof(t_redir_info));
 			redir_info->type = type;
-			redir_info->filename = get_filename(node);
+			redir_info->filename = env_expander(get_filename(node)); //kinda hardcoded
 			ft_lstadd_back(&info->redir_list, ft_lstnew(redir_info)); //switch to gc
 		}
 		return ;
@@ -160,26 +160,28 @@ void	apply_normal_redirections(t_list *normal_redirects)
 	}
 }
 
-char	*remove_quotes(char *str, char quote)
+bool	unclosed_quotes(char *str)
 {
 	int		i;
-	int		j;
+	int		dq;
+	int		sq;
+	bool	unclosed;
 
 	i = 0;
-	j = 0;
+	dq = 0;
+	sq = 0;
 	while (str[i])
 	{
-		if (str[i] == quote)
-		{
-			i++;
-			continue ;
-		}
-		str[j] = str[i];
+		if (str[i] == '\"')
+			dq++;
+		else if (str[i] == '\'')
+			sq++;
 		i++;
-		j++;
 	}
-	str[j] = '\0';
-	return (str);
+	unclosed = (dq % 2);
+	if (!unclosed)
+		unclosed = (sq % 2);
+	return (unclosed);
 }
 
 //env var format: \$[A-Za-z_][A-Za-z0-9_]*
@@ -256,6 +258,7 @@ char	*env_expander(char *str)
 				gc_free(pre);
 				pre = tmp;
 				i++;
+				continue;
 			}
 		}
 		//normal character that is not a quote or $
@@ -331,14 +334,17 @@ char	**build_argv(t_ast_node *simple_command)
 	}
 	argv[i] = NULL;
 	//free words linked list
-	printf("words linked list:\n");
-	i = 0;
-	while (argv[i])
+	if (get_debug())
 	{
-		printf("%s\n", argv[i]);
-		i++;
+		printf("words linked list:\n");
+		i = 0;
+		while (argv[i])
+		{
+			printf("%s\n", argv[i]);
+			i++;
+		}
+		printf("-----------------your expected stuff starts this line\n");
 	}
-	printf("-----------------your expected stuff starts this line\n");
 	return (argv);
 }
 
@@ -399,6 +405,8 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	info.redir_list = NULL;
 	gather_redirects(simple_cmd, &info);
 	argv = build_argv(simple_cmd);
+	//if (!argv) //either no command or unclosed quotes
+	//	return ;
 	original_in = dup(STDIN_FILENO);
 	original_out = dup(STDOUT_FILENO);
 	if (!original_in || !original_out)
@@ -423,53 +431,107 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		//exit(exit_builtin);
 		return ;
 	}
-	pid = fork();
-	if (pid < 0)
+	else if (argv)
 	{
-		perror("fork");
-		return ; //not sure if we should return or exit
-	}
-	else if (pid == 0) //child
-	{
-		ignore_signals();
-		if (info.heredoc_fd != -1)
+		pid = fork();
+		if (pid < 0)
 		{
-			dup2(info.heredoc_fd, STDIN_FILENO);
-			close(info.heredoc_fd);
+			perror("fork");
+			return ; //not sure if we should return or exit
 		}
-		apply_normal_redirections(info.redir_list);
-		path = get_env("PATH");
-		if (!path)
+		else if (pid == 0) //child
 		{
-			ft_putendl_fd("minishell: command not found", 2);
-			exit(127); //is this the correct exit code?
+			ignore_signals();
+			if (info.heredoc_fd != -1)
+			{
+				dup2(info.heredoc_fd, STDIN_FILENO);
+				close(info.heredoc_fd);
+			}
+			apply_normal_redirections(info.redir_list);
+			path = get_env("PATH");
+			if (!path)
+			{
+				ft_putstr_fd("microshell: ", 2);
+				ft_putstr_fd(argv[0], 2);
+				ft_putendl_fd(": No such file or directory", 2);
+				exit(127); //is this the correct exit code?
+			}
+			if (is_cmd_already_path(argv[0]))
+				path = argv[0];
+			else
+			{
+				paths = gc_split(path, ':', &n);
+				path = look_for_cmd(argv[0], paths);
+				gc_free_array(n, (void **)paths);
+			}
+			if (!path)
+			{
+				ft_putstr_fd(argv[0], 2);
+				ft_putendl_fd(": command not found", 2);
+				exit(127); //is this the correct exit code?
+			}
+			if (execve(path, argv, g_env->envp) == -1)
+			{
+				perror("execve");
+				exit(126); //is this the correct exit code?
+			}
 		}
-		if (is_cmd_already_path(argv[0]))
-			path = argv[0];
 		else
 		{
-			paths = gc_split(path, ':', &n);
-			path = look_for_cmd(argv[0], paths);
-			gc_free_array(n, (void **)paths);
+			activate_signal_handler();
+			waitpid(pid, &status, 0);
+			//if (WIFEXITED(status))
+			//exit(WEXITSTATUS(status));
+			//	g_env->last_exit_status = WEXITSTATUS(status);
 		}
-		if (!path)
-		{
-			ft_putendl_fd("minishell: command not found", 2);
-			exit(127); //is this the correct exit code?
-		}
-		if (execve(path, argv, g_env->envp) == -1)
-		{
-			perror("execve");
-			exit(126); //is this the correct exit code?
-		}
-	}
-	else
-	{
-		activate_signal_handler();
-		waitpid(pid, &status, 0);
-		//if (WIFEXITED(status))
-		//exit(WEXITSTATUS(status));
-		//	g_env->last_exit_status = WEXITSTATUS(status);
 	}
 	//gc_free_array((void **)argv, //length of argv);
+}
+
+void	execute_simple_piped_cmd(char **argv)
+{
+	char	*path;
+	char	**paths;
+	int		status;
+	int		n;
+
+	if (!argv || !argv[0])
+		exit(EXIT_FAILURE);
+	
+	if (is_builtin(argv[0]))
+	{
+		status = execute_builtin(argv);
+		exit(status);
+	}
+
+	ignore_signals();
+	path = get_env("PATH");
+	if (is_cmd_already_path(argv[0]))
+		path = argv[0];
+	else
+	{
+		if (!path)
+		{
+			ft_putstr_fd("microshell: ", 2);
+			ft_putstr_fd(argv[0], 2);
+			ft_putendl_fd(": No such file or directory", 2);
+			exit(127); //is this the correct exit code?
+		}
+		paths = gc_split(path, ':', &n);
+		path = look_for_cmd(argv[0], paths);
+		gc_free_array(n, (void **)paths);
+	}
+
+	if (!path)
+	{
+		ft_putstr_fd(argv[0], 2);
+		ft_putendl_fd(": command not found", 2);
+		exit(127); //is this the correct exit code?
+	}
+	if (execve(path, argv, g_env->envp) == -1)
+	{
+		perror("execve");
+		exit(126); //is this the correct exit code?
+	}
+	//this should not happen
 }
