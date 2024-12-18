@@ -11,5 +11,6 @@ void	activate_signal_handler(void);
 void	sig_handler(int sig);
 void	ignore_signals(void);
 void	here_doc_sig(int sig);
+void	here_doc_sig_piped(int sig);
 
 #endif

@@ -44,9 +44,18 @@ void	here_doc_sig(int sig)
 {
 	if (sig == SIGINT)
 	{
+		g_exit_status = 130;
+		printf("\nheredoc> ");
+	}
+}
+
+void	here_doc_sig_piped(int sig)
+{
+	if (sig == SIGINT)
+	{
 		printf("here doc sig");
 		g_exit_status = 130;
-		exit(130);
+		exit(g_exit_status);
 	}
 }
 

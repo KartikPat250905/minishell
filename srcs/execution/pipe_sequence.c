@@ -52,7 +52,7 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 	int pipe_count;
 	int	pipefds[2 * (cmd_count - 1)];
 	//pid_t	pid;
-  pid_t	*pid;
+	pid_t	*pid;
 	int		status;
 	int	i;
 	int	j;
@@ -70,14 +70,14 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 		}
 		i++;
 	}
-	ignore_signals();
+	//ignore_signals();
 	i = 0;
 	while (i < cmd_count)
 	{
 		//leaving in here for now but separate into a function
-		t_exec_info info;
-		char **argv;
-		info.heredoc_fd = -1;
+	t_exec_info info;
+	char **argv;
+	info.heredoc_fd = -1;
     info.redir_list = NULL;
 
     //before forking
@@ -85,9 +85,9 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 
     //build argv
     argv = build_argv(commands[i]);
-    
+
     pid[i] = fork();
-		//pid = fork();
+	//pid = fork();
     if (pid[i] < 0)
 		//if (pid < 0)
 		{
@@ -124,6 +124,7 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 			//apply heredoc
             if (info.heredoc_fd != -1)
             {
+				signal(SIGINT, here_doc_sig_piped);
                 if (dup2(info.heredoc_fd, STDIN_FILENO) < 0)
                 {
                     perror("dup2 heredoc");

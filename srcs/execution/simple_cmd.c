@@ -89,7 +89,7 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 	if (node->type == IO_REDIRECT)
 	{
 		type = get_redirect_type(node);
-		if (type == DLESS)
+		if (type == DLESS) //<<
 		{
 			end_word = get_here_end_word(node);
 			if (pipe(pipefd) == -1)
@@ -99,19 +99,21 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 				//exit(1); //is this the correct exit code?
 			}
 			//stops until here_end word is found
-			signal(SIGINT, here_doc_sig);
+			//signal(SIGINT, here_doc_sig);
 			while (1)
 			{
 				line = readline("heredoc> ");
-				if (!line || ft_strcmp(line, end_word) == 0)
+				signal(SIGINT, here_doc_sig);
+				if (!line || ft_strcmp(line, end_word) == 0 || g_exit_status == 130)
 				{
-					g_exit_status = 0;
+					//g_exit_status = 0;
 					free(line);
 					break ;
 				}
 				ft_putendl_fd(line, pipefd[1]);
 				free(line);
 			}
+			//signal(SIGINT, sig_handler);
 			close(pipefd[1]);
 			info->heredoc_fd = pipefd[0];
 		}
@@ -404,7 +406,6 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	t_exec_info	info;
 	int original_in;
 	int	original_out;
-	//int		exit_builtin;
 
 	info.heredoc_fd = -1;
 	info.redir_list = NULL;
@@ -423,17 +424,16 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	{
 		if (info.heredoc_fd != -1)
 		{
+			//signal(SIGINT, here_doc_sig);
 			dup2(info.heredoc_fd, STDIN_FILENO);
 			close(info.heredoc_fd);
 		}
 		apply_normal_redirections(info.redir_list);
-		//exit_builtin = execute_builtin(argv);
 		g_exit_status = execute_builtin(argv);
 		dup2(original_in, STDIN_FILENO);
 		dup2(original_out, STDOUT_FILENO);
 		close(original_in);
 		close(original_out);
-		//exit(exit_builtin);
 		return ;
 	}
 	else if (argv)
@@ -446,7 +446,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		}
 		else if (pid == 0) //child
 		{
-			ignore_signals();
+			//ignore_signals();
 			if (info.heredoc_fd != -1)
 			{
 				dup2(info.heredoc_fd, STDIN_FILENO);
@@ -473,21 +473,30 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 			{
 				ft_putstr_fd(argv[0], 2);
 				ft_putendl_fd(": command not found", 2);
-				exit(127); //is this the correct exit code?
+				g_exit_status = 127;
+				exit(g_exit_status); //is this the correct exit code?
 			}
 			if (execve(path, argv, g_env->envp) == -1)
 			{
 				perror("execve");
-				exit(126); //is this the correct exit code?
+				g_exit_status = 126;
+				exit(g_exit_status); //is this the correct exit code?
 			}
 		}
-		else
+		else //parent
 		{
 			activate_signal_handler();
 			waitpid(pid, &status, 0);
-			//if (WIFEXITED(status))
-			//exit(WEXITSTATUS(status));
-			//	g_env->last_exit_status = WEXITSTATUS(status);
+			if (WIFEXITED(status)) //if exit() was called
+				g_exit_status = WEXITSTATUS(status); //exit status == exit code
+			else if (WIFSIGNALED(status))
+			{
+				int signal_num = WTERMSIG(status);
+				if (signal_num == SIGINT)
+				{
+					g_exit_status = 130;
+				}
+			}
 		}
 	}
 	//gc_free_array((void **)argv, //length of argv);
@@ -509,7 +518,7 @@ void	execute_simple_piped_cmd(char **argv)
 		exit(status);
 	}
 
-	ignore_signals();
+	//ignore_signals();
 	path = get_env("PATH");
 	if (is_cmd_already_path(argv[0]))
 		path = argv[0];
