@@ -1,4 +1,28 @@
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd_utils.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: karpatel <karpatel@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/17 15:26:33 by karpatel          #+#    #+#             */
+/*   Updated: 2024/12/17 15:26:35 by karpatel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+int	count_char_pointer(char **array)
+{
+	int	i;
+
+	i = 0;
+	while (array[i])
+	{
+		i++;
+	}
+	return (i);
+}
 
 char	*build_path_env(char *input)
 {
@@ -16,12 +40,12 @@ char	*build_path_env(char *input)
 		try_path = ft_strjoin(cd_path[cur], input);
 		if (access(try_path, F_OK | R_OK) == 0)
 		{
-			free_str_array(cd_path);
+			gc_free_array(count_char_pointer(cd_path), (void **)cd_path);
 			return (try_path);
 		}
 		free(try_path);
 		cur++;
 	}
-	free_str_array(cd_path);
+	gc_free_array(count_char_pointer(cd_path), (void **)cd_path);
 	return (ft_strdup(input));
 }

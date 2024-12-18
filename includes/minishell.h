@@ -28,5 +28,6 @@ void	set_debug(bool debug);
 bool	get_debug(void);
 
 extern t_env *g_env;
+extern int	g_exit_status;
 
 #endif

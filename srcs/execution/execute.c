@@ -48,7 +48,7 @@ int	execute_builtin(char **argv)
 	else if (!ft_strcmp(argv[0], "unset"))
 		return (ft_unset(argv));
 	else if (!ft_strcmp(argv[0], "exit"))
-		ft_exit(argv);
+		return (ft_exit(argv));
 	return (0);
 }
 

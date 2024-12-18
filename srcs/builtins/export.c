@@ -1,4 +1,16 @@
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: karpatel <karpatel@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/17 15:27:06 by karpatel          #+#    #+#             */
+/*   Updated: 2024/12/17 15:27:07 by karpatel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 int	ft_count_nodes(t_env *env)
 {
@@ -20,15 +32,8 @@ char	**sort_list(t_env *env)
 	int		flag;
 	char	*temp;
 
-	strings = gc_alloc(sizeof(char*) * ft_count_nodes(env) + 1);
-	i = 0;
 	flag = 1;
-	while (env)
-	{
-		strings[i++] = gc_strdup(env -> key);
-		env = env -> next;
-	}
-	strings[i] = NULL;
+	strings = populate_strings(env);
 	while (flag)
 	{
 		i = 0;
@@ -47,7 +52,16 @@ char	**sort_list(t_env *env)
 	}
 	return (strings);
 }
-
+/*if (copy -> is_env)
+{
+	ft_putstr_fd("declare -x ", 1);
+	ft_putstr_fd(copy->key, 1);
+	ft_putstr_fd("=\"", 1);
+	ft_putstr_fd(copy->value, 1);
+	ft_putstr_fd("\"", 1);
+	ft_putchar_fd('\n', 1);
+}
+copy = copy -> next;*/
 
 void	print_exported(t_env *env)
 {
@@ -69,80 +83,9 @@ void	print_exported(t_env *env)
 			ft_putstr_fd("\"", 1);
 		}
 		ft_putchar_fd('\n', 1);
-		/*if (copy -> is_env)
-		{
-			ft_putstr_fd("declare -x ", 1);
-			ft_putstr_fd(copy->key, 1);
-			ft_putstr_fd("=\"", 1);
-			ft_putstr_fd(copy->value, 1);
-			ft_putstr_fd("\"", 1);
-			ft_putchar_fd('\n', 1);
-		}
-		copy = copy -> next;*/
 		i++;
 	}
 	gc_free_array(ft_count_nodes(copy), (void *)array);
-}
-
-void	assign_env(char **str)
-{
-	t_env	*global;
-
-	global = g_env;
-	while(global)
-	{
-		global -> envp = str;
-		global = global -> next;
-	}
-}
-
-void	update_envp(void)
-{
-	t_env	*global;
-	char	**env_new;
-	int		i;
-	char	*temp;
-
-	global = g_env;
-	env_new = gc_alloc(sizeof(char*) * ft_count_pointers(global->envp));
-	i = 0;
-	while (global)
-	{
-		temp = gc_strjoin(global->key, "=");
-		env_new[i++] = gc_strjoin(temp, global->value);
-		global = global -> next;
-	}
-	global = g_env;
-	gc_free_array(ft_count_pointers(global->envp), (void**)global -> envp);
-	assign_env(env_new);
-}
-
-void	export_var(char **av)
-{
-	int		i;
-	char	*eq;
-	size_t	len;
-
-	i = 1;
-	while (av[i])
-	{
-		if (av[i][0] >= '0' && av[i][0] <= '9')
-		{
-			printf("minishell: export: `%s': not a valid identifier\n", av[i++]);
-			continue;
-		}
-		eq = ft_strchr(av[i], '=');
-		if (!eq)
-		{
-			add_to_env_list(gc_strdup(av[i]), gc_strdup(""), 1);
-			i++;
-			continue ;
-		}
-		len = eq - av[i];
-		add_to_env_list(gc_strndup(av[i], len), gc_strdup(eq + 1), 1);
-		i++;
-	}
-	update_envp();
 }
 
 int	ft_export(char **av)

@@ -1,4 +1,16 @@
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: karpatel <karpatel@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/17 15:27:45 by karpatel          #+#    #+#             */
+/*   Updated: 2024/12/17 15:27:46 by karpatel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 void	free_node_unset(char *key)
 {
@@ -42,8 +54,11 @@ void	unset_var(char **av)
 
 int	ft_unset(char **av)
 {
-	if (ft_strcmp("unset", av[0]))
-		return (0);
+	if (av[1] && av[1][0] == '-')
+	{
+		printf("minishell: unset: options aren't supported\n");
+		return (1);
+	}
 	if (get_env(av[1]) == NULL)
 		return (0);
 	free_node_unset(av[1]);

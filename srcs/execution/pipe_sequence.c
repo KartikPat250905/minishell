@@ -51,12 +51,15 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 {
 	int pipe_count;
 	int	pipefds[2 * (cmd_count - 1)];
-	pid_t	pid;
+	//pid_t	pid;
+  pid_t	*pid;
+	int		status;
 	int	i;
 	int	j;
 
 	i = 0;
 	pipe_count = cmd_count - 1;
+	pid = gc_alloc(pipe_count * sizeof(pid_t));
 	//create pipes
 	while (i < pipe_count)
 	{
@@ -75,21 +78,23 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 		t_exec_info info;
 		char **argv;
 		info.heredoc_fd = -1;
-        info.redir_list = NULL;
+    info.redir_list = NULL;
 
-        //before forking
-        gather_redirects(commands[i], &info);
+    //before forking
+    gather_redirects(commands[i], &info);
 
-        //build argv
-        argv = build_argv(commands[i]);
-
-		pid = fork();
-		if (pid < 0)
+    //build argv
+    argv = build_argv(commands[i]);
+    
+    pid[i] = fork();
+		//pid = fork();
+    if (pid[i] < 0)
+		//if (pid < 0)
 		{
 			perror("fork");
 			exit(EXIT_FAILURE);
 		}
-		else if (pid == 0) //child
+		else if (pid[i] == 0) //child
 		{
 			//if not first command
 			if (i > 0)
@@ -145,7 +150,21 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 	i = 0;
 	while (i < cmd_count)
 	{
-		wait(NULL);
+		waitpid(pid[i], &status, 0);
+		if (WIFEXITED(status))
+		{
+			g_exit_status = WEXITSTATUS(status);
+			if (g_exit_status == 1)
+				g_exit_status = 127;
+		}
+		else if (WIFSIGNALED(status))
+		{
+			int signal_num = WTERMSIG(status);
+			if (signal_num == SIGINT)
+			{
+				g_exit_status = 130;
+			}
+		}
 		i++;
 	}
 	activate_signal_handler();

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "lexer.h"
+#include "lexer.h"
 
 void	handle_space(t_iterators *it)
 {
@@ -22,13 +22,13 @@ void	handle_space(t_iterators *it)
 
 bool	tokenize_pipe(t_iterators *it, t_token_stack *stack)
 {
-	t_token_node *new;
+	t_token_node	*new;
 
 	if (it->input[it->cur] == '|')
 	{
 		new = create_token(PIPE, gc_strdup("|"));
-		//if (!new)
-		//	ft_exit(); //which cleans the gc and exits?
+		if (!new)
+			gc_free_all(); //ok this just free so we need a gc_free_all_exit
 		push_token(stack, new);
 		it->cur++;
 		return (true);
@@ -79,10 +79,10 @@ bool	tokenize_words(t_iterators *it, t_token_stack *stack)
 	t_token_node	*node;
 	char			*word;
 	char			quote;
-	int				start;
 
-	start = it->cur;
-	while (it->cur < it->len && it->input[it->cur] != ' ' && !is_token(it->input[it->cur], it->input[it->cur + 1]))
+	it->start = it->cur;
+	while (it->cur < it->len && it->input[it->cur] != ' '
+		&& !is_token(it->input[it->cur], it->input[it->cur + 1]))
 	{
 		if (it->input[it->cur] == '\'' || it->input[it->cur] == '"')
 		{
@@ -95,7 +95,7 @@ bool	tokenize_words(t_iterators *it, t_token_stack *stack)
 		else
 			it->cur++;
 	}
-	word = gc_strndup(&it->input[start], it->cur - start);
+	word = gc_strndup(&it->input[it->start], it->cur - it->start);
 	node = create_token(WORD, word);
 	/*
 	if (quote == '\"')
