@@ -485,7 +485,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		}
 		else //parent
 		{
-			activate_signal_handler();
+			//activate_signal_handler();
 			waitpid(pid, &status, 0);
 			if (WIFEXITED(status)) //if exit() was called
 				g_exit_status = WEXITSTATUS(status); //exit status == exit code

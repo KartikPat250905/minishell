@@ -124,7 +124,7 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 			//apply heredoc
             if (info.heredoc_fd != -1)
             {
-				signal(SIGINT, here_doc_sig_piped);
+				//signal(SIGINT, here_doc_sig_piped);
                 if (dup2(info.heredoc_fd, STDIN_FILENO) < 0)
                 {
                     perror("dup2 heredoc");
@@ -168,7 +168,7 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 		}
 		i++;
 	}
-	activate_signal_handler();
+	//activate_signal_handler();
 }
 
 void	execute_pipe_seq(t_ast_node *node)
