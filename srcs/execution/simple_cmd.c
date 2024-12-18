@@ -224,10 +224,10 @@ char	*env_expander(char *str)
 			if (str[i + 1] == '?')
 			{
 				//handle last exit code, hardcoded for now to 42
-				//char *exit_code_str = ft_itoa(g->last_exit_status);
-				tmp = gc_strjoin(pre, "42");
+				char *exit_code_str = ft_itoa(g_exit_status);
+				tmp = gc_strjoin(pre, exit_code_str);
 				gc_free(pre);
-				//gc_free(exit_code_str);
+				gc_free(exit_code_str);
 				pre = tmp;
 				i += 2; //past "$?"
 				continue;
@@ -502,7 +502,7 @@ void	execute_simple_piped_cmd(char **argv)
 
 	if (!argv || !argv[0])
 		exit(EXIT_FAILURE);
-	
+
 	if (is_builtin(argv[0]))
 	{
 		status = execute_builtin(argv);
