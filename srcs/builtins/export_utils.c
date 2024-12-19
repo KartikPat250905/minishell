@@ -75,6 +75,7 @@ void	export_var(char **av)
 		if (is_edge(av[i]))
 		{
 			printf("minishell: export: `%s': not a valid identifier\n", av[i++]);
+			g_exit_status = 1;
 			continue ;
 		}
 		eq = ft_strchr(av[i], '=');
@@ -85,8 +86,7 @@ void	export_var(char **av)
 			continue ;
 		}
 		len = eq - av[i];
-		add_to_env_list(gc_strndup(av[i], len), gc_strdup(eq + 1), 1);
-		i++;
+		add_to_env_list(gc_strndup(av[i++], len), gc_strdup(eq + 1), 1);
 	}
 	update_envp();
 }

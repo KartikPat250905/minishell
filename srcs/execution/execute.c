@@ -42,11 +42,17 @@ int	execute_builtin(char **argv)
 	else if (!ft_strcmp(argv[0], "pwd"))
 		return (ft_pwd(argv));
 	else if (!ft_strcmp(argv[0], "export"))
-		return (ft_export(argv));
+	{
+		ft_export(argv);
+		return (g_exit_status);
+	}
 	else if (!ft_strcmp(argv[0], "env"))
-		return (!ft_env(argv));
+		return (ft_env(argv));
 	else if (!ft_strcmp(argv[0], "unset"))
-		return (ft_unset(argv));
+	{
+		ft_unset(argv);
+		return (g_exit_status);
+	}
 	else if (!ft_strcmp(argv[0], "exit"))
 		return (ft_exit(argv));
 	return (0);

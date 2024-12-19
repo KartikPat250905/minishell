@@ -45,22 +45,21 @@ void	unset_var(char **av)
 	i = 1;
 	while (av[i])
 	{
+		if (ft_strchr(av[i], '=') || ft_strchr(av[i], '-'))
+		{
+			g_exit_status = 1;
+			i++;
+			continue ;
+		}
 		free_node_unset(av[i]);
+		g_exit_status = 0;
 		i++;
 	}
 	update_envp();
 }
-//unset head properly
 
 int	ft_unset(char **av)
 {
-	if (av[1] && av[1][0] == '-')
-	{
-		printf("minishell: unset: options aren't supported\n");
-		return (1);
-	}
-	if (get_env(av[1]) == NULL)
-		return (0);
-	free_node_unset(av[1]);
+	unset_var(av);
 	return (0);
 }
