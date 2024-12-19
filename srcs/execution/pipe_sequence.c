@@ -56,7 +56,7 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 	int		status;
 	int	i;
 	int	j;
-
+	
 	i = 0;
 	pipe_count = cmd_count - 1;
 	pid = gc_alloc(pipe_count * sizeof(pid_t));

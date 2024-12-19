@@ -45,16 +45,10 @@ void	unset_var(char **av)
 	i = 1;
 	while (av[i])
 	{
-		if (ft_strchr(av[i], '=') || ft_strchr(av[i], '-'))
-		{
-			g_exit_status = 1;
-			i++;
-			continue ;
-		}
 		free_node_unset(av[i]);
-		g_exit_status = 0;
 		i++;
 	}
+	g_exit_status = 0;
 	update_envp();
 }
 
