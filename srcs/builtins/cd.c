@@ -62,8 +62,8 @@ int	ft_cd(char **av)
 		path = av[1];
 		if (chdir(path) == -1)
 		{
-			printf("bash: cd: %s: No such file or directory\n", av[1]);
-			return (0);
+			printf("minishell: cd: %s: No such file or directory\n", av[1]);
+			return (1);
 		}
 		if (!update_cd_env())
 			return (0);
@@ -71,7 +71,7 @@ int	ft_cd(char **av)
 	else
 	{
 		printf("minishell: cd: too many arguments\n");
-		return (0);
+		return (1);
 	}
 	return (0);
 }

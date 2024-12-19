@@ -16,6 +16,17 @@
 t_env	*g_env;
 int		g_exit_status;
 
+static void    init_terminal_set(void)
+{
+    struct termios    term;
+
+    if (tcgetattr(STDIN_FILENO, &term) == -1)
+        exit(EXIT_FAILURE);
+    term.c_lflag &= ~ECHOCTL;
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
+        exit(EXIT_FAILURE);
+}
+
 int	main(int ac, char **av, char **envp)
 //int	main (void)
 {
@@ -26,6 +37,7 @@ int	main(int ac, char **av, char **envp)
 
 	(void)av;
 	set_debug(false);
+	init_terminal_set();
 	if (ac > 1)
 		set_debug(true);
 	tokens = NULL;

@@ -408,6 +408,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 
 	info.heredoc_fd = -1;
 	info.redir_list = NULL;
+	activate_signal_handler();
 	gather_redirects(simple_cmd, &info);
 	argv = build_argv(simple_cmd);
 	//if (!argv) //either no command or unclosed quotes

@@ -14,6 +14,7 @@
 
 void	sig_handler_parent(int sig)
 {
+	//printf("here in sig_handler_parent\n");
 	if (sig == SIGINT)
 	{
 		g_exit_status = 130;
@@ -45,6 +46,7 @@ void	sig_handler_child(int sig)
 
 void	activate_signal_handler(void)
 {
+	//printf("I am activating stuff");
 	signal(SIGINT, sig_handler_child);
 	signal(SIGQUIT, SIG_IGN);
 }
@@ -64,10 +66,12 @@ int	get_exit_status(int status)
 
 void	hd_sig_handler(int sig)
 {
+	//printf("Here in hd_sig_handler\n");
 	if (sig == SIGINT)
 	{
 		write(1, "\n", 1);
 		close(0);
+		g_exit_status = 130;
 	}
 }
 

@@ -13,6 +13,7 @@
 //# include "parsing.h"
 # include "builtins.h"
 # include "env.h"
+#include <termios.h>
 //# include "execution.h"
 
 # include <readline/readline.h>
