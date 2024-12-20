@@ -12,18 +12,6 @@
 
 #include "minishell.h"
 
-void	assign_env(char **str)
-{
-	t_env	*global;
-
-	global = g_env;
-	while (global)
-	{
-		global -> envp = str;
-		global = global -> next;
-	}
-}
-
 void	update_envp(void)
 {
 	t_env	*global;
@@ -31,18 +19,26 @@ void	update_envp(void)
 	int		i;
 	char	*temp;
 
-	global = g_env;
-	env_new = gc_alloc(sizeof(char *) * ft_count_pointers(global->envp));
 	i = 0;
+	global = get_info()->env;
+	while (global)
+	{
+		i++;
+		global = global->next;
+	}
+	env_new = gc_alloc(sizeof(char *) * (i + 1));
+	i = 0;
+	global = get_info()->env;
 	while (global)
 	{
 		temp = gc_strjoin(global->key, "=");
 		env_new[i++] = gc_strjoin(temp, global->value);
 		global = global -> next;
 	}
-	global = g_env;
-	gc_free_array(ft_count_pointers(global->envp), (void **)global -> envp);
-	assign_env(env_new);
+	env_new[i] = NULL;
+	if (get_info()->envp)
+		gc_free_array(i, (void **)(get_info()->envp));
+	get_info()->envp = env_new;
 }
 
 int	is_edge(char *str)

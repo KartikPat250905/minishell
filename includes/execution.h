@@ -32,7 +32,6 @@ typedef struct s_exec_info
 	t_list	*redir_list;
 }	t_exec_info;
 
-
 void	execute_simple_piped_cmd(char **argv);
 
 int		get_redirect_type(t_ast_node *io_redirect_node);

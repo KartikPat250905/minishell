@@ -17,7 +17,7 @@ void	free_node_unset(char *key)
 	t_env	*env;
 	t_env	*prev;
 
-	env = g_env;
+	env = get_info()->env;
 	prev = NULL;
 	while (env)
 	{
