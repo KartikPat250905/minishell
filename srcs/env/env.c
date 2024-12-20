@@ -4,10 +4,11 @@ int	add_to_env_list(char *key, char *value, int is_env)
 {
 	t_env	*new;
 	t_env	*temp;
+	t_env	*head;
 
 	if (!is_key_in_env(key))
 	{
-		temp = g_env;
+		temp = get_info()->env;
 		while (temp)
 		{
 			if (!ft_strcmp(temp -> key, key))
@@ -26,7 +27,8 @@ int	add_to_env_list(char *key, char *value, int is_env)
 	new -> value = value;
 	new -> is_env = is_env;
 	new -> next = NULL;
-	envadd(&g_env, new);
+	head = get_info()->env;
+	envadd(&head, new);
 	return (0);
 }
 
@@ -107,8 +109,10 @@ void	envadd(t_env **lst, t_env *new)
 		current = current->next;
 	current->next = new;
 }
-//only head has envp fix
-t_env	*fetch_envp(char **envp)
+
+// maybe make it void just use get_info()->envp = envp;
+//creates linked list
+void	fetch_envp(char **envp)
 {
 	int		i;
 	t_env	*result;
@@ -117,17 +121,17 @@ t_env	*fetch_envp(char **envp)
 	i = 0;
 	result = NULL;
 	if (!envp)
-		return (result);
+		return ;//(result);
 	while (envp[i])
 	{
 		temp = init_env_node(envp[i], 1);
 		if (!temp)
-			return (NULL);
+			return ;//(NULL);
 		envadd(&result, temp);
 		i++;
 	}
-	result->envp = envp;// copy the real one
+	get_info()->env = result;
 	//result->envp = build_envp(result);
 	//char **built_envp(t_env *head);
-	return (result);
+	//return (result);
 }
