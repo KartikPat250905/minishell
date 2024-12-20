@@ -48,19 +48,12 @@ void	unset_var(char **av)
 		free_node_unset(av[i]);
 		i++;
 	}
+	g_exit_status = 0;
 	update_envp();
 }
-//unset head properly
 
 int	ft_unset(char **av)
 {
-	if (av[1] && av[1][0] == '-')
-	{
-		printf("minishell: unset: options aren't supported\n");
-		return (1);
-	}
-	if (get_env(av[1]) == NULL)
-		return (0);
-	free_node_unset(av[1]);
+	unset_var(av);
 	return (0);
 }

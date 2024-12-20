@@ -99,5 +99,7 @@ int	ft_export(char **av)
 		print_exported(global);
 	else
 		export_var(av);
+	if (g_exit_status != 1)
+		g_exit_status = 0;
 	return (0);
 }

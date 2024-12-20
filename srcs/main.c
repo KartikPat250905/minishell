@@ -16,6 +16,17 @@
 //t_env	*g_env;
 int	g_exit_status;
 
+static void    init_terminal_set(void)
+{
+    struct termios    term;
+
+    if (tcgetattr(STDIN_FILENO, &term) == -1)
+        exit(EXIT_FAILURE);
+    term.c_lflag &= ~ECHOCTL;
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
+        exit(EXIT_FAILURE);
+}
+
 int	main(int ac, char **av, char **envp)
 //int	main (void)
 {
@@ -29,6 +40,7 @@ int	main(int ac, char **av, char **envp)
 	//info->envp = NULL;
 	set_info(info);
 	(void)av;
+	init_terminal_set();
 	if (ac > 1)
 		info->debug = true;
 	info->tokens = init_token_stack();
@@ -38,6 +50,14 @@ int	main(int ac, char **av, char **envp)
 	activate_signal_handler();
 	while (1)
 	{
+		get_info()->flag = 0;
+		activate_signal_parent();
+		int tty_fd = open("/dev/tty", O_RDWR);
+		if (tty_fd >= 0)
+		{
+			dup2(tty_fd, STDIN_FILENO);
+			close(tty_fd);
+		}
 		input = readline("microshell> ");
 		if (!input)
 		{
@@ -60,5 +80,5 @@ int	main(int ac, char **av, char **envp)
 	clear_history();
 	//rl_clear_history();
 	rl_free_line_state();
-	return (0);
+	return (g_exit_status);
 }

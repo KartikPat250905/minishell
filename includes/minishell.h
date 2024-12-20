@@ -5,6 +5,7 @@
 # include <stdbool.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <fcntl.h>
 
 # include "libft.h"
 # include "gc_alloc.h"
@@ -13,6 +14,7 @@
 //# include "parsing.h"
 # include "builtins.h"
 # include "env.h"
+#include <termios.h>
 //# include "execution.h"
 
 # include <readline/readline.h>
@@ -23,6 +25,7 @@ typedef struct s_token_stack t_token_stack;
 typedef struct s_info
 {
 	bool 	debug;
+	bool	flag;
 	t_token_stack	*tokens;
 	t_env	*env; //head of a linked list
 	int		exit_status;
