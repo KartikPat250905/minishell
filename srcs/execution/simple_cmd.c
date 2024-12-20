@@ -475,7 +475,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 				ft_putendl_fd(": command not found", 2);
 				exit(127); //is this the correct exit code?
 			}
-			if (execve(path, argv, g_env->envp) == -1)
+			if (execve(path, argv, get_info()->envp) == -1)
 			{
 				perror("execve");
 				exit(126); //is this the correct exit code?
@@ -502,7 +502,7 @@ void	execute_simple_piped_cmd(char **argv)
 
 	if (!argv || !argv[0])
 		exit(EXIT_FAILURE);
-	
+
 	if (is_builtin(argv[0]))
 	{
 		status = execute_builtin(argv);
@@ -533,10 +533,11 @@ void	execute_simple_piped_cmd(char **argv)
 		ft_putendl_fd(": command not found", 2);
 		exit(127); //is this the correct exit code?
 	}
-	if (execve(path, argv, g_env->envp) == -1)
+	if (execve(path, argv, get_info()->envp) == -1)
 	{
 		perror("execve");
 		exit(126); //is this the correct exit code?
 	}
 	//this should not happen
 }
+

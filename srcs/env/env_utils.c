@@ -4,7 +4,7 @@ int	is_key_in_env(char *key)
 {
 	t_env	*temp;
 
-	temp = get_env_list();
+	temp = get_info()->env;
 	while (temp)
 	{
 		if (!ft_strcmp(temp -> key, key))
@@ -18,7 +18,7 @@ char	*get_env(char *key)
 {
 	t_env	*env;
 
-	env = get_env_list();
+	env = get_info()->env;
 	while (env)
 	{
 		if (!ft_strcmp(key, env -> key))
@@ -32,7 +32,7 @@ void	env_to_envp_print(void)
 {
 	t_env	*env;
 
-	env = get_env_list();
+	env = get_info()->env;
 	while (env)
 	{
 		if (env -> value[0] == '\0')

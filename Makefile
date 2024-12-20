@@ -6,7 +6,8 @@ HEADER = minishell.h
 
 LIBFT = ./libft
 
-SOURCES = srcs/lexer/stack/token_utils.c \
+SOURCES = srcs/info.c \
+		  srcs/lexer/stack/token_utils.c \
 		  srcs/lexer/stack/token_operations.c \
 		  srcs/lexer/tokenize.c \
 		  srcs/lexer/lexer.c \
@@ -21,7 +22,6 @@ SOURCES = srcs/lexer/stack/token_utils.c \
 		  srcs/execution/simple_cmd.c \
 		  srcs/execution/pipe_sequence.c \
 		  srcs/execution/execute.c \
-		  srcs/info.c \
 		  srcs/main.c \
 		  srcs/signals/signals.c \
 		  srcs/env/env.c \

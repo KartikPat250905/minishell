@@ -14,7 +14,7 @@
 #include "parsing.h"
 
 //t_env	*g_env;
-
+int	g_exit_status;
 
 int	main(int ac, char **av, char **envp)
 //int	main (void)
@@ -26,12 +26,14 @@ int	main(int ac, char **av, char **envp)
 
 	info = gc_alloc(sizeof(t_info));
 	ft_bzero(info, sizeof(t_info));
+	//info->envp = NULL;
 	set_info(info);
 	(void)av;
 	if (ac > 1)
-		info->debug = true; //set_debug(true);
+		info->debug = true;
 	info->tokens = init_token_stack();
-	info->env = fetch_envp(envp);
+	fetch_envp(envp);
+	update_envp();
 	table = create_table("srcs/parser/parsing-table");
 	activate_signal_handler();
 	while (1)

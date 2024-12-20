@@ -1,5 +1,5 @@
 INCLUDES = -I../includes
-CFLAGS = -Wall -Wextra -Werror $(INCLUDES)
+CFLAGS = -g -Wall -Wextra -Werror $(INCLUDES)
 
 AR = ar rcs
 
@@ -49,7 +49,6 @@ SOURCES = ft_isalpha.c \
 		  get_next_line.c \
 		  ft_atoi_base.c \
 		  ft_strcmp.c \
-		  ft_count_pointers.c \
 
 #b_sources calls the bonus source codes
 B_SOURCES = ft_lstnew_bonus.c \
