@@ -21,11 +21,17 @@
 typedef struct s_info
 {
 	bool 	debug;
+	t_token_stack	*tokens;
+	t_env	*env;
+	int		exit_status;
+	char	**envp; //move here
 }			t_info;
 
 t_info	*get_info(void);
 void	set_debug(bool debug);
 bool	get_debug(void);
+
+t_env	*get_env_list(void);
 
 extern t_env *g_env;
 extern int	g_exit_status;

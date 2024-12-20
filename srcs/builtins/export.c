@@ -92,7 +92,7 @@ int	ft_export(char **av)
 {
 	t_env	*global;
 
-	global = g_env;
+	global = get_env_list();
 	if (ft_strcmp(av[0], "export"))
 		return (0);
 	if (!av[1])

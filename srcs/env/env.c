@@ -4,10 +4,11 @@ int	add_to_env_list(char *key, char *value, int is_env)
 {
 	t_env	*new;
 	t_env	*temp;
+	t_env	*head;
 
 	if (!is_key_in_env(key))
 	{
-		temp = g_env;
+		temp = get_env_list();
 		while (temp)
 		{
 			if (!ft_strcmp(temp -> key, key))
@@ -26,7 +27,8 @@ int	add_to_env_list(char *key, char *value, int is_env)
 	new -> value = value;
 	new -> is_env = is_env;
 	new -> next = NULL;
-	envadd(&g_env, new);
+	head = get_env_list(); //not sure
+	envadd(&head, new);
 	return (0);
 }
 
@@ -93,6 +95,7 @@ t_env	*init_env_node(char *env, int if_env)
 	return (node);
 }
 
+//why do we need a double pointer here?
 void	envadd(t_env **lst, t_env *new)
 {
 	t_env	*current;
@@ -127,6 +130,7 @@ t_env	*fetch_envp(char **envp)
 		i++;
 	}
 	result->envp = envp;// copy the real one
+	get_env_list()->envp = envp;
 	//result->envp = build_envp(result);
 	//char **built_envp(t_env *head);
 	return (result);

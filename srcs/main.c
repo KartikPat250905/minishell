@@ -13,27 +13,27 @@
 #include "minishell.h"
 #include "parsing.h"
 
-t_env	*g_env;
-int		g_exit_status;
+//t_env	*g_env;
+
 
 int	main(int ac, char **av, char **envp)
 //int	main (void)
 {
 	char			*input;
-	t_token_stack	*tokens;
 	int				ret;
 	t_entry			**table;
+	t_info			*info;
 
+	info = gc_alloc(sizeof(t_info));
+	ft_bzero(info, sizeof(t_info));
+	set_info(info);
 	(void)av;
-	set_debug(false);
 	if (ac > 1)
-		set_debug(true);
-	tokens = NULL;
-	activate_signal_handler();
-	tokens = init_token_stack();
+		info->debug = true; //set_debug(true);
+	info->tokens = init_token_stack();
+	info->env = fetch_envp(envp);
 	table = create_table("srcs/parser/parsing-table");
-	g_env = fetch_envp(envp);
-	g_exit_status = 0;
+	activate_signal_handler();
 	while (1)
 	{
 		input = readline("microshell> ");
@@ -48,9 +48,8 @@ int	main(int ac, char **av, char **envp)
 			add_history(input);
 		// if (tokens)
 		// 	free_tokens()
-		//g_env = fetch_envp(envp); //needs to be done every time for now otherwise we segfault
-		tokens = lexer(input);
-		ret = parsing_main(tokens, table);
+		info->tokens = lexer(input);
+		ret = parsing_main(info->tokens, table);
 		free(input);
 		if (ret != 1)
 			ft_putendl_fd("-not accepted (parse error)-", 1);

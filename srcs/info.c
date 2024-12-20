@@ -12,11 +12,12 @@
 
 #include "minishell.h"
 
-t_info	*get_info(void)
+void	set_info(t_info *info)
 {
-	static t_info	info;
+	t_info	*info_ptr;
 
-	return (&info);
+	info_ptr = get_info();
+	*info_ptr = *info;
 }
 
 void	set_debug(bool	debug)
@@ -27,10 +28,34 @@ void	set_debug(bool	debug)
 	info->debug = debug;
 }
 
+//getters
+t_info	*get_info(void)
+{
+	static t_info	info;
+
+	return (&info);
+}
+
 bool	get_debug(void)
 {
 	t_info	*info;
 
 	info = get_info();
 	return (info->debug);
+}
+
+t_env	*get_env_list(void)
+{
+	t_info	*info;
+
+	info = get_info();
+	return (info->env);
+}
+
+char	**get_envp(void)
+{
+	t_info	*info;
+
+	info = get_info();
+	return (info->envp);
 }

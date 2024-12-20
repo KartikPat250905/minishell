@@ -16,12 +16,12 @@ void	assign_env(char **str)
 {
 	t_env	*global;
 
-	global = g_env;
-	while (global)
-	{
-		global -> envp = str;
-		global = global -> next;
-	}
+	global = get_info();
+	global -> envp = str;
+	//while (global)
+	//{
+		//global = global -> next;
+	//}
 }
 
 void	update_envp(void)
@@ -31,7 +31,7 @@ void	update_envp(void)
 	int		i;
 	char	*temp;
 
-	global = g_env;
+	global = get_env_list();
 	env_new = gc_alloc(sizeof(char *) * ft_count_pointers(global->envp));
 	i = 0;
 	while (global)
@@ -40,7 +40,7 @@ void	update_envp(void)
 		env_new[i++] = gc_strjoin(temp, global->value);
 		global = global -> next;
 	}
-	global = g_env;
+	global = get_env_list();
 	gc_free_array(ft_count_pointers(global->envp), (void **)global -> envp);
 	assign_env(env_new);
 }
