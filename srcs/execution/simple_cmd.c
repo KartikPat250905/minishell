@@ -99,11 +99,11 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 				//exit(1); //is this the correct exit code?
 			}
 			//stops until here_end word is found
-			while (1)
+			while (1 && (g_exit_status != 130 || get_info()->flag))
 			{
 				activate_hd_signal_handler();
 				line = readline("heredoc> ");
-				if (!line || ft_strcmp(line, end_word) == 0 || g_exit_status == 130)
+				if (!line || ft_strcmp(line, end_word) == 0)//|| g_exit_status == 130)
 				{
 					//g_exit_status = 0;
 					free(line);
@@ -381,7 +381,7 @@ char	*look_for_cmd(char *cmd, char **paths)
 		triable_path = gc_strjoin(aux, cmd);
 		if (access(triable_path, F_OK | X_OK) == 0)
 		{
-			g_exit_status = 0;
+			//g_exit_status = 0;
 			return (triable_path);
 		}
 		i++;
@@ -486,7 +486,10 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 			ignore_signals();
 			waitpid(pid, &status, 0);
 			if (WIFEXITED(status)) //if exit() was called
-				g_exit_status = WEXITSTATUS(status); //exit status == exit code
+			{
+				if (g_exit_status != 130)
+					g_exit_status = WEXITSTATUS(status); //exit status == exit code
+			}
 			else if (WIFSIGNALED(status))
 			{
 				int signal_num = WTERMSIG(status);

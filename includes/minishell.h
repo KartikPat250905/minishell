@@ -5,6 +5,7 @@
 # include <stdbool.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <fcntl.h>
 
 # include "libft.h"
 # include "gc_alloc.h"
@@ -22,6 +23,7 @@
 typedef struct s_info
 {
 	bool 	debug;
+	bool	flag;
 }			t_info;
 
 t_info	*get_info(void);

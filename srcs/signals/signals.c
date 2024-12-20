@@ -70,8 +70,16 @@ void	hd_sig_handler(int sig)
 	if (sig == SIGINT)
 	{
 		write(1, "\n", 1);
-		close(0);
+		int null_fd = open("/dev/null", O_RDONLY);
+		if (null_fd >= 0)
+		{
+			dup2(null_fd, STDIN_FILENO);
+			close(null_fd);
+		}
+		//write(1, "\n", 1);
+		//close(0);
 		g_exit_status = 130;
+		//printf("i assigned %i to exit status", g_exit_status);
 	}
 }
 

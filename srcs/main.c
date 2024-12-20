@@ -47,7 +47,14 @@ int	main(int ac, char **av, char **envp)
 	g_exit_status = 0;
 	while (1)
 	{
+		get_info()->flag = 0;
 		activate_signal_parent();
+		int tty_fd = open("/dev/tty", O_RDWR);
+		if (tty_fd >= 0)
+		{
+			dup2(tty_fd, STDIN_FILENO);
+			close(tty_fd);
+		}
 		input = readline("microshell> ");
 		if (!input)
 		{

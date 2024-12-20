@@ -68,6 +68,8 @@ void	execute_ast(t_ast_node *node)
 	}
 	else if (node->type == PIPE_SEQ)
 	{
+		if (g_exit_status == 130)
+			get_info()->flag = 1;
 		execute_pipe_seq(node);
 	}
 }

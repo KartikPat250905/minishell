@@ -56,10 +56,10 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 	int		status;
 	int	i;
 	int	j;
-	
+
 	i = 0;
 	pipe_count = cmd_count - 1;
-	pid = gc_alloc(pipe_count * sizeof(pid_t));
+	pid = gc_alloc(cmd_count * sizeof(pid_t));
 	//create pipes
 	while (i < pipe_count)
 	{
@@ -83,9 +83,18 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
     //before forking
 	activate_signal_handler();
     gather_redirects(commands[i], &info);
-
+	if (g_exit_status == 130)
+	{
+		activate_signal_parent();
+		break ;
+	}
     //build argv
     argv = build_argv(commands[i]);
+	if (g_exit_status == 130)
+	{
+		activate_signal_parent();
+		break ;
+	}
     pid[i] = fork();
 	//pid = fork();
     if (pid[i] < 0)
