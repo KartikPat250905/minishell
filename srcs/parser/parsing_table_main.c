@@ -5,6 +5,7 @@ char	*get_line(int i)
 {
 	char	*line;
 
+	line = NULL;
 	if (i >= 0 && i <= 10)
 		line = get_line_0_to_10(i);
 	else if (i >= 11 && i <= 21)
@@ -23,7 +24,7 @@ char	*get_line(int i)
 		line = get_line_77_to_87(i);
 	else if (i >= 88 && i <= 98)
 		line = get_line_88_to_98(i);
-	else if (i == 99)
+	else
 		line = get_line_99(i);
 	return (line);
 }
