@@ -30,6 +30,7 @@ SOURCES = srcs/info.c \
 		  srcs/signals/signals_two.c \
 		  srcs/env/env.c \
 		  srcs/env/env_utils.c \
+		  srcs/env/env_utils_two.c \
 		  srcs/builtins/cd.c \
 		  srcs/builtins/cd_utils.c \
 		  srcs/builtins/pwd.c \

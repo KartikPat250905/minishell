@@ -22,8 +22,6 @@ t_token_node	*create_token(t_token type, char *value)
 		return (NULL);
 	new_node -> type = type;
 	new_node -> value = value;
-	//new_node -> next = NULL;
-	//new_node -> state = NORMAL;
 	return (new_node);
 }
 //new_stack->top = NULL;
@@ -46,15 +44,12 @@ void	print_token_stack(t_token_stack *stack, char *name)
 	node = stack -> top;
 	ft_putendl_fd(name, 1);
 	printf("The top element is -->%s<--\n", node -> value);
-	fflush(stdout);
 	while (node)
 	{
 		ft_putstr_fd("Token type->", 1);
 		ft_putnbr_fd(node->type, 1);
 		ft_putstr_fd("\tValue->", 1);
 		ft_putstr_fd(node->value, 1);
-		//ft_putstr_fd("\tState->", 1);
-		//ft_putnbr_fd(node->state, 1);
 		ft_putstr_fd("\n", 1);
 		node = node -> next;
 	}
