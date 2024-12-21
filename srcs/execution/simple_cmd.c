@@ -101,11 +101,18 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 			//stops until here_end word is found
 			while (1 && (g_exit_status != 130 || get_info()->flag))
 			{
+				if (g_exit_status == 130 && get_info()->flag == 0)
+					break;
 				activate_hd_signal_handler();
 				line = readline("heredoc> ");
-				if (!line || ft_strcmp(line, end_word) == 0)//|| g_exit_status == 130)
+				if ((!line || ft_strcmp(line, end_word) == 0) && g_exit_status != 130)
 				{
-					//g_exit_status = 0;
+					g_exit_status = 0;
+					free(line);
+					break ;
+				}
+				if (g_exit_status == 130 && get_info() -> flag == 1)
+				{
 					free(line);
 					break ;
 				}
