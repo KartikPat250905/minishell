@@ -27,11 +27,3 @@ bool	get_debug(void)
 	info = get_info();
 	return (info->debug);
 }
-
-void	set_info(t_info *info)
-{
-	t_info	*info_ptr;
-
-	info_ptr = get_info();
-	*info_ptr = *info;
-}

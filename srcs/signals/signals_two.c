@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signals_two.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/21 20:18:31 by aapadill          #+#    #+#             */
+/*   Updated: 2024/12/21 20:18:33 by aapadill         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	get_exit_status(int status)
@@ -21,7 +33,6 @@ void	hd_sig_handler(int sig)
 			close(null_fd);
 		}
 		g_exit_status = 130;
-		//get_info()->flag = 0;
 	}
 }
 

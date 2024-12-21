@@ -14,10 +14,10 @@
 #include "parsing.h"
 #include "execution.h"
 
-int	get_redirect_type(t_ast_node *io_redirect_node)
+int get_redirect_type(t_ast_node *io_redirect_node)
 {
-	t_ast_node	*child;
-	t_ast_node	*op_node;
+	t_ast_node *child;
+	t_ast_node *op_node;
 
 	child = io_redirect_node->children[0];
 	if (child->type == IO_FILE)
@@ -39,12 +39,12 @@ int	get_redirect_type(t_ast_node *io_redirect_node)
 	return (-1);
 }
 
-char	*get_filename(t_ast_node *io_redirect_node)
+char *get_filename(t_ast_node *io_redirect_node)
 {
-	t_ast_node	*child;
-	t_ast_node	*filename;
-	t_ast_node	*here_end;
-	t_ast_node	*word;
+	t_ast_node *child;
+	t_ast_node *filename;
+	t_ast_node *here_end;
+	t_ast_node *word;
 
 	child = io_redirect_node->children[0];
 	if (child->type == IO_FILE)
@@ -62,11 +62,11 @@ char	*get_filename(t_ast_node *io_redirect_node)
 	return (NULL);
 }
 
-char	*get_here_end_word(t_ast_node *io_redirect)
+char *get_here_end_word(t_ast_node *io_redirect)
 {
-	t_ast_node	*io_here;
-	t_ast_node	*here_end;
-	t_ast_node	*word;
+	t_ast_node *io_here;
+	t_ast_node *here_end;
+	t_ast_node *word;
 
 	io_here = io_redirect->children[0];
 	here_end = io_here->children[1];
@@ -74,63 +74,97 @@ char	*get_here_end_word(t_ast_node *io_redirect)
 	return (word->token->value);
 }
 
-void	gather_redirects(t_ast_node *node, t_exec_info *info)
+void gather_redirects(t_ast_node *node, t_exec_info *info)
 {
-	int		type;
-	char	*end_word;
-	int		pipefd[2];
-	char	*line;
-	t_redir_info	*redir_info;
-	int		i;
+	int type;
+	int pipefd[2];
+	char *line;
+	t_redir_info *redir_info;
+	int i;
 
 	if (!node)
-		return ;
+		return;
 
 	if (node->type == IO_REDIRECT)
 	{
 		type = get_redirect_type(node);
-		if (type == DLESS) //<<
+		if (type == DLESS) // <<
 		{
-			end_word = get_here_end_word(node);
+			char *end_word = get_here_end_word(node);
 			if (pipe(pipefd) == -1)
 			{
 				perror("pipe");
-				return ;
-				//exit(1); //is this the correct exit code?
+				return;
 			}
-			//stops until here_end word is found
-			while (1 && get_info()->flag) //(g_exit_status != 130
+			pid_t hd_pid = fork();
+			if (hd_pid < 0)
 			{
-				if (g_exit_status == 130 && get_info()->flag == 0)
-					break;
-				activate_hd_signal_handler();
-				line = readline("heredoc> ");
-				if ((!line || ft_strcmp(line, end_word) == 0) && g_exit_status != 130)
-				{
-					g_exit_status = 0;
-					free(line);
-					break ;
-				}
-				if (g_exit_status == 130 && get_info() -> flag == 1)
-				{
-					free(line);
-					break ;
-				}
-				ft_putendl_fd(line, pipefd[1]);
-				free(line);
+				perror("fork");
+				close(pipefd[0]);
+				close(pipefd[1]);
+				return;
 			}
-			restore_default_signals();
-			close(pipefd[1]);
-			info->heredoc_fd = pipefd[0];
+			else if (hd_pid == 0)
+			{
+				// CHILD: read lines from heredoc and write them to pipe
+				// We only keep the write end open
+				close(pipefd[0]);
+
+				// Typically you want a child to have default signals or
+				// a minimal custom signal handler that leads to exit(130) on Ctrl+C
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
+
+				while (1)
+				{
+					line = readline("heredoc> ");
+					if (!line || ft_strcmp(line, end_word) == 0)
+					{
+						free(line);
+						break;
+					}
+					ft_putendl_fd(line, pipefd[1]);
+					free(line);
+				}
+				close(pipefd[1]);
+				// If user pressed Ctrl+C, the child is killed—this is fine
+				exit(0);
+			}
+			else
+			{
+				// PARENT: We only want to read from the pipe
+				close(pipefd[1]);
+
+				// Wait for the child to finish or be interrupted
+				int status;
+				waitpid(hd_pid, &status, 0);
+
+				if (WIFSIGNALED(status))
+				{
+					// e.g. user hit Ctrl+C => child died to SIGINT => exit code = 130
+					g_exit_status = 128 + WTERMSIG(status); // Typically 130
+					// Here you can choose how to handle it in the parent:
+					//   e.g. skip executing the command (like real shells do)
+					//   Or just keep going. Usually we skip further execution.
+					//   So you might do something like:
+					get_info()->flag = 0; // Indicate “stop this command entirely”
+				}
+				else if (WIFEXITED(status))
+				{
+					g_exit_status = WEXITSTATUS(status);
+				}
+				// The read end of the pipe is the heredoc data
+				info->heredoc_fd = pipefd[0];
+			}
 		}
 		else if (type == RED_FO || type == RED_TO || type == DGREAT)
 		{
 			redir_info = gc_alloc(sizeof(t_redir_info));
 			redir_info->type = type;
-			redir_info->filename = env_expander(get_filename(node)); //kinda hardcoded
-			ft_lstadd_back(&info->redir_list, ft_lstnew(redir_info)); //switch to gc
+			redir_info->filename = env_expander(get_filename(node));  // kinda hardcoded
+			ft_lstadd_back(&info->redir_list, ft_lstnew(redir_info)); // switch to gc
 		}
-		return ;
+		return;
 	}
 	i = 0;
 	while (i < node->child_count)
@@ -140,10 +174,10 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 	}
 }
 
-void	apply_normal_redirections(t_list *normal_redirects)
+void apply_normal_redirections(t_list *normal_redirects)
 {
-	t_redir_info	*redir_info;
-	int				fd;
+	t_redir_info *redir_info;
+	int fd;
 
 	while (normal_redirects)
 	{
@@ -158,8 +192,8 @@ void	apply_normal_redirections(t_list *normal_redirects)
 		if (fd < 0)
 		{
 			perror(redir_info->filename);
-			//return ; //or exit?
-			exit(1); //is this the correct exit code?
+			// return ; //or exit?
+			exit(1); // is this the correct exit code?
 		}
 		if (redir_info->type == RED_FO)
 			dup2(fd, STDIN_FILENO);
@@ -170,12 +204,12 @@ void	apply_normal_redirections(t_list *normal_redirects)
 	}
 }
 
-bool	unclosed_quotes(char *str)
+bool unclosed_quotes(char *str)
 {
-	int		i;
-	int		dq;
-	int		sq;
-	bool	unclosed;
+	int i;
+	int dq;
+	int sq;
+	bool unclosed;
 
 	i = 0;
 	dq = 0;
@@ -194,18 +228,18 @@ bool	unclosed_quotes(char *str)
 	return (unclosed);
 }
 
-//env var format: \$[A-Za-z_][A-Za-z0-9_]*
-char	*env_expander(char *str)
+// env var format: \$[A-Za-z_][A-Za-z0-9_]*
+char *env_expander(char *str)
 {
-	char	*pre;
-	char	*env_var;
-	char	*value;
-	char	*tmp;
-	int		in_sq;
-	int		in_dq;
-	int		i;
-	int		start;
-	char	single_char[2];
+	char *pre;
+	char *env_var;
+	char *value;
+	char *tmp;
+	int in_sq;
+	int in_dq;
+	int i;
+	int start;
+	char single_char[2];
 
 	pre = gc_strdup("");
 	in_sq = 0;
@@ -226,18 +260,18 @@ char	*env_expander(char *str)
 			i++;
 			continue;
 		}
-		//check for a variable expansion
+		// check for a variable expansion
 		if (str[i] == '$' && !in_sq)
 		{
 			if (str[i + 1] == '?')
 			{
-				//handle last exit code, hardcoded for now to 42
+				// handle last exit code, hardcoded for now to 42
 				char *exit_code_str = ft_itoa(g_exit_status);
 				tmp = gc_strjoin(pre, exit_code_str);
 				gc_free(pre);
 				gc_free(exit_code_str);
 				pre = tmp;
-				i += 2; //past "$?"
+				i += 2; // past "$?"
 				continue;
 			}
 			else if ((str[i + 1] == '_' || ft_isalpha(str[i + 1])))
@@ -257,12 +291,12 @@ char	*env_expander(char *str)
 					gc_free(value);
 					pre = tmp;
 				}
-				//if no value, we remove the variable and not append anything
+				// if no value, we remove the variable and not append anything
 				continue;
 			}
 			else
 			{
-				//append one character (with a null terminator by default)
+				// append one character (with a null terminator by default)
 				single_char[0] = str[i];
 				tmp = gc_strjoin(pre, single_char);
 				gc_free(pre);
@@ -271,7 +305,7 @@ char	*env_expander(char *str)
 				continue;
 			}
 		}
-		//normal character that is not a quote or $
+		// normal character that is not a quote or $
 		single_char[0] = str[i];
 		tmp = gc_strjoin(pre, single_char);
 		gc_free(pre);
@@ -281,21 +315,29 @@ char	*env_expander(char *str)
 	return (pre);
 }
 
-void	construct_cmd(t_ast_node *node, t_list **words)
+void construct_cmd(t_ast_node *node, t_list **words)
 {
-	t_list	*cmd_elem;
-	int		i;
+	t_list *cmd_elem;
+	int i;
 
 	if (!node)
-		return ;
-	if (node->type == IO_REDIRECT || node->type == IO_FILE || node->type == IO_HERE || node->type == FILENAME)
-		return ;
+		return;
+
+	if (node->type == IO_REDIRECT || node->type == IO_FILE || node->type == IO_HERE || node->type == FILENAME) // || node->type == HERE_END)
+		return;
+
 	if (node->type == WORD)
 	{
+		// remove_quotes(node->token->value, '\"');
+		// printf("\ttype: %s\n", get_symbol_name(node->token->type));
+		// printf("\tvalue: %s\n", node->token->value);
+		// printf("\tstate: %i\n", node->token->state);
+		// printf("\texpanded: %s\n", env_expander(node->token->value));
+		// cmd_elem = ft_lstnew(node->token->value);
 		cmd_elem = ft_lstnew(env_expander(node->token->value));
-		//if (!cmd_elem)
-		ft_lstadd_back(words, cmd_elem);
-		return ;
+		// if (!cmd_elem)
+		ft_lstadd_back(words, cmd_elem); // switch to gc
+		return;
 	}
 	i = 0;
 	while (i < node->child_count)
@@ -305,12 +347,12 @@ void	construct_cmd(t_ast_node *node, t_list **words)
 	}
 }
 
-char	**build_argv(t_ast_node *simple_command)
+char **build_argv(t_ast_node *simple_command)
 {
-	t_list	*words;
-	t_list	*tmp;
-	int		i;
-	char	**argv;
+	t_list *words;
+	t_list *tmp;
+	int i;
+	char **argv;
 
 	i = 0;
 	words = NULL;
@@ -324,7 +366,7 @@ char	**build_argv(t_ast_node *simple_command)
 	argv = gc_alloc(sizeof(char *) * (i + 1));
 	if (!argv)
 	{
-		//free words linked list
+		// free words linked list
 		return (NULL);
 	}
 	i = 0;
@@ -335,7 +377,7 @@ char	**build_argv(t_ast_node *simple_command)
 		words = words->next;
 	}
 	argv[i] = NULL;
-	//free words linked list
+	// free words linked list
 	if (get_debug())
 	{
 		printf("words linked list:\n");
@@ -350,7 +392,7 @@ char	**build_argv(t_ast_node *simple_command)
 	return (argv);
 }
 
-static int	is_cmd_already_path(char *cmd)
+static int is_cmd_already_path(char *cmd)
 {
 	if (ft_strchr(cmd, '/'))
 	{
@@ -367,11 +409,11 @@ static int	is_cmd_already_path(char *cmd)
 	return (0);
 }
 
-char	*look_for_cmd(char *cmd, char **paths)
+char *look_for_cmd(char *cmd, char **paths)
 {
-	int		i;
-	char	*aux;
-	char	*triable_path;
+	int i;
+	char *aux;
+	char *triable_path;
 
 	i = 0;
 	while (paths[i])
@@ -380,43 +422,45 @@ char	*look_for_cmd(char *cmd, char **paths)
 		triable_path = gc_strjoin(aux, cmd);
 		if (access(triable_path, F_OK | X_OK) == 0)
 		{
-			//g_exit_status = 0;
+			// g_exit_status = 0;
 			return (triable_path);
 		}
 		i++;
 	}
-	//ft_putstr_fd("./microshell: ", STDERR_FILENO);
-	//ft_putstr_fd(cmd, STDERR_FILENO);
-	//ft_putendl_fd(": command not found", STDERR_FILENO);
-	//gc_free_all(); //possible due to being in a child process?
-	//exit(EXIT_CMD_NOT_FOUND);
+	// ft_putstr_fd("./microshell: ", STDERR_FILENO);
+	// ft_putstr_fd(cmd, STDERR_FILENO);
+	// ft_putendl_fd(": command not found", STDERR_FILENO);
+	// gc_free_all(); //possible due to being in a child process?
+	// exit(EXIT_CMD_NOT_FOUND);
 	return (NULL);
 }
 
-void	execute_simple_cmd(t_ast_node *simple_cmd)
+void execute_simple_cmd(t_ast_node *simple_cmd)
 {
-	char	**argv;
-	pid_t	pid;
-	char	*path;
-	char	**paths;
-	int		status;
-	int		n;
-	t_exec_info	info;
+	char **argv;
+	pid_t pid;
+	char *path;
+	char **paths;
+	int status;
+	int n;
+	t_exec_info info;
 	int original_in;
-	int	original_out;
+	int original_out;
 
 	info.heredoc_fd = -1;
 	info.redir_list = NULL;
 	activate_signal_handler();
 	gather_redirects(simple_cmd, &info);
+	if (!get_info()->flag)
+		return;
 	argv = build_argv(simple_cmd);
-	//if (!argv) //either no command or unclosed quotes
+	// if (!argv) //either no command or unclosed quotes
 	//	return ;
 	original_in = dup(STDIN_FILENO);
 	original_out = dup(STDOUT_FILENO);
 	if (!original_in || !original_out)
 	{
-		return ;
+		return;
 	}
 	if (argv && is_builtin(argv[0]))
 	{
@@ -431,7 +475,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		dup2(original_out, STDOUT_FILENO);
 		close(original_in);
 		close(original_out);
-		return ;
+		return;
 	}
 	else if (argv)
 	{
@@ -439,9 +483,9 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 		if (pid < 0)
 		{
 			perror("fork");
-			return ; //not sure if we should return or exit
+			return; // not sure if we should return or exit
 		}
-		else if (pid == 0) //child
+		else if (pid == 0) // child
 		{
 			activate_signal_handler();
 			if (info.heredoc_fd != -1)
@@ -451,17 +495,18 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 			}
 			apply_normal_redirections(info.redir_list);
 			path = get_env("PATH");
-			if (!path)
-			{
-				ft_putstr_fd("microshell: ", 2);
-				ft_putstr_fd(argv[0], 2);
-				ft_putendl_fd(": No such file or directory", 2);
-				exit(127); //is this the correct exit code?
-			}
 			if (is_cmd_already_path(argv[0]))
 				path = argv[0];
 			else
 			{
+				if (!path)
+				{
+					ft_putstr_fd("microshell: ", 2);
+					ft_putstr_fd(argv[0], 2);
+					ft_putendl_fd(": No such file or directory", 2);
+					g_exit_status = 127;
+					exit(g_exit_status); // is this the correct exit code?
+				}
 				paths = gc_split(path, ':', &n);
 				path = look_for_cmd(argv[0], paths);
 				gc_free_array(n, (void **)paths);
@@ -471,43 +516,37 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 				ft_putstr_fd(argv[0], 2);
 				ft_putendl_fd(": command not found", 2);
 				g_exit_status = 127;
-				exit(g_exit_status); //is this the correct exit code?
+				exit(g_exit_status); // is this the correct exit code?
 			}
 			if (execve(path, argv, get_info()->envp) == -1)
 			{
 				perror("execve");
 				g_exit_status = 126;
-				exit(g_exit_status); //is this the correct exit code?
+				exit(g_exit_status); // is this the correct exit code?
 			}
 		}
-		else //parent
+		else // parent
 		{
 			ignore_signals();
 			waitpid(pid, &status, 0);
-			if (WIFEXITED(status)) //if exit() was called
-			{
-				if (g_exit_status != 130)
-					g_exit_status = WEXITSTATUS(status); //exit status == exit code
-			}
+			if (WIFEXITED(status))
+				g_exit_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
 			{
 				int signal_num = WTERMSIG(status);
-				if (signal_num == SIGINT)
-				{
-					g_exit_status = 130;
-				}
+				g_exit_status = 128 + signal_num;
 			}
 		}
 	}
-	//gc_free_array((void **)argv, //length of argv);
+	// gc_free_array((void **)argv, //length of argv);
 }
 
-void	execute_simple_piped_cmd(char **argv, t_exec_info *info)
+void execute_simple_piped_cmd(char **argv)
 {
-	char	*path;
-	char	**paths;
-	int		status;
-	int		n;
+	char *path;
+	char **paths;
+	int status;
+	int n;
 
 	if (!argv || !argv[0])
 		exit(EXIT_FAILURE);
@@ -527,7 +566,7 @@ void	execute_simple_piped_cmd(char **argv, t_exec_info *info)
 			ft_putstr_fd("microshell: ", 2);
 			ft_putstr_fd(argv[0], 2);
 			ft_putendl_fd(": No such file or directory", 2);
-			exit(127); //is this the correct exit code?
+			exit(127); // is this the correct exit code?
 		}
 		paths = gc_split(path, ':', &n);
 		path = look_for_cmd(argv[0], paths);
@@ -535,17 +574,14 @@ void	execute_simple_piped_cmd(char **argv, t_exec_info *info)
 	}
 	if (!path)
 	{
-		if (info->heredoc_fd != -1)
-		{
-			ft_putstr_fd(argv[0], 2);
-			ft_putendl_fd(": command not found", 2);
-		}
-		exit(127); //is this the correct exit code?
+		ft_putstr_fd(argv[0], 2);
+		ft_putendl_fd(": command not found", 2);
+		exit(127); // is this the correct exit code?
 	}
 	if (execve(path, argv, get_info()->envp) == -1)
 	{
 		perror("execve");
-		exit(126); //is this the correct exit code?
+		exit(126); // is this the correct exit code?
 	}
-	//this should not happen
+	// this should not happen
 }
