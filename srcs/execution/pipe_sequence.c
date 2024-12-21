@@ -75,29 +75,29 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 	while (i < cmd_count)
 	{
 		//leaving in here for now but separate into a function
-	t_exec_info info;
-	char **argv;
-	info.heredoc_fd = -1;
-    info.redir_list = NULL;
+		t_exec_info info;
+		char **argv;
+		info.heredoc_fd = -1;
+		info.redir_list = NULL;
 
-    //before forking
-	activate_signal_handler();
-    gather_redirects(commands[i], &info);
-	if (g_exit_status == 130)
-	{
-		activate_signal_parent();
-		break ;
-	}
-    //build argv
-    argv = build_argv(commands[i]);
-	if (g_exit_status == 130)
-	{
-		activate_signal_parent();
-		break ;
-	}
-    pid[i] = fork();
-	//pid = fork();
-    if (pid[i] < 0)
+		//before forking
+		activate_signal_handler();
+		gather_redirects(commands[i], &info);
+		if (g_exit_status == 130)
+		{
+			activate_signal_parent();
+			break ;
+		}
+		//build argv
+		argv = build_argv(commands[i]);
+		if (g_exit_status == 130)
+		{
+			activate_signal_parent();
+			break ;
+		}
+		pid[i] = fork();
+		//pid = fork();
+		if (pid[i] < 0)
 		//if (pid < 0)
 		{
 			perror("fork");
@@ -131,17 +131,17 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 				j++;
 			}
 			//apply heredoc
-            if (info.heredoc_fd != -1)
-            {
-                if (dup2(info.heredoc_fd, STDIN_FILENO) < 0)
-                {
-                    perror("dup2 heredoc");
-                    exit(EXIT_FAILURE);
-                }
-                close(info.heredoc_fd);
-            }
+			if (info.heredoc_fd != -1)
+			{
+				if (dup2(info.heredoc_fd, STDIN_FILENO) < 0)
+				{
+					perror("dup2 heredoc");
+					exit(EXIT_FAILURE);
+				}
+				close(info.heredoc_fd);
+			}
 			apply_normal_redirections(info.redir_list);
-			execute_simple_piped_cmd(argv);
+			execute_simple_piped_cmd(argv, &info);
 			exit(EXIT_FAILURE);
 		}
 		//parent

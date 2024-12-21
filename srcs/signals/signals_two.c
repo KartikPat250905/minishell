@@ -21,6 +21,7 @@ void	hd_sig_handler(int sig)
 			close(null_fd);
 		}
 		g_exit_status = 130;
+		//get_info()->flag = 0;
 	}
 }
 

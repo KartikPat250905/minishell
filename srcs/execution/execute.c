@@ -62,14 +62,14 @@ void	execute_ast(t_ast_node *node)
 {
 	if (!node)
 		return ;
-	if (node->type == SIMPLE_CMD)
+	//if (node->type == SIMPLE_CMD)
+	//{
+	//	execute_simple_cmd(node);
+	//}
+	if (node->type == PIPE_SEQ)
 	{
-		execute_simple_cmd(node);
-	}
-	else if (node->type == PIPE_SEQ)
-	{
-		if (g_exit_status == 130)
-			get_info()->flag = 1;
+		//if (g_exit_status == 130)
+		//	get_info()->flag = 1;
 		execute_pipe_seq(node);
 	}
 }

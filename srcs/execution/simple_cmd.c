@@ -99,7 +99,7 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 				//exit(1); //is this the correct exit code?
 			}
 			//stops until here_end word is found
-			while (1 && (g_exit_status != 130 || get_info()->flag))
+			while (1 && get_info()->flag) //(g_exit_status != 130
 			{
 				activate_hd_signal_handler();
 				line = readline("heredoc> ");
@@ -281,21 +281,13 @@ void	construct_cmd(t_ast_node *node, t_list **words)
 
 	if (!node)
 		return ;
-
-	if (node->type == IO_REDIRECT || node->type == IO_FILE || node->type == IO_HERE || node->type == FILENAME)// || node->type == HERE_END)
+	if (node->type == IO_REDIRECT || node->type == IO_FILE || node->type == IO_HERE || node->type == FILENAME)
 		return ;
-
 	if (node->type == WORD)
 	{
-		//remove_quotes(node->token->value, '\"');
-		//printf("\ttype: %s\n", get_symbol_name(node->token->type));
-		//printf("\tvalue: %s\n", node->token->value);
-		//printf("\tstate: %i\n", node->token->state);
-		//printf("\texpanded: %s\n", env_expander(node->token->value));
-		//cmd_elem = ft_lstnew(node->token->value);
 		cmd_elem = ft_lstnew(env_expander(node->token->value));
 		//if (!cmd_elem)
-		ft_lstadd_back(words, cmd_elem); //switch to gc
+		ft_lstadd_back(words, cmd_elem);
 		return ;
 	}
 	i = 0;
@@ -503,7 +495,7 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	//gc_free_array((void **)argv, //length of argv);
 }
 
-void	execute_simple_piped_cmd(char **argv)
+void	execute_simple_piped_cmd(char **argv, t_exec_info *info)
 {
 	char	*path;
 	char	**paths;
@@ -534,11 +526,13 @@ void	execute_simple_piped_cmd(char **argv)
 		path = look_for_cmd(argv[0], paths);
 		gc_free_array(n, (void **)paths);
 	}
-
 	if (!path)
 	{
-		ft_putstr_fd(argv[0], 2);
-		ft_putendl_fd(": command not found", 2);
+		if (info->heredoc_fd != -1)
+		{
+			ft_putstr_fd(argv[0], 2);
+			ft_putendl_fd(": command not found", 2);
+		}
 		exit(127); //is this the correct exit code?
 	}
 	if (execve(path, argv, get_info()->envp) == -1)

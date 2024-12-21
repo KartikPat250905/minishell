@@ -50,7 +50,7 @@ int	main(int ac, char **av, char **envp)
 	activate_signal_handler();
 	while (1)
 	{
-		get_info()->flag = 0;
+		get_info()->flag = 1;
 		activate_signal_parent();
 		int tty_fd = open("/dev/tty", O_RDWR);
 		if (tty_fd >= 0)
@@ -77,7 +77,7 @@ int	main(int ac, char **av, char **envp)
 			ft_putendl_fd("-not accepted (parse error)-", 1);
 		//gc_free_all();
 	}
-	clear_history();
+	//clear_history();
 	//rl_clear_history();
 	rl_free_line_state();
 	return (g_exit_status);
