@@ -16,15 +16,15 @@
 //t_env	*g_env;
 int	g_exit_status;
 
-static void    init_terminal_set(void)
+static void	init_terminal_set(void)
 {
-    struct termios    term;
+	struct termios	term;
 
-    if (tcgetattr(STDIN_FILENO, &term) == -1)
-        exit(EXIT_FAILURE);
-    term.c_lflag &= ~ECHOCTL;
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
-        exit(EXIT_FAILURE);
+	if (tcgetattr(STDIN_FILENO, &term) == -1)
+		exit(EXIT_FAILURE);
+	term.c_lflag &= ~ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
+		exit(EXIT_FAILURE);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -46,7 +46,7 @@ int	main(int ac, char **av, char **envp)
 	info->tokens = init_token_stack();
 	fetch_envp(envp);
 	update_envp();
-	table = create_table("srcs/parser/parsing-table");
+	table = create_table();
 	activate_signal_handler();
 	while (1)
 	{

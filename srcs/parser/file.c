@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "parsing.h"
+#include "grammer.h"
 
 int	get_table_size(char *filename)
 {
@@ -59,42 +60,42 @@ t_entry	*create_entry(char *line)
 	return (entry);
 }
 
-t_entry	**create_table(char *filename)
+t_entry	**create_table(void)//char *filename)
 {
 	int		i;
-	int		size;
-	int		fd;
+	//int		size;
+	//int		fd;
 	char	*line;
 	t_entry	**table;
 
 	i = 0;
-	size = get_table_size(filename);
-	fd = open(filename, O_RDONLY);
-	if (size <= 0 || fd == -1)
-	{
-		ft_putendl_fd("error opening file", 2);
-		return (NULL);
-	}
-	table = gc_alloc(sizeof(t_entry *) * (size + 1));
+	//size = get_table_size(filename);
+	// fd = open(filename, O_RDONLY);
+	// if (size <= 0 || fd == -1)
+	// {
+	// 	ft_putendl_fd("error opening file", 2);
+	// 	return (NULL);
+	// }
+	table = gc_alloc(sizeof(t_entry *) * (100 + 1));
 	if (!table)
 		return (NULL);
-	table[size] = NULL;
-	while (i < size)
+	table[100] = NULL;
+	while (i < 100)
 	{
-		line = gc_next_line(fd, READ_LINE);
+		//line = gc_next_line(fd, READ_LINE);
+		line = get_line(i);
 		if (!line)
 			break ;
 		table[i] = create_entry(line);
-		gc_free(line);
 		if (!table[i])
 		{
 			gc_free_array(i, (void **)table);
-			close(fd);
+			//close(fd);
 			return (NULL);
 		}
 		i++;
 	}
-	gc_next_line(fd, CLEAN_LINE);
-	close (fd);
+	//gc_next_line(fd, CLEAN_LINE);
+	//close (fd);
 	return (table);
 }
