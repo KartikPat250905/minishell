@@ -101,7 +101,7 @@ bool	is_state(int value);
 //file.c
 int	get_table_size(char *filename);
 t_entry	*create_entry(char *line);
-t_entry	**create_table(char *filename);
+t_entry	**create_table(void);
 
 //parsing.c
 t_entry *non_terminal_lookup(t_entry **table, int state, int non_terminal);

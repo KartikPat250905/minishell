@@ -46,7 +46,7 @@ int	main(int ac, char **av, char **envp)
 	info->tokens = init_token_stack();
 	fetch_envp(envp);
 	update_envp();
-	table = create_table("srcs/parser/parsing-table");
+	table = create_table();
 	activate_signal_handler();
 	while (1)
 	{
