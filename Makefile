@@ -27,6 +27,7 @@ SOURCES = srcs/info.c \
 		  srcs/execution/execute.c \
 		  srcs/main.c \
 		  srcs/signals/signals.c \
+		  srcs/signals/signals_two.c \
 		  srcs/env/env.c \
 		  srcs/env/env_utils.c \
 		  srcs/builtins/cd.c \

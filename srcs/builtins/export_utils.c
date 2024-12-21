@@ -70,7 +70,8 @@ void	export_var(char **av)
 	{
 		if (is_edge(av[i]))
 		{
-			printf("minishell: export: `%s': not a valid identifier\n", av[i++]);
+			printf("minishell: export: `%s':"
+				"not a valid identifier\n", av[i++]);
 			g_exit_status = 1;
 			continue ;
 		}
