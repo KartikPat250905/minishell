@@ -529,18 +529,12 @@ void execute_simple_cmd(t_ast_node *simple_cmd)
 		{
 			ignore_signals();
 			waitpid(pid, &status, 0);
-			if (WIFEXITED(status)) // if exit() was called
-			{
-				if (g_exit_status != 130)
-					g_exit_status = WEXITSTATUS(status); // exit status == exit code
-			}
+			if (WIFEXITED(status))
+				g_exit_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
 			{
 				int signal_num = WTERMSIG(status);
-				if (signal_num == SIGINT)
-				{
-					g_exit_status = 130;
-				}
+				g_exit_status = 128 + signal_num;
 			}
 		}
 	}
