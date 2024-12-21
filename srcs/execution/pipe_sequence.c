@@ -83,7 +83,7 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 		//before forking
 		activate_signal_handler();
 		gather_redirects(commands[i], &info);
-		if (g_exit_status == 130)
+		if (g_exit_status == 130 || get_info()->flag == 0)
 		{
 			activate_signal_parent();
 			break ;
@@ -141,7 +141,7 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 				close(info.heredoc_fd);
 			}
 			apply_normal_redirections(info.redir_list);
-			execute_simple_piped_cmd(argv, &info);
+			execute_simple_piped_cmd(argv);
 			exit(EXIT_FAILURE);
 		}
 		//parent
