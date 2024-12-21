@@ -27,35 +27,25 @@ static void	init_terminal_set(void)
 		exit(EXIT_FAILURE);
 }
 
-int	main(int ac, char **av, char **envp)
-//int	main (void)
+void	reset_to_tty(void)
 {
-	char			*input;
-	int				ret;
-	t_entry			**table;
-	t_info			*info;
+	int	tty_fd;
 
-	info = get_info();
-	ft_bzero(info, sizeof(t_info));
-	(void)av;
-	init_terminal_set();
-	if (ac > 1)
-		info->debug = true;
-	info->tokens = init_token_stack();
-	fetch_envp(envp);
-	update_envp();
-	table = create_table();
-	activate_signal_handler();
+	tty_fd = open("/dev/tty", O_RDWR);
+	if (tty_fd >= 0)
+	{
+		dup2(tty_fd, STDIN_FILENO);
+		close(tty_fd);
+	}
+}
+
+void	main_loop(t_entry **table, t_info *info, char *input, int ret)
+{
 	while (1)
 	{
 		info->flag = 1;
 		activate_signal_parent();
-		int tty_fd = open("/dev/tty", O_RDWR);
-		if (tty_fd >= 0)
-		{
-			dup2(tty_fd, STDIN_FILENO);
-			close(tty_fd);
-		}
+		reset_to_tty();
 		input = readline("microshell> ");
 		if (!input)
 		{
@@ -66,15 +56,39 @@ int	main(int ac, char **av, char **envp)
 			continue ;
 		if (*input)
 			add_history(input);
-		// if (tokens)
-		// 	free_tokens()
 		info->tokens = lexer(input);
+		// if (tokens)
+		// 	free_tokenstack()
 		ret = parsing_main(info->tokens, table);
 		free(input);
 		if (ret != 1)
 			ft_putendl_fd("-not accepted (parse error)-", 1);
 		//gc_free_all();
 	}
+}
+
+int	main(int ac, char **av, char **envp)
+//int	main (void)
+{
+	char			*input;
+	int				ret;
+	t_entry			**table;
+	t_info			*info;
+
+	info = get_info();
+	input = NULL;
+	ret = 1;
+	ft_bzero(info, sizeof(t_info));
+	(void)av;
+	init_terminal_set();
+	if (ac > 1)
+		info->debug = true;
+	info->tokens = init_token_stack();
+	fetch_envp(envp);
+	update_envp();
+	table = create_table();
+	activate_signal_handler();
+	main_loop(table, info, input, ret);
 	//clear_history();
 	//rl_clear_history();
 	rl_free_line_state();
