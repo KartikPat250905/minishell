@@ -96,7 +96,6 @@ void gather_redirects(t_ast_node *node, t_exec_info *info)
 				perror("pipe");
 				return;
 			}
-
 			pid_t hd_pid = fork();
 			if (hd_pid < 0)
 			{
@@ -496,17 +495,18 @@ void execute_simple_cmd(t_ast_node *simple_cmd)
 			}
 			apply_normal_redirections(info.redir_list);
 			path = get_env("PATH");
-			if (!path)
-			{
-				ft_putstr_fd("microshell: ", 2);
-				ft_putstr_fd(argv[0], 2);
-				ft_putendl_fd(": No such file or directory", 2);
-				exit(127); // is this the correct exit code?
-			}
 			if (is_cmd_already_path(argv[0]))
 				path = argv[0];
 			else
 			{
+				if (!path)
+				{
+					ft_putstr_fd("microshell: ", 2);
+					ft_putstr_fd(argv[0], 2);
+					ft_putendl_fd(": No such file or directory", 2);
+					g_exit_status = 127;
+					exit(g_exit_status); // is this the correct exit code?
+				}
 				paths = gc_split(path, ':', &n);
 				path = look_for_cmd(argv[0], paths);
 				gc_free_array(n, (void **)paths);

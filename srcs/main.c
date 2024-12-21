@@ -35,10 +35,8 @@ int	main(int ac, char **av, char **envp)
 	t_entry			**table;
 	t_info			*info;
 
-	info = gc_alloc(sizeof(t_info));
+	info = get_info();
 	ft_bzero(info, sizeof(t_info));
-	//info->envp = NULL;
-	set_info(info);
 	(void)av;
 	init_terminal_set();
 	if (ac > 1)
@@ -50,7 +48,7 @@ int	main(int ac, char **av, char **envp)
 	activate_signal_handler();
 	while (1)
 	{
-		get_info()->flag = 1;
+		info->flag = 1;
 		activate_signal_parent();
 		int tty_fd = open("/dev/tty", O_RDWR);
 		if (tty_fd >= 0)
