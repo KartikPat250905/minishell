@@ -14,39 +14,6 @@
 #include "parsing.h"
 #include "execution.h"
 
-t_ast_node	**get_simple_cmds(t_ast_node *node, int *count)
-{
-	t_ast_node	**simple_cmds;
-	t_ast_node	**left_cmds;
-	int			i;
-	int	left_count;
-
-	//just one simple command
-	//pipe_sequence -> simple_command
-	if (node->child_count == 1) //kinda hardcoded, fits the grammar though
-	{
-		simple_cmds = gc_alloc(sizeof(t_ast_node *));
-		simple_cmds[0] = node->children[0];
-		*count = 1;
-		return (simple_cmds);
-	}
-	//more than one simple command
-	//pipe_sequence -> simple_command PIPE pipe_sequence
-	else
-	{
-		left_cmds = get_simple_cmds(node->children[0], &left_count);
-		simple_cmds = gc_alloc(sizeof(t_ast_node *) * (left_count + 1));
-		i = 0;
-		while (i < left_count)
-		{
-			simple_cmds[i] = left_cmds[i];
-			i++;
-		}
-		simple_cmds[left_count] = node->children[2];
-		*count = left_count + 1;
-		return (simple_cmds);
-	}
-}
 void	execute_pipeline(t_ast_node **commands, int cmd_count)
 {
 	int pipe_count;
@@ -176,22 +143,4 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 		}
 		i++;
 	}
-}
-
-void	execute_pipe_seq(t_ast_node *node)
-{
-	int	count;
-	t_ast_node	**simple_cmds;
-
-	simple_cmds = get_simple_cmds(node, &count);
-	if (count == 1)
-	{
-		execute_simple_cmd(simple_cmds[0]);
-	}
-	else
-	{
-		//execute multiple simple commands
-		execute_pipeline(simple_cmds, count);
-	}
-	//free?
 }
