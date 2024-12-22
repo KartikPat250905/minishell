@@ -48,3 +48,42 @@ char	*look_for_cmd(char *cmd, char **paths)
 	}
 	return (NULL);
 }
+
+//check if directory
+void resolve_and_exec_cmd(char **argv)
+{
+	char *path;
+	char **paths;
+	int n;
+
+	path = get_env("PATH");
+	if (is_cmd_already_path(argv[0]))
+		path = argv[0];
+	else
+	{
+		if (!path)
+		{
+			ft_putstr_fd("microshell: ", 2);
+			ft_putstr_fd(argv[0], 2);
+			ft_putendl_fd(": No such file or directory", 2);
+			g_exit_status = 127;
+			exit(g_exit_status);
+		}
+		paths = gc_split(path, ':', &n);
+		path = look_for_cmd(argv[0], paths);
+		gc_free_array(n, (void **)paths);
+	}
+	if (!path)
+	{
+		ft_putstr_fd(argv[0], 2);
+		ft_putendl_fd(": command not found", 2);
+		g_exit_status = 127;
+		exit(g_exit_status);
+	}
+	if (execve(path, argv, get_info()->envp) == -1)
+	{
+		perror("execve");
+		g_exit_status = 126;
+		exit(g_exit_status);
+	}
+}

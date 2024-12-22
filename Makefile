@@ -24,6 +24,7 @@ SOURCES = srcs/info.c \
 		  srcs/parser/parsing_table_main.c \
 		  srcs/parser/parsing_table_two.c \
 		  srcs/free/cleaner.c \
+		  srcs/execution/simple_cmd_utils.c \
 		  srcs/execution/simple_cmd.c \
 		  srcs/execution/pipe_sequence.c \
 		  srcs/execution/resolve_path.c \

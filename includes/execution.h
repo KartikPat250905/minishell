@@ -57,8 +57,15 @@ void	construct_cmd(t_ast_node *node, t_list **words);
 char	**build_argv(t_ast_node *simple_command);
 
 //resolve_path.c
-int is_cmd_already_path(char *cmd);
-char *look_for_cmd(char *cmd, char **paths);
+int		is_cmd_already_path(char *cmd);
+char	*look_for_cmd(char *cmd, char **paths);
+void	resolve_and_exec_cmd(char **argv);
+
+//simple_cmd_utils.c
+void	initialize_exec_info(t_exec_info *info);
+void	wait_for_child(pid_t pid);
+void	execute_builtin_cmd(char **argv, t_exec_info *info);
+void	execute_external_cmd(char **argv, t_exec_info *info);
 
 //simple_cmd.c
 void	execute_simple_piped_cmd(char **argv);
