@@ -60,19 +60,14 @@ int	execute_builtin(char **argv)
 
 void	execute_pipe_seq(t_ast_node *node)
 {
-	int	count;
+	int			count;
 	t_ast_node	**simple_cmds;
 
 	simple_cmds = get_simple_cmds(node, &count);
 	if (count == 1)
-	{
 		execute_simple_cmd(simple_cmds[0]);
-	}
 	else
-	{
-		//execute multiple simple commands
 		execute_pipeline(simple_cmds, count);
-	}
 	//free?
 }
 

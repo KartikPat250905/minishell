@@ -14,12 +14,12 @@
 #include "parsing.h"
 #include "execution.h"
 
-bool unclosed_quotes(char *str)
+bool	unclosed_quotes(char *str)
 {
-	int i;
-	int dq;
-	int sq;
-	bool unclosed;
+	int		i;
+	int		dq;
+	int		sq;
+	bool	unclosed;
 
 	i = 0;
 	dq = 0;
@@ -39,17 +39,17 @@ bool unclosed_quotes(char *str)
 }
 
 // env var format: \$[A-Za-z_][A-Za-z0-9_]*
-char *env_expander(char *str)
+char	*env_expander(char *str)
 {
-	char *pre;
-	char *env_var;
-	char *value;
-	char *tmp;
-	int in_sq;
-	int in_dq;
-	int i;
-	int start;
-	char single_char[2];
+	char	*pre;
+	char	*env_var;
+	char	*value;
+	char	*tmp;
+	int		in_sq;
+	int		in_dq;
+	int		i;
+	int		start;
+	char	single_char[2];
 
 	pre = gc_strdup("");
 	in_sq = 0;
@@ -62,13 +62,13 @@ char *env_expander(char *str)
 		{
 			in_dq = !in_dq;
 			i++;
-			continue;
+			continue ;
 		}
 		else if (str[i] == '\'' && !in_dq)
 		{
 			in_sq = !in_sq;
 			i++;
-			continue;
+			continue ;
 		}
 		// check for a variable expansion
 		if (str[i] == '$' && !in_sq)
@@ -82,7 +82,7 @@ char *env_expander(char *str)
 				gc_free(exit_code_str);
 				pre = tmp;
 				i += 2; // past "$?"
-				continue;
+				continue ;
 			}
 			else if ((str[i + 1] == '_' || ft_isalpha(str[i + 1])))
 			{
@@ -102,7 +102,7 @@ char *env_expander(char *str)
 					pre = tmp;
 				}
 				// if no value, we remove the variable and not append anything
-				continue;
+				continue ;
 			}
 			else
 			{
@@ -112,7 +112,7 @@ char *env_expander(char *str)
 				gc_free(pre);
 				pre = tmp;
 				i++;
-				continue;
+				continue ;
 			}
 		}
 		// normal character that is not a quote or $
@@ -125,29 +125,21 @@ char *env_expander(char *str)
 	return (pre);
 }
 
-void construct_cmd(t_ast_node *node, t_list **words)
+void	construct_cmd(t_ast_node *node, t_list **words)
 {
-	t_list *cmd_elem;
-	int i;
+	t_list	*cmd_elem;
+	int		i;
 
 	if (!node)
-		return;
-
-	if (node->type == IO_REDIRECT || node->type == IO_FILE || node->type == IO_HERE || node->type == FILENAME) // || node->type == HERE_END)
-		return;
-
+		return ;
+	if (node->type == IO_REDIRECT || node->type == IO_FILE
+		|| node->type == IO_HERE || node->type == FILENAME)
+		return ;
 	if (node->type == WORD)
 	{
-		// remove_quotes(node->token->value, '\"');
-		// printf("\ttype: %s\n", get_symbol_name(node->token->type));
-		// printf("\tvalue: %s\n", node->token->value);
-		// printf("\tstate: %i\n", node->token->state);
-		// printf("\texpanded: %s\n", env_expander(node->token->value));
-		// cmd_elem = ft_lstnew(node->token->value);
 		cmd_elem = ft_lstnew(env_expander(node->token->value));
-		// if (!cmd_elem)
-		ft_lstadd_back(words, cmd_elem); // switch to gc
-		return;
+		ft_lstadd_back(words, cmd_elem);
+		return ;
 	}
 	i = 0;
 	while (i < node->child_count)
@@ -157,12 +149,12 @@ void construct_cmd(t_ast_node *node, t_list **words)
 	}
 }
 
-char **build_argv(t_ast_node *simple_command)
+char	**build_argv(t_ast_node *simple_command)
 {
-	t_list *words;
-	t_list *tmp;
-	int i;
-	char **argv;
+	t_list	*words;
+	t_list	*tmp;
+	int		i;
+	char	**argv;
 
 	i = 0;
 	words = NULL;
