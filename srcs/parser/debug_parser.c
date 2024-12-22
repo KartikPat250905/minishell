@@ -13,28 +13,40 @@
 #include "minishell.h"
 #include "parsing.h"
 
-//from gpt
-void print_ast(t_ast_node *node, int indent)
+void	print_indent(int indent)
 {
-		if (!node)
-			return;
-		for (int i = 0; i < indent; i++)
-			printf("\t"); // Two spaces per indent level
-		if (node->token)
-		{
-			// It's a terminal node
-			printf("%s, value=%s\n", get_symbol_name(node->type), node->token->value);
-		}
-		else
-		{
-			// It's a non-terminal node
-			printf("%s, children: %d\n", get_symbol_name(node->type), node->child_count);
-		}
-		// Recursively traverse child nodes
-		for (int i = 0; i < node->child_count; i++)
-		{
-			print_ast(node->children[i], indent + 1);
-		}
+	int	i;
+
+	while (i < indent)
+	{
+		printf("\t");
+		i++;
+	}
+}
+
+void	print_ast(t_ast_node *node, int indent)
+{
+	int	i;
+
+	if (!node)
+		return ;
+	print_indent(indent);
+	if (node->token)
+	{
+		printf("%s, value=%s\n",
+			get_symbol_name(node->type), node->token->value);
+	}
+	else
+	{
+		printf("%s, children: %d\n",
+			get_symbol_name(node->type), node->child_count);
+	}
+	i = 0;
+	while (i < node->child_count)
+	{
+		print_ast(node->children[i], indent + 1);
+		i++;
+	}
 }
 
 void	print_stacks(t_stack *stack, t_token_stack *tokens)
@@ -51,7 +63,7 @@ void	print_stacks(t_stack *stack, t_token_stack *tokens)
 
 void	print_stack(t_stack *stack, char *name)
 {
-	t_node *node;
+	t_node	*node;
 
 	node = stack->top;
 	ft_putstr_fd("---", 1);
@@ -66,7 +78,7 @@ void	print_stack(t_stack *stack, char *name)
 
 void	print_tokens(t_token_stack *tokens, char *name)
 {
-	t_token_node *node;
+	t_token_node	*node;
 
 	node = tokens->top;
 	ft_putstr_fd("---", 1);

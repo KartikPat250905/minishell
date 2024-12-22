@@ -13,23 +13,23 @@
 #include "minishell.h"
 #include "parsing.h"
 
-t_entry *non_terminal_lookup(t_entry **table, int state, int non_terminal)
+t_entry	*non_terminal_lookup(t_entry **table, int state, int non_terminal)
 {
 	int	i;
 
 	i = 0;
 	while (table[i])
 	{
-		if (table[i]->state == state && 
-			table[i]->token_type == non_terminal && 
-			table[i]->action == GOTO)
+		if (table[i]->state == state
+			&& table[i]->token_type == non_terminal
+			&& table[i]->action == GOTO)
 			return (table[i]);
 		i++;
 	}
 	return (NULL);
 }
 
-t_entry *actual_lookup(t_entry **table, int state, int token)
+t_entry	*actual_lookup(t_entry **table, int state, int token)
 {
 	int	i;
 
@@ -47,16 +47,16 @@ t_entry *actual_lookup(t_entry **table, int state, int token)
 
 t_entry	*table_lookup(t_stack *stack, t_token_stack *tokens, t_entry **table)
 {
-	int	state;
-	int	token;
+	int		state;
+	int		token;
 	t_entry	*entry;
 
 	state = -2;
 	if (stack->top)
-		state = stack->top->value; //fetch_top(stack);
+		state = stack->top->value;
 	token = -2;
 	if (tokens->top)
-		token = tokens->top->type; //fetch_top(in_stack);
+		token = tokens->top->type;
 	entry = NULL;
 	entry = actual_lookup(table, state, token);
 	if (!entry)

@@ -12,18 +12,18 @@
 
 #include "parsing.h"
 
-t_ast_node *get_ast_root(t_stack *stack)
+t_ast_node	*get_ast_root(t_stack *stack)
 {
-    t_node *current;
+	t_node	*current;
 
 	current = stack->top;
 	while (current)
 	{
 		if (current->ast_node && current->value != END)
 		{
-    		return current->ast_node;
-        }
-        current = current->next;
-    }
-    return NULL;
+			return (current->ast_node);
+		}
+		current = current->next;
+	}
+	return (NULL);
 }
