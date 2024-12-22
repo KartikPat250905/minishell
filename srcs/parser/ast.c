@@ -41,7 +41,8 @@ t_ast_node	**children_alloc_and_fill(t_stack *stack, int reduce)
 	return (children);
 }
 
-t_ast_node	*init_ast_node(int type, t_token_node *token, t_ast_node **children, int child_count)
+t_ast_node	*init_ast_node(int type, t_token_node *token,
+	t_ast_node **children, int child_count)
 {
 	t_ast_node	*ast_node;
 
@@ -55,7 +56,7 @@ t_ast_node	*init_ast_node(int type, t_token_node *token, t_ast_node **children, 
 	return (ast_node);
 }
 
-t_ast_node *get_ast_root(t_stack *stack)
+t_ast_node	*get_ast_root(t_stack *stack)
 {
 	t_node	*current;
 
