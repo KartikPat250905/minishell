@@ -101,6 +101,8 @@ int			action_accept(void);
 int			action_goto(t_stack *stack, t_entry *entry);
 
 //ast.c
+t_ast_node	**children_alloc_and_fill(t_stack *stack, int reduce);
+t_ast_node	*init_ast_node(int type, t_token_node *token, t_ast_node **children, int child_count);
 t_ast_node	*get_ast_root(t_stack *stack);
 
 //parsing.c
@@ -111,6 +113,7 @@ void		push(t_stack *stack, t_node *new_node);
 t_node		*pop(t_stack *stack);
 
 //stack_utils.c
+t_node		*init_stack_node(t_ast_node *ast_node);
 t_node		*init_node(int value);
 //int		free_stack(t_stack *stack, int send_error);
 

@@ -13,128 +13,7 @@
 #include "parsing.h"
 #include "minishell.h"
 
-//organize error returns: malloc, logic
-int	action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens)
-{
-	t_token_node	*popped_token;
-	t_node			*token;
-	t_ast_node		*ast_node;
-
-	if (get_debug())
-		ft_putendl_fd("-shift-", 1);
-	popped_token = pop_token(tokens);
-	if (!popped_token)
-		return (-2);
-
-	//--create_ast_node
-	ast_node = gc_alloc(sizeof(t_ast_node));
-	if (!ast_node)
-		return (-2);
-	ast_node->type = popped_token->type;
-	ast_node->token = popped_token;
-	//--create_ast_node
-
-	//--create_token and link ast_node
-	token = init_node(popped_token->type);
-	if (!token)
-		return (-2);
-	token->ast_node = ast_node;
-	//--create_token and link ast_node
-	push(stack, token);
-
-	return (action_goto(stack, entry));
-}
-
-int	action_reduce(t_stack *stack, t_entry *entry, t_entry **table)
-{
-	int	non_terminal;
-	int	current_state;
-	t_node	*rule;
-	t_entry	*goto_entry;
-
-	if (get_debug())
-		ft_putendl_fd("-reduce-", 1);
-
-	//--ast_node type fetch
-	non_terminal = get_non_terminal(entry->go_to);
-	if (non_terminal == -1)
-		return (-2);
-	//--ast_node type fetch
-
-	//--ast_node children array alloc
-	t_ast_node	**children;
-	children = NULL;
-	if (entry->reduce > 0)
-	{
-		children = gc_alloc(sizeof(t_ast_node *) * entry->reduce);
-		if (!children)
-			return (-2);
-	}
-	//--ast_node children array alloc
-	
-	//--ast_node children fill
-	int	i;
-	t_node *state;
-	t_node *symbol;
-
-	i = entry->reduce;
-	while(0 < i--)
-	{
-		state = pop(stack);
-		if (!state)
-			return (-2);
-		symbol = pop(stack);
-		if (!symbol)
-			return (-2);
-		if (symbol->ast_node)
-			children[i] = symbol->ast_node;
-		else
-			children[i] = NULL;
-		//free state and symbol?
-	}
-	//--ast_node children fill
-
-	//current_state
-	if (!stack->top)
-		return (-2);
-	current_state = stack->top->value; //fetch_top(stack);
-
-	//--create_ast_node
-	t_ast_node	*ast_node;
-	ast_node = gc_alloc(sizeof(t_ast_node));
-	if (!ast_node)
-	{
-		if (children)
-			gc_free(children);
-		return (-2);
-	}
-	//--create_ast_node
-	ast_node->type = non_terminal;
-	ast_node->children = children;
-	ast_node->child_count = entry->reduce;
-	
-	//--push non-terminal to stack
-	rule = init_node(non_terminal);
-	if (!rule)
-	{
-		if (ast_node)
-			gc_free(ast_node);
-		if (children)
-			gc_free(children);
-		return (-2);
-	}
-	rule->ast_node = ast_node;
-	push(stack, rule);
-	//--push non-terminal to stack
-
-	goto_entry = non_terminal_lookup(table, current_state, non_terminal);
-	if (!goto_entry)
-		return (-2); //goto entry not found
-
-	return(action_goto(stack, goto_entry));
-}
-
-int	action_accept(void) //t_stack *stack
+int	action_accept(void)
 {
 	if (get_debug())
 	{
@@ -148,10 +27,73 @@ int	action_goto(t_stack *stack, t_entry *entry)
 {
 	t_node	*next_state;
 
-	//ft_putendl_fd("-adding goto-", 1);
 	next_state = init_node(entry->go_to);
 	if (!next_state)
 		return (-2); //error
 	push(stack, next_state);
 	return (-1);
+}
+
+int	action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens)
+{
+	t_token_node	*popped_token;
+	t_node			*token;
+	t_ast_node		*ast_node;
+
+	if (get_debug())
+		ft_putendl_fd("-shift-", 1);
+	popped_token = pop_token(tokens);
+	if (!popped_token)
+		return (-2);
+	//--create_ast_node
+	ast_node = init_ast_node(popped_token->type, popped_token, NULL, 0);
+	if (!ast_node)
+		return (-2);
+	//--create_token and link ast_node
+	token = init_stack_node(ast_node);
+	if (!token)
+		return (-2);
+	push(stack, token);
+	return (action_goto(stack, entry));
+}
+
+static int	create_ast_and_push(t_stack *stack, int reduce, t_ast_node **children, int non_terminal)
+{
+	t_ast_node	*ast_node;
+	t_node		*rule;
+
+	ast_node = init_ast_node(non_terminal, NULL, children, reduce);
+	if (!ast_node)
+		return (-2);
+	rule = init_stack_node(ast_node);
+	if (!rule)
+		return (-2);
+	push(stack, rule);
+	return (1);
+}
+
+int	action_reduce(t_stack *stack, t_entry *entry, t_entry **table)
+{
+	int			non_terminal;
+	int			current_state;
+	t_entry		*goto_entry;
+	t_ast_node	**children;
+
+	if (get_debug())
+		ft_putendl_fd("-reduce-", 1);
+	non_terminal = get_non_terminal(entry->go_to);
+	if (non_terminal == -1)
+		return (-2);
+	children = children_alloc_and_fill(stack, entry->reduce);
+	if (!children)
+		return (-2);
+	if (!stack->top)
+		return (-2);
+	current_state = stack->top->value;
+	if (create_ast_and_push(stack, entry->reduce, children, non_terminal) == -2)
+		return (-2);
+	goto_entry = non_terminal_lookup(table, current_state, non_terminal);
+	if (!goto_entry)
+		return (-2);
+	return(action_goto(stack, goto_entry));
 }

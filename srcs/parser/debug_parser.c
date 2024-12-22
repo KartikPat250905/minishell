@@ -17,6 +17,7 @@ void	print_indent(int indent)
 {
 	int	i;
 
+	i = 0;
 	while (i < indent)
 	{
 		printf("\t");

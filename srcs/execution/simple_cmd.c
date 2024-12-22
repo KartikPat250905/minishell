@@ -380,14 +380,17 @@ char **build_argv(t_ast_node *simple_command)
 	// free words linked list
 	if (get_debug())
 	{
-		printf("words linked list:\n");
+		printf("command :\n");
 		i = 0;
 		while (argv[i])
 		{
-			printf("%s\n", argv[i]);
+			if (i != 0)
+				printf(" -> ");
+			printf("%s", argv[i]);
 			i++;
 		}
-		printf("-----------------your expected stuff starts this line\n");
+		printf("\n");
+		//printf("-----------------your expected stuff starts this line\n");
 	}
 	return (argv);
 }
