@@ -14,10 +14,20 @@
 #include "parsing.h"
 #include "execution.h"
 
-void execute_simple_cmd(t_ast_node *simple_cmd)
+int	count_argv(char **argv)
 {
-	char **argv;
-	t_exec_info info;
+	int	i;
+
+	i = 0;
+	while (argv[i])
+		i++;
+	return (i);
+}
+
+void	execute_simple_cmd(t_ast_node *simple_cmd)
+{
+	char		**argv;
+	t_exec_info	info;
 
 	initialize_exec_info(&info);
 	activate_signal_handler();
@@ -37,12 +47,12 @@ void execute_simple_cmd(t_ast_node *simple_cmd)
 	}
 	else
 		execute_external_cmd(argv, &info);
-	// gc_free_array((void **)argv, //length of argv);
+	gc_free_array(count_argv(argv), (void **)argv);
 }
 
-void execute_simple_piped_cmd(char **argv)
+void	execute_simple_piped_cmd(char **argv)
 {
-	int status;
+	int	status;
 
 	if (!argv || !argv[0])
 	{
@@ -55,5 +65,4 @@ void execute_simple_piped_cmd(char **argv)
 		exit(status);
 	}
 	resolve_and_exec_cmd(argv);
-	// this should not happen
 }

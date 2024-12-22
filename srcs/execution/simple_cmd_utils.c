@@ -22,8 +22,8 @@ void	initialize_exec_info(t_exec_info *info)
 
 void	wait_for_child(pid_t pid)
 {
-	int status;
-	int signal_num;
+	int	status;
+	int	signal_num;
 
 	ignore_signals();
 	waitpid(pid, &status, 0);
@@ -38,13 +38,13 @@ void	wait_for_child(pid_t pid)
 
 void	execute_builtin_cmd(char **argv, t_exec_info *info)
 {
-	int original_in;
-	int original_out;
+	int	original_in;
+	int	original_out;
 
 	original_in = dup(STDIN_FILENO);
 	original_out = dup(STDOUT_FILENO);
 	if (!original_in || !original_out)
-		return;
+		return ;
 	if (info->heredoc_fd != -1)
 	{
 		dup2(info->heredoc_fd, STDIN_FILENO);
@@ -68,7 +68,7 @@ void	execute_external_cmd(char **argv, t_exec_info *info)
 		perror("fork");
 		return ;
 	}
-	else if (pid == 0) //child
+	else if (pid == 0)
 	{
 		activate_signal_handler();
 		if (info->heredoc_fd != -1)
@@ -79,7 +79,7 @@ void	execute_external_cmd(char **argv, t_exec_info *info)
 		apply_normal_redirections(info->redir_list);
 		resolve_and_exec_cmd(argv);
 	}
-	else //parent
+	else
 	{
 		wait_for_child(pid);
 	}
