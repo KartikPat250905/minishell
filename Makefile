@@ -11,12 +11,12 @@ SOURCES = srcs/info.c \
 		  srcs/lexer/stack/token_operations.c \
 		  srcs/lexer/tokenize.c \
 		  srcs/lexer/lexer.c \
+		  srcs/parser/debug_parser.c \
 		  srcs/parser/stack/stack_utils.c \
 		  srcs/parser/stack/stack_operations.c \
-		  srcs/parser/file.c \
+		  srcs/parser/lookups.c \
 		  srcs/parser/grammar_utils.c \
 		  srcs/parser/actions.c \
-		  srcs/parser/enum_check.c \
 		  srcs/parser/parsing.c \
 		  srcs/parser/ast.c \
 		  srcs/parser/parsing_table.c \

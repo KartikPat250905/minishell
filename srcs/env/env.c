@@ -88,7 +88,6 @@ void	envadd(t_env **lst, t_env *new)
 	current->next = new;
 }
 
-// maybe make it void just use get_info()->envp = envp;
 //creates linked list
 void	fetch_envp(char **envp)
 {

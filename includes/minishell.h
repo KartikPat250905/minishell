@@ -21,6 +21,7 @@
 # include <readline/history.h>
 
 typedef struct s_token_stack	t_token_stack;
+typedef struct s_ast_node		t_ast_node;
 
 typedef struct s_info
 {
@@ -29,6 +30,7 @@ typedef struct s_info
 	t_token_stack				*tokens;
 	t_env						*env; //head of a linked list
 	int							exit_status;
+	t_ast_node					*ast;
 	char						**envp; //move here //array //because of execve
 }						t_info;
 
