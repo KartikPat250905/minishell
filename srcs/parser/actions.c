@@ -29,7 +29,7 @@ int	action_goto(t_stack *stack, t_entry *entry)
 
 	next_state = init_node(entry->go_to);
 	if (!next_state)
-		return (-2); //error
+		return (-2);
 	push(stack, next_state);
 	return (-1);
 }
@@ -45,11 +45,9 @@ int	action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens)
 	popped_token = pop_token(tokens);
 	if (!popped_token)
 		return (-2);
-	//--create_ast_node
 	ast_node = init_ast_node(popped_token->type, popped_token, NULL, 0);
 	if (!ast_node)
 		return (-2);
-	//--create_token and link ast_node
 	token = init_stack_node(ast_node);
 	if (!token)
 		return (-2);
@@ -57,7 +55,8 @@ int	action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens)
 	return (action_goto(stack, entry));
 }
 
-static int	create_ast_and_push(t_stack *stack, int reduce, t_ast_node **children, int non_terminal)
+static int	create_ast_and_push(t_stack *stack, int reduce,
+	t_ast_node **children, int non_terminal)
 {
 	t_ast_node	*ast_node;
 	t_node		*rule;
@@ -95,5 +94,5 @@ int	action_reduce(t_stack *stack, t_entry *entry, t_entry **table)
 	goto_entry = non_terminal_lookup(table, current_state, non_terminal);
 	if (!goto_entry)
 		return (-2);
-	return(action_goto(stack, goto_entry));
+	return (action_goto(stack, goto_entry));
 }
