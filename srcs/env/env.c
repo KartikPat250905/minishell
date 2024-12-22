@@ -10,26 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
+#include "minishell.h"
 
 int	add_to_env_list(char *key, char *value, int is_env)
 {
 	t_env	*new;
-	t_env	*temp;
 	t_env	*head;
 
 	if (!is_key_in_env(key))
 	{
-		temp = get_info()->env;
-		while (temp)
-		{
-			if (!ft_strcmp(temp -> key, key))
-			{
-				temp -> value = value;
-				return (0);
-			}
-			temp = temp -> next;
-		}
+		add_if_key_exists(key, value);
 		return (0);
 	}
 	new = gc_alloc(sizeof(t_env));
@@ -57,30 +47,6 @@ int	is_valid_number(const char *str)
 	return (1);
 }
 
-void	handle_shvl(char **key, char **value)
-{
-	int	shell_lvl;
-
-	if (!ft_strcmp(*key, "SHLVL"))
-	{
-		if (is_valid_number(*value))
-		{
-			printf("I am here\n");
-			shell_lvl = ft_atoi(*value) + 1;
-			if (shell_lvl > 999)
-				shell_lvl = 1;
-			printf("The shell lvl is %d\n", shell_lvl);
-			free(*value);
-			*value = ft_itoa(shell_lvl);
-		}
-		else
-		{
-			free(*value);
-			*value = ft_strdup("1");
-		}
-	}
-}
-
 t_env	*init_env_node(char *env, int if_env)
 {
 	t_env	*node;
@@ -91,8 +57,8 @@ t_env	*init_env_node(char *env, int if_env)
 	if (!node)
 		return (NULL);
 	key = ft_substr(env, 0, ft_strchr(env, '=') - env);
-	value = ft_substr(env, ft_strchr(env, '=') - env + 1, ft_strlen(env) - (ft_strchr(env, '=') - env) - 1);
-	//handle_shvl(&key, &value);
+	value = ft_substr(env, ft_strchr(env, '=') - env + 1,
+			ft_strlen(env) - (ft_strchr(env, '=') - env) - 1);
 	if (!key || !value)
 	{
 		free(key);
@@ -133,17 +99,14 @@ void	fetch_envp(char **envp)
 	i = 0;
 	result = NULL;
 	if (!envp)
-		return ;//(result);
+		return ;
 	while (envp[i])
 	{
 		temp = init_env_node(envp[i], 1);
 		if (!temp)
-			return ;//(NULL);
+			return ;
 		envadd(&result, temp);
 		i++;
 	}
 	get_info()->env = result;
-	//result->envp = build_envp(result);
-	//char **built_envp(t_env *head);
-	//return (result);
 }

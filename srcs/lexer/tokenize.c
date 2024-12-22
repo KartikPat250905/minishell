@@ -28,7 +28,7 @@ bool	tokenize_pipe(t_iterators *it, t_token_stack *stack)
 	{
 		new = create_token(PIPE, gc_strdup("|"));
 		if (!new)
-			gc_free_all(); //ok this just free so we need a gc_free_all_exit
+			gc_free_all();
 		push_token(stack, new);
 		it->cur++;
 		return (true);
@@ -97,12 +97,6 @@ bool	tokenize_words(t_iterators *it, t_token_stack *stack)
 	}
 	word = gc_strndup(&it->input[it->start], it->cur - it->start);
 	node = create_token(WORD, word);
-	/*
-	if (quote == '\"')
-		node->state = DOUBLE_QUOTES;
-	else if (quote == '\'')
-		node->state = SINGLE_QUOTES;
-	*/
 	push_token(stack, node);
 	return (true);
 }
