@@ -141,39 +141,7 @@ int	action_accept(void) //t_stack *stack
 		ft_putendl_fd("-accept-", 1);
 		ft_putendl_fd("parsing accepted", 1);
 	}
-	/*
-	t_node	*state;
-	t_node	*symbol;
-
-	state = pop(stack);
-	if (!state)
-		return (-2);
-	symbol = pop(stack);
-	if (!symbol)
-		return (-2);
-
-	//--create_ast_node
-	t_ast_node	*ast_node;
-	ast_node = gc_alloc(sizeof(t_ast_node));
-	if (!ast_node)
-		return (-2);
-	ast_node->type = ACCEP;
-	ast_node->token = NULL;
-	ast_node->child_count = 1;
-	ast_node->children = gc_alloc(sizeof(t_ast_node *));
-	if (!ast_node->children)
-		return (-2);
-	ast_node->children[0] = symbol->ast_node;
-	//--create_ast_node
-
-	t_node	*accept;
-	accept = init_node(ast_node->type);
-	if (!accept)
-		return (-2);
-	accept->ast_node = ast_node;
-	push(stack, accept);
-	*/
-	return (1);
+	return (ACCEPT);
 }
 
 int	action_goto(t_stack *stack, t_entry *entry)

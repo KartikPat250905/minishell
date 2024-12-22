@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 #include "parsing.h"
+#include "execution.h"
 
 //t_env	*g_env;
 int	g_exit_status;
@@ -39,11 +40,11 @@ void	reset_to_tty(void)
 	}
 }
 
-void	main_loop(t_entry **table, t_info *info, char *input, int ret)
+void	main_loop(t_entry **table, char *input)
 {
 	while (1)
 	{
-		info->flag = 1;
+		get_info()->flag = 1;
 		activate_signal_parent();
 		reset_to_tty();
 		input = readline("microshell> ");
@@ -52,43 +53,46 @@ void	main_loop(t_entry **table, t_info *info, char *input, int ret)
 			printf("Exit\n");
 			break ;
 		}
-		if (!*input)
-			continue ;
 		if (*input)
+		{
 			add_history(input);
-		info->tokens = lexer(input);
-		// if (tokens)
-		// 	free_tokenstack()
-		ret = parsing_main(info->tokens, table);
+			get_info()->tokens = lexer(input);
+			if (get_info()->tokens)
+			{
+				if (parsing_main(get_info()->tokens, table) == ACCEPT)
+					execute_ast(get_info()->ast);
+				//free_tokens_stack();
+			}
+			//free_ast(get_info()->ast);
+		}
 		free(input);
-		if (ret != 1)
-			ft_putendl_fd("-not accepted (parse error)-", 1);
 		//gc_free_all();
 	}
 }
 
 int	main(int ac, char **av, char **envp)
-//int	main (void)
 {
 	char			*input;
-	int				ret;
 	t_entry			**table;
 	t_info			*info;
 
-	info = get_info();
-	input = NULL;
-	ret = 1;
-	ft_bzero(info, sizeof(t_info));
 	(void)av;
-	init_terminal_set();
+	input = NULL;
+	info = get_info();
+	ft_bzero(info, sizeof(t_info));
 	if (ac > 1)
 		info->debug = true;
-	info->tokens = init_token_stack();
+	info->tokens = gc_alloc(sizeof(t_token_stack));
+	//if (!info->tokens)
+		//printf(error alloc); //exit(EXIT_FAILURE);
 	fetch_envp(envp);
 	update_envp();
 	table = create_table();
+	//if (!table)
+		//printf(error alloc); //exit(EXIT_FAILURE); //free_tokens_stack();
+	init_terminal_set();
 	activate_signal_handler();
-	main_loop(table, info, input, ret);
+	main_loop(table, input);
 	//clear_history();
 	//rl_clear_history();
 	rl_free_line_state();
