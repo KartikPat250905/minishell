@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
@@ -20,7 +19,7 @@
 # define EXIT_CMD_NOT_FOUND 127
 # define EXIT_PERMISSION_DENIED 126
 
-typedef	struct s_redir_info
+typedef struct s_redir_info
 {
 	int		type;
 	char	*filename;

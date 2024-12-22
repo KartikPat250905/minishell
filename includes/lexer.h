@@ -64,7 +64,7 @@ typedef struct s_token_node
 typedef struct s_token_stack
 {
 	t_token_node	*top;
-	size_t	size;
+	size_t			size;
 }	t_token_stack;
 
 /* -------------------------------------------------------------------------- */
@@ -72,20 +72,20 @@ typedef struct s_token_stack
 /* -------------------------------------------------------------------------- */
 
 //lexer
-void	handle_space(t_iterators *it);
-bool	tokenize_pipe(t_iterators *it, t_token_stack *stack);
-bool	tokenize_output(t_iterators *it, t_token_stack *stack);
-bool	tokenize_input(t_iterators *it, t_token_stack *stack);
-bool	tokenize_words(t_iterators *it, t_token_stack *stack);
+void			handle_space(t_iterators *it);
+bool			tokenize_pipe(t_iterators *it, t_token_stack *stack);
+bool			tokenize_output(t_iterators *it, t_token_stack *stack);
+bool			tokenize_input(t_iterators *it, t_token_stack *stack);
+bool			tokenize_words(t_iterators *it, t_token_stack *stack);
 
-bool	is_token(char ch, char next);
+bool			is_token(char ch, char next);
 t_token_stack	*lexer(char *input);
 
 //stack
 t_token_node	*create_token(t_token type, char *value);
 t_token_stack	*init_token_stack(void);
-void	print_token_stack(t_token_stack *stack, char *name);
+void			print_token_stack(t_token_stack *stack, char *name);
 t_token_node	*pop_token(t_token_stack *stack);
-void	push_token(t_token_stack *stack, t_token_node *node);
+void			push_token(t_token_stack *stack, t_token_node *node);
 
 #endif

@@ -84,44 +84,45 @@ typedef struct s_stack
 /* -------------------------------------------------------------------------- */
 
 //actions.c
-int	action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens);
-int	action_reduce(t_stack *stack, t_entry *entry, t_entry **table);
-int	action_accept(void); //t_stack *stack
-int	action_goto(t_stack *stack, t_entry *entry);
+int			action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens);
+int			action_reduce(t_stack *stack, t_entry *entry, t_entry **table);
+int			action_accept(void); //t_stack *stack
+int			action_goto(t_stack *stack, t_entry *entry);
 
 //ast.c
 t_ast_node	*get_ast_root(t_stack *stack);
-void traverse_ast(t_ast_node *node, int indent);
+void		traverse_ast(t_ast_node *node, int indent);
 
 //enum_check.c
-bool	is_terminal(int value);
-bool	is_non_terminal(int value);
-bool	is_state(int value);
+bool		is_terminal(int value);
+bool		is_non_terminal(int value);
+bool		is_state(int value);
 
 //file.c
-int	get_table_size(char *filename);
-t_entry	*create_entry(char *line);
-t_entry	**create_table(void);
+int			get_table_size(char *filename);
+t_entry		*create_entry(char *line);
+t_entry		**create_table(void);
 
 //parsing.c
-t_entry *non_terminal_lookup(t_entry **table, int state, int non_terminal);
-t_entry	*actual_lookup(t_entry **table, int state, int token);
-t_entry	*table_lookup(t_stack *stack, t_token_stack *tokens, t_entry **table);
-int		parsing_main(t_token_stack *tokens, t_entry **table);
+t_entry		*non_terminal_lookup(t_entry **table, int state, int non_terminal);
+t_entry		*actual_lookup(t_entry **table, int state, int token);
+t_entry		*table_lookup(t_stack *stack,
+				t_token_stack *tokens, t_entry **table);
+int			parsing_main(t_token_stack *tokens, t_entry **table);
 
 //stack.c
-t_node	*init_node(int value);
-t_stack	*init_stack(void);
+t_node		*init_node(int value);
+t_stack		*init_stack(void);
 
 //grammar_utils.c
-int	get_non_terminal(int rule_number);
+int			get_non_terminal(int rule_number);
 const char	*get_symbol_name(int type);
 
 //stack_utils.c
-void	push(t_stack *stack, t_node *new_node);
-t_node	*pop(t_stack *stack);
-void	print_stack(t_stack *stack, char *name);
-void	print_tokens(t_token_stack *tokens, char *name);
-//int	free_stack(t_stack *stack, int send_error);
+void		push(t_stack *stack, t_node *new_node);
+t_node		*pop(t_stack *stack);
+void		print_stack(t_stack *stack, char *name);
+void		print_tokens(t_token_stack *tokens, char *name);
+//int		free_stack(t_stack *stack, int send_error);
 
 #endif
