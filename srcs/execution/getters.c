@@ -21,31 +21,26 @@ t_ast_node	**get_simple_cmds(t_ast_node *node, int *count)
 	int			i;
 	int	left_count;
 
-	//just one simple command
-	//pipe_sequence -> simple_command
-	if (node->child_count == 1) //kinda hardcoded, fits the grammar though
+	if (node->child_count == 1) //kinda hardcoded, is this creating the segfault?
 	{
 		simple_cmds = gc_alloc(sizeof(t_ast_node *));
+		//if (!simple_cmds)
 		simple_cmds[0] = node->children[0];
 		*count = 1;
 		return (simple_cmds);
 	}
-	//more than one simple command
-	//pipe_sequence -> simple_command PIPE pipe_sequence
-	else
+	left_cmds = get_simple_cmds(node->children[0], &left_count);
+	simple_cmds = gc_alloc(sizeof(t_ast_node *) * (left_count + 1));
+	//if (!simple_cmds)
+	i = 0;
+	while (i < left_count)
 	{
-		left_cmds = get_simple_cmds(node->children[0], &left_count);
-		simple_cmds = gc_alloc(sizeof(t_ast_node *) * (left_count + 1));
-		i = 0;
-		while (i < left_count)
-		{
-			simple_cmds[i] = left_cmds[i];
-			i++;
-		}
-		simple_cmds[left_count] = node->children[2];
-		*count = left_count + 1;
-		return (simple_cmds);
+		simple_cmds[i] = left_cmds[i];
+		i++;
 	}
+	simple_cmds[left_count] = node->children[2];
+	*count = left_count + 1;
+	return (simple_cmds);
 }
 
 int get_redirect_type(t_ast_node *io_redirect_node)

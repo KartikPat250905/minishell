@@ -31,6 +31,14 @@ typedef struct s_exec_info
 	t_list	*redir_list;
 }	t_exec_info;
 
+typedef struct s_pipe_data
+{
+	int		*pipefds;
+	pid_t	*pids;
+	int		cmd_count;
+	int		pipe_count;
+}	t_pipe_data;
+
 //execute.c
 bool	is_builtin(char *cmd_name);
 int		execute_builtin(char **argv);
