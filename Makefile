@@ -20,8 +20,10 @@ SOURCES = srcs/info.c \
 		  srcs/parser/parsing.c \
 		  srcs/parser/ast.c \
 		  srcs/parser/parsing_table.c \
+		  srcs/parser/table.c \
 		  srcs/parser/parsing_table_main.c \
 		  srcs/parser/parsing_table_two.c \
+		  srcs/free/cleaner.c \
 		  srcs/execution/simple_cmd.c \
 		  srcs/execution/pipe_sequence.c \
 		  srcs/execution/execute.c \

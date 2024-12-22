@@ -59,4 +59,3 @@ t_node	*pop(t_stack *stack)
 	popped->next = NULL;
 	return (popped);
 }
-

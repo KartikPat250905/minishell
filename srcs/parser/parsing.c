@@ -33,7 +33,7 @@ static t_stack	*init_parsing_stack(void)
 
 static int	parsing_loop(t_stack *stack, t_entry **table, t_token_stack *tokens)
 {
-	int	ret;
+	int		ret;
 	t_entry	*entry;
 
 	entry = NULL;
