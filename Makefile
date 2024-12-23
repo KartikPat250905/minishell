@@ -28,6 +28,7 @@ SOURCES = srcs/info.c \
 		  srcs/execution/simple_cmd.c \
 		  srcs/execution/pipe_sequence.c \
 		  srcs/execution/resolve_path.c \
+		  srcs/execution/expander.c \
 		  srcs/execution/execution_utils.c \
 		  srcs/execution/redirections.c \
 		  srcs/execution/getters.c \
