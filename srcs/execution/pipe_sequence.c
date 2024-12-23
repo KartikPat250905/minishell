@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 09:39:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/12/10 09:39:14 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/12/23 16:40:51 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,14 @@ void	close_pipes(int *pipefds, int pipe_count)
 void	wait_for_child_pipe(pid_t pid, int *status)
 {
 	int	signal_num;
+	int	result;
 
-	waitpid(pid, status, 0);
+	result = waitpid(pid, status, 0);
+	if (result < 0)
+	{
+		perror("waitpid");
+		return ;
+	}
 	if (WIFEXITED(*status))
 	{
 		g_exit_status = WEXITSTATUS(*status);
@@ -69,6 +75,7 @@ void	wait_for_children(pid_t *pids, int cmd_count)
 	int i;
 
 	i = 0;
+	status = 0;
 	while (i < cmd_count)
 	{
 		wait_for_child_pipe(pids[i], &status);
