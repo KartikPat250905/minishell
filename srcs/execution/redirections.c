@@ -119,7 +119,7 @@ int	open_redirection(t_redir_info *redir_info)
 	return (fd);
 }
 
-void apply_normal_redirections(t_list *normal_redirects)
+int	apply_normal_redirections(t_list *normal_redirects)
 {
 	t_redir_info *redir_info;
 	int			fd;
@@ -130,7 +130,7 @@ void apply_normal_redirections(t_list *normal_redirects)
 		fd = open_redirection(redir_info);
 		if (fd < 0)
 		{
-			return ;//exit(1); //is this the correct exit code? //return?
+			return (-1);
 		}
 		if (redir_info->type == RED_FO)
 			dup2(fd, STDIN_FILENO);
@@ -139,6 +139,7 @@ void apply_normal_redirections(t_list *normal_redirects)
 		close(fd);
 		normal_redirects = normal_redirects->next;
 	}
+	return (0);
 }
 
 void apply_normal_redirections_piped(t_list *normal_redirects)

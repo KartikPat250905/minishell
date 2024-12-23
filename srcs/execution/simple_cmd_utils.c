@@ -50,8 +50,8 @@ void	execute_builtin_cmd(char **argv, t_exec_info *info)
 		dup2(info->heredoc_fd, STDIN_FILENO);
 		close(info->heredoc_fd);
 	}
-	apply_normal_redirections(info->redir_list);
-	g_exit_status = execute_builtin(argv);
+	if (apply_normal_redirections(info->redir_list) != -1)
+		g_exit_status = execute_builtin(argv);
 	dup2(original_in, STDIN_FILENO);
 	dup2(original_out, STDOUT_FILENO);
 	close(original_in);
