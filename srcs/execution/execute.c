@@ -68,7 +68,6 @@ void	execute_pipe_seq(t_ast_node *node)
 		execute_simple_cmd(simple_cmds[0]);
 	else
 		execute_pipeline(simple_cmds, count);
-	//free?
 }
 
 void	execute_ast(t_ast_node *node)

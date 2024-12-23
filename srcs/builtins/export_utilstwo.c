@@ -18,7 +18,7 @@ char	**populate_strings(t_env *env)
 	char	**strings;
 
 	i = 0;
-	strings = gc_alloc(sizeof(char *) * ft_count_nodes(env) + 1);
+	strings = gc_alloc(sizeof(char *) * (ft_count_nodes(env) + 1));
 	while (env)
 	{
 		strings[i++] = gc_strdup(env -> key);

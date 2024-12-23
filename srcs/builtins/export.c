@@ -40,7 +40,7 @@ char	**sort_list(t_env *env)
 		flag = 0;
 		while (strings[i])
 		{
-			if (strings[i + 1] && ft_strcmp(strings[i], strings[i + 1]) > 0)
+			if (strings[i + 1] != NULL && ft_strcmp(strings[i], strings[i + 1]) > 0)
 			{
 				flag = 1;
 				temp = strings[i];
