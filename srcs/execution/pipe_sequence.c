@@ -14,6 +14,11 @@
 #include "parsing.h"
 #include "execution.h"
 
+void debug_fd(int fd, const char *operation)
+{
+    fprintf(stderr, "FD %d: %s\n", fd, operation);
+}
+
 void	create_pipes(int *pipefds, int pipe_count)
 {
 	int i;
@@ -28,6 +33,7 @@ void	create_pipes(int *pipefds, int pipe_count)
 			gc_free_all();
 			exit(g_exit_status);
 		}
+		debug_fd(*(pipefds + i * 2),"open");
 		i++;
 	}
 }
@@ -39,6 +45,7 @@ void	close_pipes(int *pipefds, int pipe_count)
 	i = 0;
 	while (i < pipe_count * 2)
 	{
+		debug_fd(pipefds[i], "close");
 		close(pipefds[i]);
 		i++;
 	}
