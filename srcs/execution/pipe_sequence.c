@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 09:39:13 by aapadill          #+#    #+#             */
-/*   Updated: 2024/12/23 16:40:51 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/12/23 16:48:49 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,7 @@ void	wait_for_child_pipe(pid_t pid, int *status)
 
 	result = waitpid(pid, status, 0);
 	if (result < 0)
-	{
-		perror("waitpid");
 		return ;
-	}
 	if (WIFEXITED(*status))
 	{
 		g_exit_status = WEXITSTATUS(*status);

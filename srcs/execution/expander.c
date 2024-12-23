@@ -6,7 +6,7 @@
 /*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 13:09:34 by aapadill          #+#    #+#             */
-/*   Updated: 2024/12/23 13:10:35 by aapadill         ###   ########.fr       */
+/*   Updated: 2024/12/23 16:49:46 by aapadill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static char	*expand_exit_status(char *pre)
 	char	*exit_code_str;
 	char	*tmp;
 
-	exit_code_str = ft_itoa(g_exit_status);
+	exit_code_str = gc_itoa(g_exit_status);
 	tmp = gc_strjoin(pre, exit_code_str);
 	gc_free(pre);
 	gc_free(exit_code_str);
