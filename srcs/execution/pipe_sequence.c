@@ -25,6 +25,7 @@ void	create_pipes(int *pipefds, int pipe_count)
 		{
 			perror("pipe");
 			g_exit_status = EXIT_FAILURE;
+			gc_free_all();
 			exit(g_exit_status);
 		}
 		i++;
@@ -94,6 +95,7 @@ void	apply_heredoc_redirect(t_exec_info *info)
 		if (dup2(info->heredoc_fd, STDIN_FILENO) < 0)
 		{
 			perror("dup2 heredoc");
+			gc_free_all();
 			exit(EXIT_FAILURE);
 		}
 		close(info->heredoc_fd);
@@ -107,6 +109,7 @@ void	setup_child_pipes(t_pipe_data *pd, int index)
 		if (dup2(pd->pipefds[(index - 1) * 2], STDIN_FILENO) < 0)
 		{
 			perror("dup2 input");
+			gc_free_all();
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -115,6 +118,7 @@ void	setup_child_pipes(t_pipe_data *pd, int index)
 		if (dup2(pd->pipefds[index * 2 + 1], STDOUT_FILENO) < 0)
 		{
 			perror("dup2 output");
+			gc_free_all();
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -127,6 +131,7 @@ void	handle_child_process(t_pipe_data *pd, int index, t_exec_info *info, char **
 	apply_heredoc_redirect(info);
 	apply_normal_redirections_piped(info->redir_list);
 	execute_simple_piped_cmd(argv);
+	gc_free_all();
 	exit(EXIT_FAILURE);
 }
 
@@ -148,6 +153,7 @@ bool	execute_single_command(t_ast_node *command, int index, t_pipe_data *pd)
 	if (pd->pids[index] < 0)
 	{
 		perror("fork");
+		gc_free_all();
 		exit(EXIT_FAILURE);
 	}
 	else if (pd->pids[index] == 0)
@@ -177,7 +183,7 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 	pd.cmd_count = cmd_count;
 	pd.pipefds = gc_alloc(pd.pipe_count * 2 * sizeof(int));
 	pd.pids = gc_alloc(pd.cmd_count * sizeof(pid_t));
-	
+
 	create_pipes(pd.pipefds, pd.pipe_count);
 	execute_all_commands_in_pipeline(commands, &pd);
 	close_pipes(pd.pipefds, pd.pipe_count);

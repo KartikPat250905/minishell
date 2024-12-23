@@ -1,7 +1,7 @@
 NAME = minishell
 CC = cc
 INCLUDES = -Iincludes -I/opt/homebrew/opt/readline/include
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g -Wall -Wextra -Werror
 HEADER = minishell.h
 
 LIBFT = ./libft

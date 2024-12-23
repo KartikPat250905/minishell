@@ -1,35 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew_bonus.c                                  :+:      :+:    :+:   */
+/*   gc_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aapadill <aapadill@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: karpatel <karpatel@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/30 15:10:58 by aapadill          #+#    #+#             */
-/*   Updated: 2024/06/12 07:57:22 by aapadill         ###   ########.fr       */
+/*   Created: 2024/12/23 13:26:04 by karpatel          #+#    #+#             */
+/*   Updated: 2024/12/23 13:26:05 by karpatel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
-** @brief
-** Allocates and returns a new node. The member variable ’content’ is
-** initialized with the value of the parameter ’content’. The variable
-** ’next’ is initialized to NULL.
-**
-** @param
-** content: The content to create the node with.
-**
-** @return
-** The new node.
-*/
-
 #include "libft.h"
+#include "gc_alloc.h"
 
-t_list	*ft_lstnew(void *content)
+t_list	*gc_lstnew(void *content)
 {
 	t_list	*lstptr;
 
-	lstptr = (malloc(sizeof(t_list)));
+	lstptr = (gc_alloc(sizeof(t_list)));
 	if (!lstptr)
 		return (NULL);
 	lstptr->content = content;

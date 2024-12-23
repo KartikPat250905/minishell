@@ -34,5 +34,6 @@ char	*gc_strjoin_gnl(char *s1, char *s2);
 char	*gc_substr(char const *s, unsigned int start, size_t len);
 void	*gc_calloc(size_t count, size_t size);
 char	*gc_strndup(char *s, int n);
+t_list	*gc_lstnew(void *content);
 
 #endif

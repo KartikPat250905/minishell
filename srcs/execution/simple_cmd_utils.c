@@ -77,7 +77,10 @@ void	execute_external_cmd(char **argv, t_exec_info *info)
 			close(info->heredoc_fd);
 		}
 		if (apply_normal_redirections(info->redir_list) == EXIT_FAILURE)
+		{
+			gc_free_all();
 			exit(g_exit_status);
+		}
 		resolve_and_exec_cmd(argv);
 	}
 	else

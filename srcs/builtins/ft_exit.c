@@ -69,6 +69,7 @@ int	ft_exit(char **av)
 	//gc_free_all();
 	g_exit_status = exit_code;
 	printf("exit\n");
+	gc_free_all();
 	exit(exit_code);
 	return (1);
 }

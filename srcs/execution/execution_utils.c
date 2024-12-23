@@ -137,7 +137,7 @@ void	construct_cmd(t_ast_node *node, t_list **words)
 		return ;
 	if (node->type == WORD)
 	{
-		cmd_elem = ft_lstnew(env_expander(node->token->value));
+		cmd_elem = gc_lstnew(env_expander(node->token->value));
 		ft_lstadd_back(words, cmd_elem);
 		return ;
 	}
@@ -168,7 +168,7 @@ char	**build_argv(t_ast_node *simple_command)
 	argv = gc_alloc(sizeof(char *) * (i + 1));
 	if (!argv)
 	{
-		// free words linked list
+		free_t_list(&words);
 		return (NULL);
 	}
 	i = 0;
@@ -179,7 +179,7 @@ char	**build_argv(t_ast_node *simple_command)
 		words = words->next;
 	}
 	argv[i] = NULL;
-	// free words linked list
+	free_t_list(&words);
 	if (get_debug())
 	{
 		printf("command :\n");

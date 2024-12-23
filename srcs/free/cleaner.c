@@ -37,3 +37,21 @@ void	free_token_stack(t_token_stack *stack)
 	}
 	stack->top = NULL;
 }
+
+void	free_t_list(t_list **node)
+{
+	t_list	*next;
+	t_list	*head;
+
+	head = *node;
+	//printf("I am in free_t_list\n");
+	while (head != NULL)
+	{
+		next = head->next;
+		if (head -> content)
+			free(head -> content);
+		free(head);
+		head = next;
+	}
+	*node = NULL;
+}

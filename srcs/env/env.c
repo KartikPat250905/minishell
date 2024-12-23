@@ -56,8 +56,8 @@ t_env	*init_env_node(char *env, int if_env)
 	node = gc_alloc(sizeof(t_env));
 	if (!node)
 		return (NULL);
-	key = ft_substr(env, 0, ft_strchr(env, '=') - env);
-	value = ft_substr(env, ft_strchr(env, '=') - env + 1,
+	key = gc_substr(env, 0, ft_strchr(env, '=') - env);
+	value = gc_substr(env, ft_strchr(env, '=') - env + 1,
 			ft_strlen(env) - (ft_strchr(env, '=') - env) - 1);
 	if (!key || !value)
 	{
