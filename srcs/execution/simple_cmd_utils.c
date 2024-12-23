@@ -50,7 +50,7 @@ void	execute_builtin_cmd(char **argv, t_exec_info *info)
 		dup2(info->heredoc_fd, STDIN_FILENO);
 		close(info->heredoc_fd);
 	}
-	if (apply_normal_redirections(info->redir_list) != -1)
+	if (apply_normal_redirections(info->redir_list) != EXIT_FAILURE)
 		g_exit_status = execute_builtin(argv);
 	dup2(original_in, STDIN_FILENO);
 	dup2(original_out, STDOUT_FILENO);
@@ -76,11 +76,10 @@ void	execute_external_cmd(char **argv, t_exec_info *info)
 			dup2(info->heredoc_fd, STDIN_FILENO);
 			close(info->heredoc_fd);
 		}
-		apply_normal_redirections(info->redir_list);
+		if (apply_normal_redirections(info->redir_list) == EXIT_FAILURE)
+			exit(g_exit_status);
 		resolve_and_exec_cmd(argv);
 	}
 	else
-	{
 		wait_for_child(pid);
-	}
 }

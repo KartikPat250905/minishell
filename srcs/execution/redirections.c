@@ -130,7 +130,8 @@ int	apply_normal_redirections(t_list *normal_redirects)
 		fd = open_redirection(redir_info);
 		if (fd < 0)
 		{
-			return (-1);
+			g_exit_status = EXIT_FAILURE;
+			return (g_exit_status);
 		}
 		if (redir_info->type == RED_FO)
 			dup2(fd, STDIN_FILENO);
