@@ -15,5 +15,6 @@ void	hd_sig_handler(int sig);
 void	activate_hd_signal_handler(void);
 void	restore_default_signals(void);
 void	activate_signal_parent(void);
+void	free_exit(int sig);
 
 #endif
