@@ -70,6 +70,8 @@ void	print_exported(t_env *env)
 	int		i;
 
 	i = 0;
+	if (!env)
+		return ;
 	copy = env;
 	array = sort_list(copy);
 	while (array[i])

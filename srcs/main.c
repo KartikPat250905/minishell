@@ -57,6 +57,7 @@ void	main_loop(t_entry **table, char *input)
 		if (!input)
 		{
 			printf("Exit\n");
+			free_env_list();
 			free(input);
 			break ;
 		}
