@@ -45,14 +45,26 @@ int		execute_builtin(char **argv);
 void	execute_pipe_seq(t_ast_node *node);
 void	execute_ast(t_ast_node *node);
 
+//pipe_sequence_utils.c
+bool	execute_single_command(t_ast_node *command, int index, t_pipe_data *pd);
+void	setup_child_pipes(t_pipe_data *pd, int index);
+void	handle_child_process(t_pipe_data *pd, int index, t_exec_info *info, char **argv);
+
 //pipe_sequence.c
+void	create_pipes(int *pipefds, int pipe_count);
 void	execute_pipeline(t_ast_node **commands, int cmd_count);
+void	close_pipes(int *pipefds, int pipe_count);
+void	wait_for_children(pid_t *pids, int cmd_count);
+void	wait_for_child_pipe(pid_t pid, int *status);
 
 //getters.c
 t_ast_node	**get_simple_cmds(t_ast_node *node, int *count);
 int			get_redirect_type(t_ast_node *io_redirect_node);
 char		*get_filename(t_ast_node *io_redirect_node);
 char		*get_here_end_word(t_ast_node *io_redirect);
+
+//redirections_heredoc.c
+void	handle_heredoc(char *end_word, t_exec_info *info);
 
 //redirections.c
 void	gather_redirects(t_ast_node *node, t_exec_info *info);
@@ -79,5 +91,16 @@ void	execute_external_cmd(char **argv, t_exec_info *info);
 //simple_cmd.c
 void	execute_simple_piped_cmd(char **argv);
 void	execute_simple_cmd(t_ast_node *node);
+
+//expander_utils.c
+void	toggle_quotes(char c, int *in_sq, int *in_dq);
+int		is_quote(char c, int *in_sq, int *in_dq);
+char	*expand_exit_status(char *pre);
+char	*expand_env_var(char *pre, char *str, int *i);
+int		handle_expansion(char **pre, char *str, int *i);
+
+//expander.c
+char	*append_char(char *pre, char c);
+char	*env_expander(char *str);
 
 #endif

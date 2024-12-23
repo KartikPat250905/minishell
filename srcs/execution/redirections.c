@@ -13,62 +13,7 @@
 #include "minishell.h"
 #include "parsing.h"
 #include "execution.h"
-#include "gc_alloc.h"
-
-void	handle_heredoc(char *end_word, t_exec_info *info)
-{
-	int pipefd[2];
-	pid_t hd_pid;
-	char *line;
-	int status;
-
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
-		return;
-	}
-	hd_pid = fork();
-	if (hd_pid < 0)
-	{
-		perror("fork");
-		close(pipefd[0]);
-		close(pipefd[1]);
-		return ;
-	}
-	else if (hd_pid == 0)
-	{
-		close(pipefd[0]);
-		signal(SIGINT, free_exit);
-		signal(SIGQUIT, SIG_DFL);
-		while (1)
-		{
-			line = readline("heredoc> ");
-			if (!line || ft_strcmp(line, end_word) == 0)
-			{
-				free(line);
-				break;
-			}
-			ft_putendl_fd(line, pipefd[1]);
-			free(line);
-		}
-		close(pipefd[1]);
-		gc_free_all();
-		exit(0);
-	}
-	else
-	{
-		close(pipefd[1]);
-		waitpid(hd_pid, &status, 0);
-		if (WIFSIGNALED(status))
-		{
-			g_exit_status = 128 + WTERMSIG(status);
-			get_info()->flag = 0;
-		}
-		else if (WIFEXITED(status))
-			g_exit_status = WEXITSTATUS(status);
-		info->heredoc_fd = pipefd[0];
-	}
-}
+//#include "gc_alloc.h"
 
 void add_redirection_info(int type, char *filename, t_exec_info *info)
 {

@@ -26,10 +26,13 @@ SOURCES = srcs/info.c \
 		  srcs/free/cleaner.c \
 		  srcs/execution/simple_cmd_utils.c \
 		  srcs/execution/simple_cmd.c \
+		  srcs/execution/pipe_sequence_utils.c \
 		  srcs/execution/pipe_sequence.c \
 		  srcs/execution/resolve_path.c \
+		  srcs/execution/expander_utils.c \
 		  srcs/execution/expander.c \
 		  srcs/execution/execution_utils.c \
+		  srcs/execution/redirections_heredoc.c \
 		  srcs/execution/redirections.c \
 		  srcs/execution/getters.c \
 		  srcs/execution/execute.c \
