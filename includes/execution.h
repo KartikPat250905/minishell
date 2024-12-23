@@ -57,6 +57,7 @@ char		*get_here_end_word(t_ast_node *io_redirect);
 //redirections.c
 void	gather_redirects(t_ast_node *node, t_exec_info *info);
 void	apply_normal_redirections(t_list *normal_redirects);
+void	apply_normal_redirections_piped(t_list *normal_redirects);
 
 //execution_utils.c
 bool	unclosed_quotes(char *str);

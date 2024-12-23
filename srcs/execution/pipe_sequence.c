@@ -125,7 +125,7 @@ void	handle_child_process(t_pipe_data *pd, int index, t_exec_info *info, char **
 {
 	setup_child_pipes(pd, index);
 	apply_heredoc_redirect(info);
-	apply_normal_redirections(info->redir_list);
+	apply_normal_redirections_piped(info->redir_list);
 	execute_simple_piped_cmd(argv);
 	exit(EXIT_FAILURE);
 }
