@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "gc_alloc.h"
+#include "minishell.h"
 
 /*
 ** @description
@@ -125,12 +126,15 @@ void	gc_free_all(void)
 	t_list	*curr;
 	t_list	*temp;
 
+	// if (get_info() -> env != NULL)
+	// 	free_env_list();
 	gc = get_gc();
 	curr = gc->head;
 	while (curr)
 	{
 		temp = curr->next;
-		free(curr->content);
+		if (curr -> content)
+			free(curr->content);
 		free(curr);
 		curr = temp;
 	}

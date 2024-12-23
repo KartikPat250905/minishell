@@ -56,12 +56,14 @@ void	child_exit(char **argv, char *path)
 		ft_putstr_fd(argv[0], 2);
 		ft_putendl_fd(": command not found", 2);
 		g_exit_status = 127;
+		gc_free_all();
 		exit(g_exit_status);
 	}
 	if (execve(path, argv, get_info()->envp) == -1)
 	{
 		perror("execve");
 		g_exit_status = 126;
+		gc_free_all();
 		exit(g_exit_status);
 	}
 }
@@ -84,6 +86,7 @@ void	resolve_and_exec_cmd(char **argv)
 			ft_putstr_fd(argv[0], 2);
 			ft_putendl_fd(": No such file or directory", 2);
 			g_exit_status = 127;
+			gc_free_all();
 			exit(g_exit_status);
 		}
 		paths = gc_split(path, ':', &n);

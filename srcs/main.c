@@ -13,7 +13,7 @@
 #include "minishell.h"
 #include "parsing.h"
 #include "execution.h"
-
+//ls cat ctrl d 3570 bytes
 //t_env	*g_env;
 int	g_exit_status;
 
@@ -22,10 +22,16 @@ static void	init_terminal_set(void)
 	struct termios	term;
 
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
+	{
+		gc_free_all();
 		exit(EXIT_FAILURE);
+	}
 	term.c_lflag &= ~ECHOCTL;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
+	{
+		gc_free_all();
 		exit(EXIT_FAILURE);
+	}
 }
 
 void	reset_to_tty(void)
@@ -51,6 +57,7 @@ void	main_loop(t_entry **table, char *input)
 		if (!input)
 		{
 			printf("Exit\n");
+			free(input);
 			break ;
 		}
 		if (*input)
@@ -93,6 +100,7 @@ int	main(int ac, char **av, char **envp)
 	init_terminal_set();
 	activate_signal_handler();
 	main_loop(table, input);
+	gc_free_all();
 	//clear_history();
 	//rl_clear_history();
 	rl_free_line_state();

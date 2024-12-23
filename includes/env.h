@@ -18,5 +18,6 @@ int		is_key_in_env(char *key);
 void	env_to_envp_print(void);
 void	add_if_key_exists(char *key, char *value);
 void	free_env_list(void);
+void	free_t_list(t_list **node);
 
 #endif

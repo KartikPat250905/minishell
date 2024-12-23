@@ -13,6 +13,7 @@
 #include "minishell.h"
 #include "parsing.h"
 #include "execution.h"
+#include "gc_alloc.h"
 
 void	handle_heredoc(char *end_word, t_exec_info *info)
 {
@@ -20,7 +21,7 @@ void	handle_heredoc(char *end_word, t_exec_info *info)
 	pid_t hd_pid;
 	char *line;
 	int status;
-	
+
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
@@ -51,6 +52,7 @@ void	handle_heredoc(char *end_word, t_exec_info *info)
 			free(line);
 		}
 		close(pipefd[1]);
+		gc_free_all();
 		exit(0);
 	}
 	else
@@ -75,7 +77,7 @@ void add_redirection_info(int type, char *filename, t_exec_info *info)
 	redir_info = gc_alloc(sizeof(t_redir_info));
 	redir_info->type = type;
 	redir_info->filename = env_expander(filename);
-	ft_lstadd_back(&info->redir_list, ft_lstnew(redir_info));
+	ft_lstadd_back(&info->redir_list, gc_lstnew(redir_info));
 }
 
 void gather_redirects(t_ast_node *node, t_exec_info *info)
@@ -154,6 +156,7 @@ void apply_normal_redirections_piped(t_list *normal_redirects)
 		fd = open_redirection(redir_info);
 		if (fd < 0)
 		{
+			gc_free_all();
 			exit(1); //is this the correct exit code? //return?
 		}
 		if (redir_info->type == RED_FO)

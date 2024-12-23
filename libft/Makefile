@@ -68,7 +68,8 @@ B_SOURCES = ft_lstnew_bonus.c \
 			gc_alloc/gc_strjoin.c \
 			gc_alloc/gc_substr.c \
 			gc_alloc/gc_calloc.c \
-			gc_alloc/gc_strndup.c
+			gc_alloc/gc_strndup.c \
+			gc_alloc/gc_lstnew.c
 
 #objects calls the .o equivalent of the sources.c files
 OBJECTS = $(SOURCES:.c=.o)
