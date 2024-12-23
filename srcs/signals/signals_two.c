@@ -47,3 +47,13 @@ void	restore_default_signals(void)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 }
+
+void	free_exit(int sig)
+{
+	if (sig == SIGINT)
+	{
+		g_exit_status = 130;
+		gc_free_all();
+		exit(g_exit_status);
+	}
+}

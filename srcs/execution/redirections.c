@@ -38,7 +38,7 @@ void	handle_heredoc(char *end_word, t_exec_info *info)
 	else if (hd_pid == 0)
 	{
 		close(pipefd[0]);
-		signal(SIGINT, SIG_DFL);
+		signal(SIGINT, free_exit);
 		signal(SIGQUIT, SIG_DFL);
 		while (1)
 		{
