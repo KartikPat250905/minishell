@@ -17,12 +17,12 @@ int	ft_count_nodes(t_env *env)
 	int	result;
 
 	result = 0;
-	while (env)
+	while (env -> next)
 	{
 		result++;
 		env = env -> next;
 	}
-	return (result);
+	return (result + 1);
 }
 
 char	**sort_list(t_env *env)
@@ -74,15 +74,17 @@ void	print_exported(t_env *env)
 	array = sort_list(copy);
 	while (array[i])
 	{
-		ft_putstr_fd("declare -x ", 1);
-		ft_putstr_fd(array[i], 1);
+		// ft_putstr_fd("declare -x ", 1);
+		// ft_putstr_fd(array[i], 1);
+		printf("declare -x %s", array[i]);
 		if (get_env(array[i]) && get_env(array[i])[0] != '\0')
 		{
-			ft_putstr_fd("=\"", 1);
-			ft_putstr_fd(get_env(array[i]), 1);
-			ft_putstr_fd("\"", 1);
+			printf("=\"%s\"", get_env(array[i]));
+			// ft_putstr_fd("=\"", 1);
+			// ft_putstr_fd(get_env(array[i]), 1);
+			// ft_putstr_fd("\"", 1);
 		}
-		ft_putchar_fd('\n', 1);
+		printf("\n");
 		i++;
 	}
 	gc_free_array(ft_count_nodes(copy), (void *)array);

@@ -43,7 +43,6 @@ void	execute_simple_cmd(t_ast_node *simple_cmd)
 	if (is_builtin(argv[0]))
 	{
 		execute_builtin_cmd(argv, &info);
-		gc_free_all();
 		return ;
 	}
 	else
