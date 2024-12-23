@@ -36,9 +36,9 @@ t_entry	*actual_lookup(t_entry **table, int state, int token)
 	i = 0;
 	if (!table)
 		return (NULL);
-	while (table[i])
+	while (i < 100 && table[i])
 	{
-		if (table[i]->state == state && table[i]->token_type == token)
+		if (table[i] && table[i]->state == state && table[i]->token_type == token)
 			return (table[i]);
 		i++;
 	}
@@ -52,6 +52,8 @@ t_entry	*table_lookup(t_stack *stack, t_token_stack *tokens, t_entry **table)
 	t_entry	*entry;
 
 	state = -2;
+	if (!stack || !tokens)
+		return (NULL);
 	if (stack->top)
 		state = stack->top->value;
 	token = -2;

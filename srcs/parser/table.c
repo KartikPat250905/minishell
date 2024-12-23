@@ -54,7 +54,7 @@ t_entry	**create_table(void)
 	table = gc_alloc(sizeof(t_entry *) * (100 + 1));
 	if (!table)
 		return (NULL);
-	table[100] = NULL;
+	//table[100] = NULL;
 	while (i < 100)
 	{
 		line = get_line(i);
@@ -68,5 +68,6 @@ t_entry	**create_table(void)
 		}
 		i++;
 	}
+	table[i] = NULL;
 	return (table);
 }

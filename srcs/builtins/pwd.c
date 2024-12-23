@@ -23,8 +23,12 @@ int	ft_pwd(char **argv)
 	}
 	pwd = getcwd(NULL, 0);
 	if (pwd == NULL)
+	{
+		perror("getcwd");
 		return (1);
+	}
 	ft_putstr_fd(pwd, 1);
 	ft_putstr_fd("\n", 1);
+	free(pwd);
 	return (0);
 }
