@@ -16,9 +16,8 @@
 
 void	handle_heredoc_child(char *end_word, int write_fd)
 {
-	char *line;
+	char	*line;
 
-	//close(STDIN_FILENO); //not sure
 	signal(SIGINT, free_exit);
 	signal(SIGQUIT, SIG_DFL);
 	while (1)
@@ -27,7 +26,7 @@ void	handle_heredoc_child(char *end_word, int write_fd)
 		if (!line || ft_strcmp(line, end_word) == 0)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		ft_putendl_fd(line, write_fd);
 		free(line);
@@ -39,8 +38,8 @@ void	handle_heredoc_child(char *end_word, int write_fd)
 
 void	handle_heredoc(char *end_word, t_exec_info *info)
 {
-	int pipefd[2];
-	pid_t hd_pid;
+	int		pipefd[2];
+	pid_t	hd_pid;
 
 	if (pipe(pipefd) == -1)
 	{

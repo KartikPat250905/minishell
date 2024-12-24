@@ -30,7 +30,7 @@ int		ft_echo(char **av);
 int		ft_env(char **av);
 int		ft_export(char **av);
 int		ft_unset(char **av);
-int		ft_exit(char **av);
+void	ft_exit(char **av);
 
 void	free_str_array(char **str);
 void	update_envp(void);

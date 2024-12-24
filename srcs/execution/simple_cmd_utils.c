@@ -24,14 +24,14 @@ void	wait_for_child(pid_t pid)
 {
 	int	status;
 	int	signal_num;
-	int result;
+	int	result;
 
 	result = 0;
-	ignore_signals(); //not sure
+	ignore_signals();
 	result = waitpid(pid, &status, 0);
 	if (result < 0)
 	{
-		g_exit_status = EXIT_FAILURE; //not sure
+		g_exit_status = EXIT_FAILURE;
 	}
 	if (WIFEXITED(status))
 		g_exit_status = WEXITSTATUS(status);
@@ -39,7 +39,6 @@ void	wait_for_child(pid_t pid)
 	{
 		signal_num = WTERMSIG(status);
 		g_exit_status = 128 + signal_num;
-		//get_info()->flag = 0;
 	}
 }
 

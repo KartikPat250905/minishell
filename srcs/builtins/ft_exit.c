@@ -44,7 +44,7 @@ int	get_exit_code(char **av)
 	return (exit_code);
 }
 
-int	ft_exit(char **av)
+void	ft_exit(char **av)
 {
 	int	exit_code;
 
@@ -66,11 +66,9 @@ int	ft_exit(char **av)
 		printf("minishell: exit: numeric argument required\n");
 		exit_code = 2;
 	}
-	//gc_free_all();
 	g_exit_status = exit_code;
 	printf("exit\n");
 	free_env_list();
 	gc_free_all();
 	exit(exit_code);
-	return (1);
 }

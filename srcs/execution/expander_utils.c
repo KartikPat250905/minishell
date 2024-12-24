@@ -83,5 +83,3 @@ int	handle_expansion(char **pre, char *str, int *i)
 	}
 	return (0);
 }
-
-

@@ -13,11 +13,10 @@
 #include "minishell.h"
 #include "parsing.h"
 #include "execution.h"
-//#include "gc_alloc.h"
 
-void add_redirection_info(int type, char *filename, t_exec_info *info)
+void	add_redirection_info(int type, char *filename, t_exec_info *info)
 {
-	t_redir_info *redir_info;
+	t_redir_info	*redir_info;
 
 	redir_info = gc_alloc(sizeof(t_redir_info));
 	redir_info->type = type;
@@ -25,18 +24,17 @@ void add_redirection_info(int type, char *filename, t_exec_info *info)
 	ft_lstadd_back(&info->redir_list, gc_lstnew(redir_info));
 }
 
-void gather_redirects(t_ast_node *node, t_exec_info *info)
+void	gather_redirects(t_ast_node *node, t_exec_info *info)
 {
-	int type;
-	int i;
+	int	type;
+	int	i;
 
 	if (!node)
-		return;
-
+		return ;
 	if (node->type == IO_REDIRECT)
 	{
 		type = get_redirect_type(node);
-		if (type == DLESS) // <<
+		if (type == DLESS)
 			handle_heredoc(get_here_end_word(node), info);
 		else if (type == RED_FO || type == RED_TO || type == DGREAT)
 			add_redirection_info(type, get_filename(node), info);
@@ -52,7 +50,7 @@ void gather_redirects(t_ast_node *node, t_exec_info *info)
 
 int	open_redirection(t_redir_info *redir_info)
 {
-	int fd;
+	int	fd;
 
 	fd = -1;
 	if (redir_info->type == RED_FO)
@@ -68,8 +66,8 @@ int	open_redirection(t_redir_info *redir_info)
 
 int	apply_normal_redirections(t_list *normal_redirects)
 {
-	t_redir_info *redir_info;
-	int			fd;
+	t_redir_info	*redir_info;
+	int				fd;
 
 	while (normal_redirects)
 	{
@@ -90,10 +88,10 @@ int	apply_normal_redirections(t_list *normal_redirects)
 	return (0);
 }
 
-void apply_normal_redirections_piped(t_list *normal_redirects)
+void	apply_normal_redirections_piped(t_list *normal_redirects)
 {
-	t_redir_info *redir_info;
-	int			fd;
+	t_redir_info	*redir_info;
+	int				fd;
 
 	while (normal_redirects)
 	{
@@ -102,7 +100,7 @@ void apply_normal_redirections_piped(t_list *normal_redirects)
 		if (fd < 0)
 		{
 			gc_free_all();
-			exit(1); //is this the correct exit code? //return?
+			exit(1);
 		}
 		if (redir_info->type == RED_FO)
 			dup2(fd, STDIN_FILENO);

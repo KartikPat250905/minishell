@@ -38,7 +38,8 @@ t_entry	*actual_lookup(t_entry **table, int state, int token)
 		return (NULL);
 	while (i < 100 && table[i])
 	{
-		if (table[i] && table[i]->state == state && table[i]->token_type == token)
+		if (table[i] && table[i]->state == state
+			&& table[i]->token_type == token)
 			return (table[i]);
 		i++;
 	}

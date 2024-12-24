@@ -16,7 +16,7 @@
 
 void	create_pipes(int *pipefds, int pipe_count)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < pipe_count)
@@ -34,14 +34,13 @@ void	create_pipes(int *pipefds, int pipe_count)
 
 void	execute_pipeline(t_ast_node **commands, int cmd_count)
 {
-	t_pipe_data pd;
-	int i;
+	t_pipe_data	pd;
+	int			i;
 
 	pd.pipe_count = cmd_count - 1;
 	pd.cmd_count = cmd_count;
 	pd.pipefds = gc_alloc(pd.pipe_count * 2 * sizeof(int));
 	pd.pids = gc_alloc(pd.cmd_count * sizeof(pid_t));
-
 	create_pipes(pd.pipefds, pd.pipe_count);
 	ignore_signals();
 	i = 0;
@@ -57,7 +56,7 @@ void	execute_pipeline(t_ast_node **commands, int cmd_count)
 
 void	close_pipes(int *pipefds, int pipe_count)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < pipe_count * 2)
@@ -69,8 +68,8 @@ void	close_pipes(int *pipefds, int pipe_count)
 
 void	wait_for_children(pid_t *pids, int cmd_count)
 {
-	int status;
-	int i;
+	int	status;
+	int	i;
 
 	i = 0;
 	status = 0;
