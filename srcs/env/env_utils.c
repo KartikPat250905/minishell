@@ -45,6 +45,8 @@ void	env_to_envp_print(void)
 	t_env	*env;
 
 	env = get_info()->env;
+	if (env == NULL)
+		return ;
 	while (env)
 	{
 		if (env -> value[0] == '\0')
