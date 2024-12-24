@@ -51,21 +51,20 @@ void	ft_exit(char **av)
 	exit_code = 2;
 	if (av[0] && !av[1])
 		exit_code = 0;
-	else if ((av[1][0] == '+' || av[1][0] == '-' || ft_isdigit(av[1][0])))
+	else if ((av[1][0] == '+' || av[1][0] == '-' || ft_isdigit(av[1][0])) && !av[1])
 	{
 		exit_code = get_exit_code(av);
 		if ((ft_strlen(av[1]) > 19 && av[1][0] != '-') ||
 			(ft_strlen(av[1]) > 19 && av[1][0] == '-'))
-		{
 			printf("minishell: exit: numeric argument required\n");
-			exit_code = 2;
-		}
+	}
+	else if (av[1] && av[2])
+	{
+		exit_code = 1;
+		printf("minishell: exit: too many arguments.\n");
 	}
 	else
-	{
 		printf("minishell: exit: numeric argument required\n");
-		exit_code = 2;
-	}
 	g_exit_status = exit_code;
 	printf("exit\n");
 	free_env_list();
