@@ -23,15 +23,14 @@ void	free_node_unset(char *key)
 	{
 		if (!ft_strcmp(key, env -> key))
 			break ;
-		prev = env;
+		if (prev != NULL)
+			prev = env;
 		env = env -> next;
 	}
-	if (!env)
-		return ;
 	if (prev != NULL)
 		prev -> next = env -> next;
 	else
-		prev->next = env->next;
+		get_info()->env = env -> next;
 	env -> next = NULL;
 	free(env -> key);
 	free(env -> value);

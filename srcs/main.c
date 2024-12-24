@@ -56,7 +56,6 @@ void	main_loop(t_entry **table, char *input)
 		if (!input)
 		{
 			printf("Exit\n");
-			free_env_list();
 			free(input);
 			g_exit_status = 0;
 			break ;
@@ -95,6 +94,7 @@ int	main(int ac, char **av, char **envp)
 	activate_signal_handler();
 	main_loop(table, input);
 	gc_free_all();
+	free_env_list();
 	rl_free_line_state();
 	return (g_exit_status);
 }
