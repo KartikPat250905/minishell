@@ -43,14 +43,14 @@ void	reset_to_tty(void)
 		dup2(tty_fd, STDIN_FILENO);
 		close(tty_fd);
 	}
+	get_info()->flag = 1;
+	activate_signal_parent();
 }
 
 void	main_loop(t_entry **table, char *input)
 {
 	while (1)
 	{
-		get_info()->flag = 1;
-		activate_signal_parent();
 		reset_to_tty();
 		input = readline("microshell> ");
 		if (!input)
@@ -58,6 +58,7 @@ void	main_loop(t_entry **table, char *input)
 			printf("Exit\n");
 			free_env_list();
 			free(input);
+			g_exit_status = 0;
 			break ;
 		}
 		if (*input)
