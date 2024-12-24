@@ -92,7 +92,8 @@ void		print_tokens(t_token_stack *tokens, char *name);
 //lookups.c
 t_entry		*non_terminal_lookup(t_entry **table, int state, int non_terminal);
 t_entry		*actual_lookup(t_entry **table, int state, int token);
-t_entry		*table_lookup(t_stack *stack, t_token_stack *tokens, t_entry **table);
+t_entry		*table_lookup(t_stack *stack,
+				t_token_stack *tokens, t_entry **table);
 
 //actions.c
 int			action_shift(t_stack *stack, t_entry *entry, t_token_stack *tokens);
@@ -102,7 +103,8 @@ int			action_goto(t_stack *stack, t_entry *entry);
 
 //ast.c
 t_ast_node	**children_alloc_and_fill(t_stack *stack, int reduce);
-t_ast_node	*init_ast_node(int type, t_token_node *token, t_ast_node **children, int child_count);
+t_ast_node	*init_ast_node(int type, t_token_node *token,
+				t_ast_node **children, int child_count);
 t_ast_node	*get_ast_root(t_stack *stack);
 
 //parsing.c

@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-//getters
 t_info	*get_info(void)
 {
 	static t_info	info;

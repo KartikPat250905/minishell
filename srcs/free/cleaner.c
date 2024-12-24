@@ -44,7 +44,6 @@ void	free_t_list(t_list **node)
 	t_list	*head;
 
 	head = *node;
-	//printf("I am in free_t_list\n");
 	while (head != NULL)
 	{
 		next = head->next;

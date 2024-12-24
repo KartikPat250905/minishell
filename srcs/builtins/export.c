@@ -40,7 +40,8 @@ char	**sort_list(t_env *env)
 		flag = 0;
 		while (strings[i])
 		{
-			if (strings[i + 1] != NULL && ft_strcmp(strings[i], strings[i + 1]) > 0)
+			if (strings[i + 1] != NULL
+				&& ft_strcmp(strings[i], strings[i + 1]) > 0)
 			{
 				flag = 1;
 				temp = strings[i];
@@ -76,15 +77,10 @@ void	print_exported(t_env *env)
 	array = sort_list(copy);
 	while (array[i])
 	{
-		// ft_putstr_fd("declare -x ", 1);
-		// ft_putstr_fd(array[i], 1);
 		printf("declare -x %s", array[i]);
 		if (get_env(array[i]) && get_env(array[i])[0] != '\0')
 		{
 			printf("=\"%s\"", get_env(array[i]));
-			// ft_putstr_fd("=\"", 1);
-			// ft_putstr_fd(get_env(array[i]), 1);
-			// ft_putstr_fd("\"", 1);
 		}
 		printf("\n");
 		i++;

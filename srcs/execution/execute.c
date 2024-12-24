@@ -54,7 +54,10 @@ int	execute_builtin(char **argv)
 		return (g_exit_status);
 	}
 	else if (!ft_strcmp(argv[0], "exit"))
-		return (ft_exit(argv));
+	{
+		ft_exit(argv);
+		return (1);
+	}
 	return (0);
 }
 

@@ -13,8 +13,7 @@
 #include "minishell.h"
 #include "parsing.h"
 #include "execution.h"
-//ls cat ctrl d 3570 bytes
-//t_env	*g_env;
+
 int	g_exit_status;
 
 static void	init_terminal_set(void)
@@ -69,12 +68,9 @@ void	main_loop(t_entry **table, char *input)
 			{
 				if (parsing_main(get_info()->tokens, table) == ACCEPT)
 					execute_ast(get_info()->ast);
-				//free_tokens_stack();
 			}
-			//free_ast(get_info()->ast);
 		}
 		free(input);
-		//gc_free_all();
 	}
 }
 
@@ -91,19 +87,13 @@ int	main(int ac, char **av, char **envp)
 	if (ac > 1)
 		info->debug = true;
 	info->tokens = gc_alloc(sizeof(t_token_stack));
-	//if (!info->tokens)
-		//printf(error alloc); //exit(EXIT_FAILURE);
 	fetch_envp(envp);
 	update_envp();
 	table = create_table();
-	//if (!table)
-		//printf(error alloc); //exit(EXIT_FAILURE); //free_tokens_stack();
 	init_terminal_set();
 	activate_signal_handler();
 	main_loop(table, input);
 	gc_free_all();
-	//clear_history();
-	//rl_clear_history();
 	rl_free_line_state();
 	return (g_exit_status);
 }

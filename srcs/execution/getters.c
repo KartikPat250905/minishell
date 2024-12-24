@@ -19,19 +19,17 @@ t_ast_node	**get_simple_cmds(t_ast_node *node, int *count)
 	t_ast_node	**simple_cmds;
 	t_ast_node	**left_cmds;
 	int			i;
-	int	left_count;
+	int			left_count;
 
-	if (node->child_count == 1) //kinda hardcoded, is this creating the segfault?
+	if (node->child_count == 1)
 	{
 		simple_cmds = gc_alloc(sizeof(t_ast_node *));
-		//if (!simple_cmds)
 		simple_cmds[0] = node->children[0];
 		*count = 1;
 		return (simple_cmds);
 	}
 	left_cmds = get_simple_cmds(node->children[0], &left_count);
 	simple_cmds = gc_alloc(sizeof(t_ast_node *) * (left_count + 1));
-	//if (!simple_cmds)
 	i = 0;
 	while (i < left_count)
 	{
@@ -43,10 +41,10 @@ t_ast_node	**get_simple_cmds(t_ast_node *node, int *count)
 	return (simple_cmds);
 }
 
-int get_redirect_type(t_ast_node *io_redirect_node)
+int	get_redirect_type(t_ast_node *io_redirect_node)
 {
-	t_ast_node *child;
-	t_ast_node *op_node;
+	t_ast_node	*child;
+	t_ast_node	*op_node;
 
 	child = io_redirect_node->children[0];
 	if (child->type == IO_FILE)
@@ -68,12 +66,12 @@ int get_redirect_type(t_ast_node *io_redirect_node)
 	return (-1);
 }
 
-char *get_filename(t_ast_node *io_redirect_node)
+char	*get_filename(t_ast_node *io_redirect_node)
 {
-	t_ast_node *child;
-	t_ast_node *filename;
-	t_ast_node *here_end;
-	t_ast_node *word;
+	t_ast_node	*child;
+	t_ast_node	*filename;
+	t_ast_node	*here_end;
+	t_ast_node	*word;
 
 	child = io_redirect_node->children[0];
 	if (child->type == IO_FILE)
@@ -91,11 +89,11 @@ char *get_filename(t_ast_node *io_redirect_node)
 	return (NULL);
 }
 
-char *get_here_end_word(t_ast_node *io_redirect)
+char	*get_here_end_word(t_ast_node *io_redirect)
 {
-	t_ast_node *io_here;
-	t_ast_node *here_end;
-	t_ast_node *word;
+	t_ast_node	*io_here;
+	t_ast_node	*here_end;
+	t_ast_node	*word;
 
 	io_here = io_redirect->children[0];
 	here_end = io_here->children[1];

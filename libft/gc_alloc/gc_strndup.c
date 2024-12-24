@@ -1,4 +1,4 @@
-# include "gc_alloc.h"
+#include "gc_alloc.h"
 
 char	*gc_strndup(char *s, int n)
 {

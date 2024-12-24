@@ -105,7 +105,7 @@ char	**build_argv(t_ast_node *simple_command)
 	{
 		free_t_list(&words);
 		return (NULL);
-  } 
+	}
 	i = 0;
 	while (words)
 	{
@@ -114,7 +114,7 @@ char	**build_argv(t_ast_node *simple_command)
 		words = words->next;
 	}
 	argv[i] = NULL;
-  free_t_list(&words);
+	free_t_list(&words);
 	if (get_debug())
 		debug_print_argv(argv);
 	return (argv);

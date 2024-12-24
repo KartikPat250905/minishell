@@ -63,7 +63,8 @@ void	setup_child_pipes(t_pipe_data *pd, int index)
 	close_pipes(pd->pipefds, pd->pipe_count);
 }
 
-void	handle_child_process(t_pipe_data *pd, int index, t_exec_info *info, char **argv)
+void	handle_child_process(t_pipe_data *pd, int index,
+		t_exec_info *info, char **argv)
 {
 	setup_child_pipes(pd, index);
 	if (info->heredoc_fd != -1)
