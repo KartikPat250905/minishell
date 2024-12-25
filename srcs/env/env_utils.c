@@ -45,18 +45,20 @@ void	env_to_envp_print(void)
 	t_env	*env;
 
 	env = get_info()->env;
-	if (env == NULL)
+	if (!env)
 		return ;
 	while (env)
 	{
-		if (env -> value[0] == '\0')
+		if (env -> value && env -> value[0] == '\0')
 		{
 			env = env -> next;
 			continue ;
 		}
-		ft_putstr_fd(env->key, 1);
+		if (env -> key)
+			ft_putstr_fd(env->key, 1);
 		ft_putchar_fd('=', 1);
-		ft_putstr_fd(env ->value, 1);
+		if (env -> value)
+			ft_putstr_fd(env ->value, 1);
 		ft_putchar_fd('\n', 1);
 		env = env->next;
 	}

@@ -30,8 +30,8 @@ int	go_home(void)
 			return (1);
 		}
 	}
-	add_to_env_list("OLDPWD", get_env("PWD"), 0);
-	add_to_env_list("PWD", home_path, 1);
+	add_to_env_list(ft_strdup("OLDPWD"), ft_strdup(get_env("PWD")), 0);
+	add_to_env_list(ft_strdup("PWD"), home_path, 1);
 	return (0);
 }
 
@@ -39,14 +39,14 @@ int	update_cd_env(void)
 {
 	char	*cwd;
 
-	add_to_env_list("OLDPWD", get_env("PWD"), 0);
+	add_to_env_list(ft_strdup("OLDPWD"), ft_strdup(get_env("PWD")), 0);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
 		printf("minishell: cd: getcwd failed\n");
 		return (0);
 	}
-	add_to_env_list("PWD", gc_strdup(cwd), 1);
+	add_to_env_list(ft_strdup("PWD"), ft_strdup(cwd), 1);
 	free(cwd);
 	return (1);
 }
