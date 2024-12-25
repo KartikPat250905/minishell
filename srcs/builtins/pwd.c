@@ -29,6 +29,6 @@ int	ft_pwd(char **argv)
 	}
 	ft_putstr_fd(pwd, 1);
 	ft_putstr_fd("\n", 1);
-	free(pwd);
+	add_to_env_list(ft_strdup("PWD"), pwd, 0);
 	return (0);
 }

@@ -23,10 +23,11 @@ void	free_node_unset(char *key)
 	{
 		if (!ft_strcmp(key, env -> key))
 			break ;
-		if (prev != NULL)
-			prev = env;
+		prev = env;
 		env = env -> next;
 	}
+	if (env == NULL)
+		return ;
 	if (prev != NULL)
 		prev -> next = env -> next;
 	else

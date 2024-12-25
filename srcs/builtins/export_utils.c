@@ -78,12 +78,12 @@ void	export_var(char **av)
 		eq = ft_strchr(av[i], '=');
 		if (!eq)
 		{
-			add_to_env_list(gc_strdup(av[i]), gc_strdup(""), 1);
+			add_to_env_list(ft_strdup(av[i]), ft_strdup(""), 1);
 			i++;
 			continue ;
 		}
 		len = eq - av[i];
-		add_to_env_list(gc_strndup(av[i++], len), gc_strdup(eq + 1), 1);
+		add_to_env_list(ft_strndup(av[i++], len), ft_strdup(eq + 1), 1);
 	}
 	update_envp();
 }
