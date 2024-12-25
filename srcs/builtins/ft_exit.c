@@ -51,7 +51,8 @@ void	ft_exit(char **av)
 	exit_code = 2;
 	if (av[0] && !av[1])
 		exit_code = 0;
-	else if ((av[1][0] == '+' || av[1][0] == '-' || ft_isdigit(av[1][0])) && !av[1])
+	else if ((av[1][0] == '+' || av[1][0] == '-'
+			|| ft_isdigit(av[1][0])) && !av[1])
 	{
 		exit_code = get_exit_code(av);
 		if ((ft_strlen(av[1]) > 19 && av[1][0] != '-') ||

@@ -39,7 +39,7 @@ void	wait_for_child(pid_t pid)
 	{
 		signal_num = WTERMSIG(status);
 		g_exit_status = 128 + signal_num;
-		get_info() -> flag = 0;
+		get_info()->flag = 0;
 	}
 }
 

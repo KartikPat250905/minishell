@@ -100,6 +100,6 @@ void	wait_for_child_pipe(pid_t pid, int *status)
 		signal_num = WTERMSIG(*status);
 		if (signal_num == SIGINT)
 			g_exit_status = 130;
-		get_info() -> flag = 0;
+		get_info()->flag = 0;
 	}
 }

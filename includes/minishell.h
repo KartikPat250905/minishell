@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: karpatel <karpatel@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/25 11:43:10 by karpatel          #+#    #+#             */
+/*   Updated: 2024/12/25 11:43:11 by karpatel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -11,11 +23,9 @@
 # include "gc_alloc.h"
 # include "lexer.h"
 # include "signals.h"
-//# include "parsing.h"
 # include "builtins.h"
 # include "env.h"
 # include <termios.h>
-//# include "execution.h"
 
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -28,10 +38,10 @@ typedef struct s_info
 	bool						debug;
 	bool						flag;
 	t_token_stack				*tokens;
-	t_env						*env; //head of a linked list
+	t_env						*env;
 	int							exit_status;
 	t_ast_node					*ast;
-	char						**envp; //move here //array //because of execve
+	char						**envp;
 }						t_info;
 
 t_info							*get_info(void);
