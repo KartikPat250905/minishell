@@ -41,7 +41,7 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 		return ;
 	}
 	i = 0;
-	while (i < node->child_count && g_exit_status != 130)
+	while (i < node->child_count)
 	{
 		gather_redirects(node->children[i], info);
 		i++;
