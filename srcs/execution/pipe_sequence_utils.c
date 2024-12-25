@@ -33,6 +33,7 @@ bool	execute_single_command(t_ast_node *command, int index, t_pipe_data *pd)
 	{
 		perror("fork");
 		gc_free_all();
+		free_env_list();
 		exit(EXIT_FAILURE);
 	}
 	else if (pd->pids[index] == 0)
@@ -48,6 +49,7 @@ void	setup_child_pipes(t_pipe_data *pd, int index)
 		{
 			perror("dup2 input");
 			gc_free_all();
+			free_env_list();
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -57,6 +59,7 @@ void	setup_child_pipes(t_pipe_data *pd, int index)
 		{
 			perror("dup2 output");
 			gc_free_all();
+			free_env_list();
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -73,12 +76,14 @@ void	handle_child_process(t_pipe_data *pd, int index,
 		{
 			perror("dup2 heredoc");
 			gc_free_all();
+			free_env_list();
 			exit(EXIT_FAILURE);
 		}
 		close(info->heredoc_fd);
 	}
 	apply_normal_redirections_piped(info->redir_list);
 	execute_simple_piped_cmd(argv);
+	free_env_list();
 	gc_free_all();
 	exit(EXIT_FAILURE);
 }

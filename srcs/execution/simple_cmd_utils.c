@@ -39,6 +39,7 @@ void	wait_for_child(pid_t pid)
 	{
 		signal_num = WTERMSIG(status);
 		g_exit_status = 128 + signal_num;
+		get_info() -> flag = 0;
 	}
 }
 
@@ -85,6 +86,7 @@ void	execute_external_cmd(char **argv, t_exec_info *info)
 		if (apply_normal_redirections(info->redir_list) == EXIT_FAILURE)
 		{
 			gc_free_all();
+			free_env_list();
 			exit(g_exit_status);
 		}
 		resolve_and_exec_cmd(argv);

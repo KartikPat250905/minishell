@@ -23,12 +23,14 @@ static void	init_terminal_set(void)
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
 	{
 		gc_free_all();
+		free_env_list();
 		exit(EXIT_FAILURE);
 	}
 	term.c_lflag &= ~ECHOCTL;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
 	{
 		gc_free_all();
+		free_env_list();
 		exit(EXIT_FAILURE);
 	}
 }

@@ -18,7 +18,7 @@ void	handle_heredoc_child(char *end_word, int write_fd)
 {
 	char	*line;
 
-	signal(SIGINT, free_exit);
+	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	while (1)
 	{
@@ -32,6 +32,7 @@ void	handle_heredoc_child(char *end_word, int write_fd)
 		free(line);
 	}
 	close(write_fd);
+	free_env_list();
 	gc_free_all();
 	exit(EXIT_SUCCESS);
 }
