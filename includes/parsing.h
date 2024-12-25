@@ -40,8 +40,8 @@ typedef enum e_non_terminals
 	IO_REDIRECT = 16,
 	IO_FILE = 17,
 	IO_HERE = 19,
-	FILENAME = 21, //upd from 18 to 21
-	HERE_END = 23, //upd from 20 to 23
+	FILENAME = 21,
+	HERE_END = 23,
 	DEFAULT = -1,
 }				t_rules;
 
@@ -60,7 +60,7 @@ typedef struct s_entry
 
 typedef struct s_ast_node
 {
-	int					type; //rename to symbol?
+	int					type;
 	t_token_node		*token;
 	struct s_ast_node	**children;
 	int					child_count;
@@ -68,7 +68,7 @@ typedef struct s_ast_node
 
 typedef struct s_node
 {
-	int				value; //state or terminal/non-terminal
+	int				value;
 	t_ast_node		*ast_node;
 	struct s_node	*next;
 }	t_node;

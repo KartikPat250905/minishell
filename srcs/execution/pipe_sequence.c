@@ -26,6 +26,7 @@ void	create_pipes(int *pipefds, int pipe_count)
 			perror("pipe");
 			g_exit_status = EXIT_FAILURE;
 			gc_free_all();
+			free_env_list();
 			exit(g_exit_status);
 		}
 		i++;
@@ -99,5 +100,6 @@ void	wait_for_child_pipe(pid_t pid, int *status)
 		signal_num = WTERMSIG(*status);
 		if (signal_num == SIGINT)
 			g_exit_status = 130;
+		get_info()->flag = 0;
 	}
 }

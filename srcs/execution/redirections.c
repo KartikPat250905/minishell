@@ -41,7 +41,7 @@ void	gather_redirects(t_ast_node *node, t_exec_info *info)
 		return ;
 	}
 	i = 0;
-	while (i < node->child_count)
+	while (i < node->child_count && g_exit_status != 130)
 	{
 		gather_redirects(node->children[i], info);
 		i++;
@@ -100,6 +100,7 @@ void	apply_normal_redirections_piped(t_list *normal_redirects)
 		if (fd < 0)
 		{
 			gc_free_all();
+			free_env_list();
 			exit(1);
 		}
 		if (redir_info->type == RED_FO)

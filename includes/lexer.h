@@ -57,7 +57,6 @@ typedef struct s_token_node
 {
 	int					type;
 	char				*value;
-	//t_quote_state		state;
 	struct s_token_node	*next;
 }	t_token_node;
 
