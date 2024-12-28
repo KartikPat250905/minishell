@@ -57,6 +57,20 @@ int	is_edge(char *str)
 	return (0);
 }
 
+int	is_only_spaces(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!ft_isspace(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	export_var(char **av)
 {
 	int		i;
@@ -66,7 +80,7 @@ void	export_var(char **av)
 	i = 1;
 	while (av[i])
 	{
-		if (is_edge(av[i]))
+		if (is_edge(av[i]) || is_only_spaces(av[i]))
 		{
 			printf("minishell: export: `%s':"
 				"not a valid identifier\n", av[i++]);
