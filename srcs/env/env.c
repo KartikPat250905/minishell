@@ -17,6 +17,8 @@ int	add_to_env_list(char *key, char *value, int is_env)
 	t_env	*new;
 	t_env	*head;
 
+	if (!key || !value)
+		free_and_exit();
 	if (!is_key_in_env(key))
 	{
 		add_if_key_exists(key, value);
@@ -24,7 +26,7 @@ int	add_to_env_list(char *key, char *value, int is_env)
 	}
 	new = malloc(sizeof(t_env));
 	if (!new)
-		return (1);
+		free_and_exit();
 	new -> key = key;
 	new -> value = value;
 	new -> is_env = is_env;
@@ -55,7 +57,7 @@ t_env	*init_env_node(char *env, int if_env)
 
 	node = malloc(sizeof(t_env));
 	if (!node)
-		return (NULL);
+		free_and_exit();
 	key = ft_substr(env, 0, ft_strchr(env, '=') - env);
 	value = ft_substr(env, ft_strchr(env, '=') - env + 1,
 			ft_strlen(env) - (ft_strchr(env, '=') - env) - 1);

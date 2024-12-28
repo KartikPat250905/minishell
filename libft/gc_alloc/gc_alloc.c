@@ -50,16 +50,13 @@ void	*gc_alloc(size_t size)
 
 	gc = get_gc();
 	if (!size)
-		return (NULL);
+		free_and_exit();
 	ptr = malloc(size);
 	if (!ptr)
-		return (NULL);
+		free_and_exit();
 	node = ft_lstnew(ptr);
 	if (!node)
-	{
-		free(ptr);
-		return (NULL);
-	}
+		free_and_exit();
 	ft_bzero(ptr, size);
 	ft_lstadd_front(&(gc->head), node);
 	return (ptr);

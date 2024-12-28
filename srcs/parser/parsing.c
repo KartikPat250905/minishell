@@ -67,12 +67,6 @@ int	parser(void)
 
 	get_info()->table = create_table();
 	stack = init_parsing_stack();
-	if (!get_info()->table || !stack)
-	{
-		g_exit_status = EXIT_FAILURE;
-		get_info()->break_flag = true;
-		return (-2);
-	}
 	ret = parsing_loop(stack);
 	if (ret == ACCEPT)
 	{

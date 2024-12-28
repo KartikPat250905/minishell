@@ -1,7 +1,7 @@
 NAME = minishell
 CC = cc
 INCLUDES = -Iincludes -I/opt/homebrew/opt/readline/include
-CFLAGS = -g -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 HEADER = minishell.h
 
 LIBFT = ./libft
@@ -36,6 +36,7 @@ SOURCES = srcs/info.c \
 		  srcs/execution/redirections.c \
 		  srcs/execution/getters.c \
 		  srcs/execution/execute.c \
+		  srcs/terminal_utils.c \
 		  srcs/main.c \
 		  srcs/signals/signals.c \
 		  srcs/signals/signals_two.c \

@@ -24,18 +24,6 @@ t_token_node	*create_token(t_token type, char *value)
 	new_node -> value = value;
 	return (new_node);
 }
-//new_stack->top = NULL;
-//new_stack->size = 0;
-
-// t_token_stack	*init_token_stack(void)
-// {
-// 	t_token_stack	*new_stack;
-
-// 	new_stack = gc_alloc(sizeof(t_token_stack));
-// 	if (!new_stack)
-// 		return (NULL);
-// 	return (new_stack);
-// }
 
 void	print_token_stack(t_token_stack *stack, char *name)
 {

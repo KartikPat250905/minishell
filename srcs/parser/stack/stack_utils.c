@@ -35,15 +35,3 @@ t_node	*init_node(int value)
 	new_node->value = value;
 	return (new_node);
 }
-
-/*
-int	free_stack(t_stack *stack, int send_error)
-{
-	while (stack->size)
-		free(pop(stack));
-	free(stack);
-	if (send_error)
-		write(2, "Error\n", 6);
-	return (0);
-}
-*/

@@ -98,12 +98,6 @@ void	lexer(char *input)
 
 	get_info()->tokens = gc_alloc(sizeof(t_token_stack));
 	rev_tokens = gc_alloc(sizeof(t_token_stack));
-	if (!get_info()->tokens || !rev_tokens)
-	{
-		g_exit_status = EXIT_FAILURE;
-		get_info()->break_flag = true;
-		return ;
-	}
 	init_iterators(&it, input);
 	while (it.cur < it.len)
 	{

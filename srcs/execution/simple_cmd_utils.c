@@ -54,13 +54,16 @@ void	execute_builtin_cmd(char **argv, t_exec_info *info)
 		return ;
 	if (info->heredoc_fd != -1)
 	{
-		dup2(info->heredoc_fd, STDIN_FILENO);
+		if (dup2(info->heredoc_fd, STDIN_FILENO) < 0)
+			free_and_exit();
 		close(info->heredoc_fd);
 	}
 	if (apply_normal_redirections(info->redir_list) != EXIT_FAILURE)
 		g_exit_status = execute_builtin(argv);
-	dup2(original_in, STDIN_FILENO);
-	dup2(original_out, STDOUT_FILENO);
+	if (dup2(original_in, STDIN_FILENO) < 0)
+		free_and_exit();
+	if (dup2(original_out, STDOUT_FILENO) < 0)
+		free_and_exit();
 	close(original_in);
 	close(original_out);
 }
@@ -71,16 +74,14 @@ void	execute_external_cmd(char **argv, t_exec_info *info)
 
 	pid = fork();
 	if (pid < 0)
-	{
-		perror("fork");
 		return ;
-	}
 	else if (pid == 0)
 	{
 		activate_signal_handler();
 		if (info->heredoc_fd != -1)
 		{
-			dup2(info->heredoc_fd, STDIN_FILENO);
+			if (dup2(info->heredoc_fd, STDIN_FILENO) < 0)
+				free_and_exit();
 			close(info->heredoc_fd);
 		}
 		if (apply_normal_redirections(info->redir_list) == EXIT_FAILURE)
@@ -91,6 +92,5 @@ void	execute_external_cmd(char **argv, t_exec_info *info)
 		}
 		resolve_and_exec_cmd(argv);
 	}
-	else
-		wait_for_child(pid);
+	wait_for_child(pid);
 }

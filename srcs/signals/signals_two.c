@@ -29,7 +29,8 @@ void	hd_sig_handler(int sig)
 		null_fd = open("/dev/null", O_RDONLY);
 		if (null_fd >= 0)
 		{
-			dup2(null_fd, STDIN_FILENO);
+			if (dup2(null_fd, STDIN_FILENO) < 0)
+				free_and_exit();
 			close(null_fd);
 		}
 		g_exit_status = 130;

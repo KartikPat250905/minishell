@@ -16,42 +16,27 @@
 
 int	g_exit_status;
 
-void	init_terminal_set(void)
+void	handle_input(char *input)
 {
-	struct termios	term;
-
-	if (tcgetattr(STDIN_FILENO, &term) == -1)
+	add_history(input);
+	lexer(input);
+	if (get_info()->tokens && get_info()->tokens->top->type != END)
 	{
-		gc_free_all();
-		free_env_list();
-		exit(EXIT_FAILURE);
+		if (parser() == ACCEPT && get_info()->ast)
+			execute_ast(get_info()->ast);
+		else
+		{
+			g_exit_status = EXIT_PARSE_ERROR;
+			ft_putendl_fd("Parse error", 2);
+		}
 	}
-	term.c_lflag &= ~ECHOCTL;
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
-	{
-		gc_free_all();
-		free_env_list();
-		exit(EXIT_FAILURE);
-	}
-}
-
-void	reset_to_tty(void)
-{
-	int	tty_fd;
-
-	tty_fd = open("/dev/tty", O_RDWR);
-	if (tty_fd >= 0)
-	{
-		dup2(tty_fd, STDIN_FILENO);
-		close(tty_fd);
-	}
-	get_info()->flag = 1;
-	activate_signal_parent();
+	else
+		g_exit_status = EXIT_SUCCESS;
 }
 
 void	main_loop(char *input)
 {
-	while (1) //&& !get_info()->break_flag)
+	while (1)
 	{
 		update_envp();
 		reset_to_tty();
@@ -64,36 +49,9 @@ void	main_loop(char *input)
 			break ;
 		}
 		else if (*input)
-		{
-			add_history(input);
-			lexer(input);
-			if (get_info()->break_flag)
-			{
-				free(input);
-				break ;
-			}
-			if (get_info()->tokens && get_info()->tokens->top->type != END)
-			{
-				if (parser() == ACCEPT && get_info()->ast)
-					execute_ast(get_info()->ast);
-				else
-				{
-					if (get_info()->break_flag)
-					{
-						free(input);
-						break ;
-					}
-					g_exit_status = EXIT_PARSE_ERROR;
-					ft_putendl_fd("Parse error", 2);
-				}
-			}
-			else
-			{
-				g_exit_status = EXIT_SUCCESS;
-			}
-		}
-		gc_free_all();
+			handle_input(input);
 		free(input);
+		gc_free_all();
 	}
 }
 

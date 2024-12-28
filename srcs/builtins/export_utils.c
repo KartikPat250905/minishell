@@ -36,8 +36,6 @@ void	update_envp(void)
 		global = global -> next;
 	}
 	env_new[i] = NULL;
-	//if (get_info()->envp)
-	//	gc_free_array(i, (void **)(get_info()->envp));
 	get_info()->envp = env_new;
 }
 

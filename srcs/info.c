@@ -26,3 +26,10 @@ bool	get_debug(void)
 	info = get_info();
 	return (info->debug);
 }
+
+void	free_and_exit(void)
+{
+	gc_free_all();
+	free_env_list();
+	exit(EXIT_FAILURE);
+}

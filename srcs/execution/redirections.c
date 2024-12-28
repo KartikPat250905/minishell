@@ -79,9 +79,12 @@ int	apply_normal_redirections(t_list *normal_redirects)
 			return (g_exit_status);
 		}
 		if (redir_info->type == RED_FO)
-			dup2(fd, STDIN_FILENO);
-		else
-			dup2(fd, STDOUT_FILENO);
+		{
+			if (dup2(fd, STDIN_FILENO) < 0)
+				free_and_exit();
+		}
+		else if (dup2(fd, STDOUT_FILENO) < 0)
+			free_and_exit();
 		close(fd);
 		normal_redirects = normal_redirects->next;
 	}
@@ -104,9 +107,12 @@ void	apply_normal_redirections_piped(t_list *normal_redirects)
 			exit(1);
 		}
 		if (redir_info->type == RED_FO)
-			dup2(fd, STDIN_FILENO);
-		else
-			dup2(fd, STDOUT_FILENO);
+		{
+			if (dup2(fd, STDIN_FILENO) < 0)
+				free_and_exit();
+		}
+		else if (dup2(fd, STDOUT_FILENO) < 0)
+			free_and_exit();
 		close(fd);
 		normal_redirects = normal_redirects->next;
 	}
