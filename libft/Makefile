@@ -1,5 +1,5 @@
 INCLUDES = -I../includes
-CFLAGS = -g -Wall -Wextra -Werror $(INCLUDES)
+CFLAGS = -Wall -Wextra -Werror $(INCLUDES)
 
 AR = ar rcs
 
