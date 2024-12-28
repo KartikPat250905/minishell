@@ -53,12 +53,14 @@ void	main_loop(char *input)
 {
 	while (1) //&& !get_info()->break_flag)
 	{
+		update_envp();
 		reset_to_tty();
 		input = readline("microshell> ");
 		if (!input)
 		{
 			g_exit_status = EXIT_SUCCESS;
 			ft_putstr_fd("bye\n", 1);
+			get_info()->break_flag = true;
 			break ;
 		}
 		else if (*input)
@@ -66,13 +68,21 @@ void	main_loop(char *input)
 			add_history(input);
 			lexer(input);
 			if (get_info()->break_flag)
+			{
+				free(input);
 				break ;
+			}
 			if (get_info()->tokens && get_info()->tokens->top->type != END)
 			{
 				if (parser() == ACCEPT && get_info()->ast)
 					execute_ast(get_info()->ast);
 				else
 				{
+					if (get_info()->break_flag)
+					{
+						free(input);
+						break ;
+					}
 					g_exit_status = EXIT_PARSE_ERROR;
 					ft_putendl_fd("Parse error", 2);
 				}
@@ -97,7 +107,6 @@ void	init_main(int ac, char **av, char **envp)
 	if (ac > 1)
 		info->debug = true;
 	fetch_envp(envp);
-	update_envp();
 }
 
 int	main(int ac, char **av, char **envp)
@@ -109,8 +118,10 @@ int	main(int ac, char **av, char **envp)
 	init_main(ac, av, envp);
 	activate_signal_handler();
 	main_loop(input);
-	//if (get_gc());
-	gc_free_all();
+	if (get_info()->break_flag)
+	{
+		gc_free_all();
+	}
 	free_env_list();
 	rl_free_line_state();
 	return (g_exit_status);
