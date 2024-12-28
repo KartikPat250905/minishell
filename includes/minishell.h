@@ -13,6 +13,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# define EXIT_PARSE_ERROR 2
+
 # include <stdio.h>
 # include <stdbool.h>
 # include <unistd.h>
@@ -32,14 +34,17 @@
 
 typedef struct s_token_stack	t_token_stack;
 typedef struct s_ast_node		t_ast_node;
+typedef struct s_entry			t_entry;
 
 typedef struct s_info
 {
 	bool						debug;
+	bool						break_flag;
 	bool						flag;
-	t_token_stack				*tokens;
 	t_env						*env;
 	int							exit_status;
+	t_token_stack				*tokens;
+	t_entry						**table;
 	t_ast_node					*ast;
 	char						**envp;
 }						t_info;

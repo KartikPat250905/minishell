@@ -78,7 +78,7 @@ bool			tokenize_input(t_iterators *it, t_token_stack *stack);
 bool			tokenize_words(t_iterators *it, t_token_stack *stack);
 
 bool			is_token(char ch, char next);
-t_token_stack	*lexer(char *input);
+void			lexer(char *input);
 
 //stack
 t_token_node	*create_token(t_token type, char *value);

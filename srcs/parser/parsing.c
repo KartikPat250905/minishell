@@ -31,7 +31,7 @@ static t_stack	*init_parsing_stack(void)
 	return (stack);
 }
 
-static int	parsing_loop(t_stack *stack, t_entry **table, t_token_stack *tokens)
+static int	parsing_loop(t_stack *stack)
 {
 	int		ret;
 	t_entry	*entry;
@@ -41,8 +41,8 @@ static int	parsing_loop(t_stack *stack, t_entry **table, t_token_stack *tokens)
 	while (ret == -1)
 	{
 		if (get_debug())
-			print_stacks(stack, tokens);
-		entry = table_lookup(stack, tokens, table);
+			print_stacks(stack, get_info()->tokens);
+		entry = table_lookup(stack, get_info()->tokens, get_info()->table);
 		if (!entry)
 		{
 			ret = -2;
@@ -51,24 +51,29 @@ static int	parsing_loop(t_stack *stack, t_entry **table, t_token_stack *tokens)
 		else if (entry->action == ACCEPT)
 			ret = action_accept();
 		else if (entry->action == SHIFT)
-			ret = action_shift(stack, entry, tokens);
+			ret = action_shift(stack, entry, get_info()->tokens);
 		else if (entry->action == REDUCE)
-			ret = action_reduce(stack, entry, table);
+			ret = action_reduce(stack, entry, get_info()->table);
 		else
 			ret = 0;
 	}
 	return (ret);
 }
 
-int	parsing_main(t_token_stack *tokens, t_entry **table)
+int	parser(void)
 {
 	int		ret;
 	t_stack	*stack;
 
+	get_info()->table = create_table();
 	stack = init_parsing_stack();
-	if (!stack)
+	if (!get_info()->table || !stack)
+	{
+		g_exit_status = EXIT_FAILURE;
+		get_info()->break_flag = true;
 		return (-2);
-	ret = parsing_loop(stack, table, tokens);
+	}
+	ret = parsing_loop(stack);
 	if (ret == ACCEPT)
 	{
 		get_info()->ast = get_ast_root(stack);
@@ -79,9 +84,6 @@ int	parsing_main(t_token_stack *tokens, t_entry **table)
 		}
 	}
 	else
-	{
-		ft_putendl_fd("-not accepted (parse error)-", 2);
 		get_info()->ast = NULL;
-	}
 	return (ret);
 }

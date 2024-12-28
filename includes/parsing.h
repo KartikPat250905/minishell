@@ -108,7 +108,7 @@ t_ast_node	*init_ast_node(int type, t_token_node *token,
 t_ast_node	*get_ast_root(t_stack *stack);
 
 //parsing.c
-int			parsing_main(t_token_stack *tokens, t_entry **table);
+int			parser(void);
 
 //stack_operations.c
 void		push(t_stack *stack, t_node *new_node);

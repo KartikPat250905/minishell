@@ -90,15 +90,21 @@ int	lexer_loop(t_iterators *it, t_token_stack *rev_tokens)
 	return (0);
 }
 
-t_token_stack	*lexer(char *input)
+void	lexer(char *input)
 {
 	t_iterators		it;
 	t_token_stack	*rev_tokens;
-	t_token_stack	*result;
 	t_token_node	*eof;
 
-	init_iterators(&it, input);
+	get_info()->tokens = gc_alloc(sizeof(t_token_stack));
 	rev_tokens = gc_alloc(sizeof(t_token_stack));
+	if (!get_info()->tokens || !rev_tokens)
+	{
+		g_exit_status = EXIT_FAILURE;
+		get_info()->break_flag = true;
+		return ;
+	}
+	init_iterators(&it, input);
 	while (it.cur < it.len)
 	{
 		if (lexer_loop(&it, rev_tokens))
@@ -106,8 +112,7 @@ t_token_stack	*lexer(char *input)
 	}
 	eof = create_token(END, gc_strdup("EOF"));
 	push_token(rev_tokens, eof);
-	result = reverse_stack(rev_tokens);
+	get_info()->tokens = reverse_stack(rev_tokens);
 	if (get_debug())
-		print_token_stack(rev_tokens, "TOKEN STACK : AFTER");
-	return (result);
+		print_token_stack(rev_tokens, "Token Stack (After)");
 }

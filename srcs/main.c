@@ -16,7 +16,7 @@
 
 int	g_exit_status;
 
-static void	init_terminal_set(void)
+void	init_terminal_set(void)
 {
 	struct termios	term;
 
@@ -49,52 +49,67 @@ void	reset_to_tty(void)
 	activate_signal_parent();
 }
 
-void	main_loop(t_entry **table, char *input)
+void	main_loop(char *input)
 {
-	while (1)
+	while (1) //&& !get_info()->break_flag)
 	{
 		reset_to_tty();
 		input = readline("microshell> ");
 		if (!input)
 		{
-			printf("Exit\n");
-			free(input);
-			g_exit_status = 0;
+			g_exit_status = EXIT_SUCCESS;
+			ft_putstr_fd("bye\n", 1);
 			break ;
 		}
-		if (*input)
+		else if (*input)
 		{
 			add_history(input);
-			get_info()->tokens = lexer(input);
-			if (get_info()->tokens)
+			lexer(input);
+			if (get_info()->break_flag)
+				break ;
+			if (get_info()->tokens && get_info()->tokens->top->type != END)
 			{
-				if (parsing_main(get_info()->tokens, table) == ACCEPT)
+				if (parser() == ACCEPT && get_info()->ast)
 					execute_ast(get_info()->ast);
+				else
+				{
+					g_exit_status = EXIT_PARSE_ERROR;
+					ft_putendl_fd("Parse error", 2);
+				}
+			}
+			else
+			{
+				g_exit_status = EXIT_SUCCESS;
 			}
 		}
+		gc_free_all();
 		free(input);
 	}
+}
+
+void	init_main(int ac, char **av, char **envp)
+{
+	t_info	*info;
+
+	(void)av;
+	info = get_info();
+	ft_bzero(info, sizeof(t_info));
+	if (ac > 1)
+		info->debug = true;
+	fetch_envp(envp);
+	update_envp();
 }
 
 int	main(int ac, char **av, char **envp)
 {
 	char			*input;
-	t_entry			**table;
-	t_info			*info;
 
-	(void)av;
 	input = NULL;
-	info = get_info();
-	ft_bzero(info, sizeof(t_info));
-	if (ac > 1)
-		info->debug = true;
-	info->tokens = gc_alloc(sizeof(t_token_stack));
-	fetch_envp(envp);
-	update_envp();
-	table = create_table();
 	init_terminal_set();
+	init_main(ac, av, envp);
 	activate_signal_handler();
-	main_loop(table, input);
+	main_loop(input);
+	//if (get_gc());
 	gc_free_all();
 	free_env_list();
 	rl_free_line_state();
