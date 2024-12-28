@@ -55,6 +55,7 @@ bool							get_debug(void);
 extern int						g_exit_status;
 
 void							free_and_exit(void);
+void							free_and_exit_with(int exit_code);
 void							init_terminal_set(void);
 void							reset_to_tty(void);
 

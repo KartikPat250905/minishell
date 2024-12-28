@@ -24,9 +24,8 @@ int	is_cmd_already_path(char *cmd)
 		{
 			ft_putstr_fd("./microshell: ", STDERR_FILENO);
 			perror(cmd);
-			gc_free_all();
-			free_env_list();
-			exit(EXIT_CMD_NOT_FOUND);
+			g_exit_status = EXIT_CMD_NOT_FOUND;
+			free_and_exit_with(g_exit_status);
 		}
 	}
 	return (0);
@@ -57,17 +56,13 @@ void	child_exit(char **argv, char *path)
 		ft_putstr_fd(argv[0], 2);
 		ft_putendl_fd(": command not found", 2);
 		g_exit_status = 127;
-		gc_free_all();
-		free_env_list();
-		exit(g_exit_status);
+		free_and_exit_with(g_exit_status);
 	}
 	if (execve(path, argv, get_info()->envp) == -1)
 	{
 		perror("execve");
 		g_exit_status = 126;
-		gc_free_all();
-		free_env_list();
-		exit(g_exit_status);
+		free_and_exit_with(g_exit_status);
 	}
 }
 
@@ -89,9 +84,7 @@ void	resolve_and_exec_cmd(char **argv)
 			ft_putstr_fd(argv[0], 2);
 			ft_putendl_fd(": No such file or directory", 2);
 			g_exit_status = 127;
-			gc_free_all();
-			free_env_list();
-			exit(g_exit_status);
+			free_and_exit_with(g_exit_status);
 		}
 		paths = gc_split(path, ':', &n);
 		path = look_for_cmd(argv[0], paths);

@@ -57,16 +57,12 @@ void	execute_simple_piped_cmd(char **argv)
 	if (!argv || !argv[0])
 	{
 		g_exit_status = EXIT_FAILURE;
-		gc_free_all();
-		free_env_list();
-		exit(g_exit_status);
+		free_and_exit();
 	}
 	if (is_builtin(argv[0]))
 	{
 		status = execute_builtin(argv);
-		gc_free_all();
-		free_env_list();
-		exit(status);
+		free_and_exit_with(status);
 	}
 	resolve_and_exec_cmd(argv);
 }

@@ -74,7 +74,10 @@ void	execute_external_cmd(char **argv, t_exec_info *info)
 
 	pid = fork();
 	if (pid < 0)
+	{
+		perror("fork exec external cmd");
 		return ;
+	}
 	else if (pid == 0)
 	{
 		activate_signal_handler();
@@ -85,11 +88,7 @@ void	execute_external_cmd(char **argv, t_exec_info *info)
 			close(info->heredoc_fd);
 		}
 		if (apply_normal_redirections(info->redir_list) == EXIT_FAILURE)
-		{
-			gc_free_all();
-			free_env_list();
-			exit(g_exit_status);
-		}
+			free_and_exit();
 		resolve_and_exec_cmd(argv);
 	}
 	wait_for_child(pid);

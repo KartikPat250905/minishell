@@ -25,9 +25,7 @@ void	create_pipes(int *pipefds, int pipe_count)
 		{
 			perror("pipe");
 			g_exit_status = EXIT_FAILURE;
-			gc_free_all();
-			free_env_list();
-			exit(g_exit_status);
+			free_and_exit();
 		}
 		i++;
 	}
@@ -92,8 +90,8 @@ void	wait_for_child_pipe(pid_t pid, int *status)
 	if (WIFEXITED(*status))
 	{
 		g_exit_status = WEXITSTATUS(*status);
-		if (g_exit_status == 1)
-			g_exit_status = 127;
+		//if (g_exit_status == 1)
+		//	g_exit_status = 127;
 	}
 	else if (WIFSIGNALED(*status))
 	{

@@ -75,7 +75,5 @@ void	handle_child_process(t_pipe_data *pd, int index,
 	}
 	apply_normal_redirections_piped(info->redir_list);
 	execute_simple_piped_cmd(argv);
-	free_env_list();
-	gc_free_all();
-	exit(EXIT_FAILURE);
+	free_and_exit();
 }

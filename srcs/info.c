@@ -33,3 +33,10 @@ void	free_and_exit(void)
 	free_env_list();
 	exit(EXIT_FAILURE);
 }
+
+void	free_and_exit_with(int exit_code)
+{
+	gc_free_all();
+	free_env_list();
+	exit(exit_code);
+}

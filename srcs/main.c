@@ -44,7 +44,7 @@ void	main_loop(char *input)
 		if (!input)
 		{
 			g_exit_status = EXIT_SUCCESS;
-			ft_putstr_fd("bye\n", 1);
+			ft_putstr_fd("Bye!\n", 1);
 			get_info()->break_flag = true;
 			break ;
 		}
@@ -62,8 +62,13 @@ void	init_main(int ac, char **av, char **envp)
 	(void)av;
 	info = get_info();
 	ft_bzero(info, sizeof(t_info));
-	if (ac > 1)
+	if (ac == 2 && ft_strncmp(av[1], "--debug", 8) == 0)
 		info->debug = true;
+	else if (ac > 1)
+	{
+		ft_putendl_fd("Usage: ./microshell [--debug]", 2);
+		exit(EXIT_FAILURE);
+	}
 	fetch_envp(envp);
 }
 
@@ -77,10 +82,8 @@ int	main(int ac, char **av, char **envp)
 	activate_signal_handler();
 	main_loop(input);
 	if (get_info()->break_flag)
-	{
 		gc_free_all();
-	}
 	free_env_list();
-	rl_free_line_state();
+	//rl_free_line_state();
 	return (g_exit_status);
 }

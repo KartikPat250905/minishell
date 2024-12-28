@@ -102,9 +102,8 @@ void	apply_normal_redirections_piped(t_list *normal_redirects)
 		fd = open_redirection(redir_info);
 		if (fd < 0)
 		{
-			gc_free_all();
-			free_env_list();
-			exit(1);
+			g_exit_status = EXIT_FAILURE;
+			free_and_exit();
 		}
 		if (redir_info->type == RED_FO)
 		{
