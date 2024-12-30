@@ -12,32 +12,6 @@
 
 #include "minishell.h"
 
-/*
- * Hardcored lexer just to be able to test the LR parsing algo,
- * we obviously need a proper lexer that takes the original raw string
- * and returns a stack of input tokens, remember,
- * we are reading from left to right, so we fill the stack from right to left
- *
- * test case:
- * ls > outfile EOF
- * WORD RED_TO WORD EOF
- *
- * ls > > ls
- * WORD RED_TO RED_TO WORD EOF
- *
- * ls | cat EOF
- * WORD PIPE WORD EOF
- *
- * btw, should prototype be?
- * int lexer(char *str, t_stack *input_tokens);
- *
- * or
- *
- * t_stack *lexer(char *str);
- */
-
-//ls < ls ls | cat | ls > outfile
-
 t_token_stack	*reverse_stack(t_token_stack *stack)
 {
 	t_token_node	*curr;
